@@ -1,0 +1,22 @@
+<html t:type="layout" title="Indexes"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd" xmlns:p="tapestry:parameter">
+	<table t:type="Loop" source="relations" value="relation">
+		<tr>
+			<td>
+				<table>
+					<tr>
+						<td>
+							<h2>${relation.name}</h2>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<table t:type="grid" source="relation.atributes" row="atribute"
+								t:exclude="atributeId" />
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</html>
