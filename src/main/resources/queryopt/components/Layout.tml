@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	<!--
+
+		Design by Free CSS Templates http://www.freecsstemplates.org Released
+		for free under a Creative Commons Attribution 2.5 License Title :
+		Concrete Version : 1.0 Released : 20080825 Description: A Web 2.0
+		design with fluid width suitable for blogs and small websites.
+	-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
+	xmlns:p="tapestry:parameter">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>${title}</title>
+	</head>
+	<body>
+		<!-- start header -->
+		<div id="header">
+			<div id="logo">
+				<h1>
+					<t:pagelink page="Index">Query Optimizer</t:pagelink>
+				</h1>
+				<h2>
+					<a href="http://www.ii.edu.mk/">Institute of Informatics</a>
+				</h2>
+			</div>
+			<div id="menu">
+				<ul>
+					<li t:type="loop" source="pageNames" value="pageName"
+						class="prop:classForPageName">
+						<t:pagelink page="prop:pageName">${pageName}</t:pagelink>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- end header -->
+		
+		<!-- start page -->
+		<div id="page">
+			<!-- start content -->
+			<div id="content">
+				<t:body />
+			</div>
+			<!-- end content -->
+
+			<!-- start sidebar -->
+			<div id="sidebar">
+				<ul>
+					<li>
+						<h2>Metadata</h2>
+						<ul>
+							<li><a href="#" t:type="PageLink" page="Relations">Relations</a></li>
+							<li><a href="#" t:type="PageLink" page="Atributes">Atributes</a></li>
+							<li><a href="#" t:type="PageLink" page="Indexes">Indexes</a></li>
+							<li><a href="#" t:type="PageLink" page="SystemInfo">System Info</a></li>
+						</ul>
+					</li>
+					<li>
+						<h2>Queries</h2>
+						<div class="sidebar-content">
+							<ul>
+								<li t:type="Loop" source="queries" value="query">
+									<a href="#" t:type="PageLink" page="QueryView">${query.name}</a>
+								</li>
+								<li t:type="unless" test="queries">
+									No Queries defined
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- end sidebar -->
+
+			<br style="clear: both;" />
+		</div>
+		<!-- end page -->
+		
+		<!-- start footer -->
+		<div id="footer">
+			<p class="legal">
+				&copy;2009 Query Optimizer. All Rights Reserved.
+			</p>
+		</div>
+		<!-- end footer -->
+		
+	</body>
+</html>

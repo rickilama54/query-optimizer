@@ -1,0 +1,206 @@
+<html t:type="layout" title="Relations"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd" xmlns:p="tapestry:parameter">
+	<script type="text/javascript">
+		function toggleVisibility(control)
+		{
+		if(control.style.display ==
+		"block"
+		||
+		control.style.display
+		== "")
+		control.style.display = "none";
+		else
+		control.style.display = "block";
+		}
+
+		function toggleVisibilityNodes(noOfNodes, nodes)
+		{
+		for(i=0;i!=noOfNodes;i++)
+		{
+		toggleVisibility(nodes[i].lastChild);
+		toggleVisibility(nodes[i].lastChild.previousSibling);
+		}
+		}
+    </script>
+
+	<t:zone t:id="mainzone">
+		<form t:type="form" t:id="mainForm" zone="mainzone" name="mainform">
+			<table class="nostyle">
+				<tr t:type="Loop" source="relations" value="relation" encoder="relationEncoder">
+					<td class="nostyle">
+						<h1>${relation.name}</h1>
+						<h2>Atributes</h2>
+						<table>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Is PK</th>
+									<th>References (FK)</th>
+									<th>Size in bytes</th>
+									<th>Distinct</th>
+									<th>edit</th>
+									<th>del</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t:type="AjaxFormLoop" source="atributes" value="atribute"
+									t:id="atributesLoop" encoder="atributeEncoder" context="relation">
+									<t:submitnotifier>
+										<td>
+											<div class="edit">${atribute.name}</div>
+											<div class="edit" style="display:none">
+												<input t:type="textfield" value="atribute.name" />
+											</div>
+										</td>
+										<td>
+											<div class="edit" id="view">
+												<t:if test="atribute.pk">
+													yes
+													<t:parameter name="else">no</t:parameter>
+												</t:if>
+											</div>
+											<div class="edit" id="edit" style="display:none">
+												<input t:type="checkbox" value="atribute.pk" />
+											</div>
+										</td>
+										<td>
+											<div class="edit">
+												<t:if test="atribute.fkAtribute">
+													${atribute.fkAtribute?.relation.name}.${atribute.fkAtribute?.name}
+													<t:parameter name="else"> - </t:parameter>
+												</t:if>
+											</div>
+											<div class="edit" style="display:none">
+												<t:selectobject list="fkCandidates" value="atribute.fkAtribute"
+													labelField="literal:relation.name '.' name" blankLabel="no" />
+											</div>
+										</td>
+										<td>
+											<div class="edit">${atribute.sizeInBytes}</div>
+											<div class="edit" style="display:none">
+												<input t:type="textfield" value="atribute.sizeInBytes" />
+											</div>
+										</td>
+										<td>
+											<div class="edit">${atribute.distinct}</div>
+											<div class="edit" style="display:none">
+												<input t:type="textfield" value="atribute.distinct" />
+											</div>
+										</td>
+										<td>
+											<a style="cursor:pointer;"
+												onclick="toggleVisibilityNodes(5, this.parentNode.parentNode.childNodes);
+												if(this.innerHTML == 'edit') 
+												this.innerHTML = 'save';
+												else if(this.innerHTML == 'save') {
+												this.innerHTML = 'edit';
+												document.getElementById('mainForm').submit();
+												}">edit</a>
+										</td>
+										<td>
+											<a t:type="removerowlink" style="cursor:pointer;">delete</a>
+										</td>
+									</t:submitnotifier>
+									<t:parameter name="addRow">
+										<td colspan="7" style="text-align: right">
+											<t:addrowlink>Add a row</t:addrowlink>
+										</td>
+									</t:parameter>
+								</tr>
+							</tbody>
+						</table>
+						<input t:id="SaveAtributes"
+							style="margin-top:5px; position:relative; right:0px; text-align: right;"
+							t:type="submit" value="Save" />
+						<h2>Indexes</h2>
+						<table>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Atributes</th>
+									<th>edit</th>
+									<th>del</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t:type="AjaxFormLoop" source="relation.indexes" value="index"
+									t:id="indexesLoop" context="relation">
+									<t:submitnotifier>
+										<td>
+											<div class="edit">${index.name}</div>
+											<div class="edit" style="display:none">
+												<input t:type="textfield" value="index.name" />
+											</div>
+										</td>
+										<td>
+											<div class="edit">
+												<table class="nostyle">
+													<tr class="nostyle">
+														<td t:type="Loop" class="nostyle" source="indexAtributes"
+															value="indexAtribute">
+															${indexAtribute.atribute.name}
+															<t:unless test="lastAtributeInIndex">;</t:unless>
+														</td>
+													</tr>
+												</table>
+											</div>
+											<div class="edit" style="display:none">
+												<table>
+													<thead>
+														<tr>
+															<th>Name</th>
+															<th />
+														</tr>
+													</thead>
+													<tr t:type="AjaxFormLoop" t:id="editIndexLoop" source="indexAtributes"
+														value="indexAtribute" context="index">
+														<t:submitnotifier>
+															<td>
+																<t:selectobject
+																	list="indexAtribute.atribute.relation.atributes" value="indexAtribute.atribute"
+																	labelField="literal:name" blankOption="NEVER" />
+															</td>
+															<td>
+																<a t:type="removerowlink" style="cursor:pointer;">del</a>
+															</td>
+														</t:submitnotifier>
+														<t:parameter name="addRow">
+															<td colspan="2" style="text-align: right">
+																<t:addrowlink>Add a row</t:addrowlink>
+															</td>
+														</t:parameter>
+													</tr>
+												</table>
+											</div>
+										</td>
+										<td>
+											<a style="cursor:pointer;"
+												onclick="toggleVisibilityNodes(2, this.parentNode.parentNode.childNodes);
+												if(this.innerHTML == 'edit') 
+												this.innerHTML = 'save';
+												else if(this.innerHTML == 'save') {
+												this.innerHTML = 'edit';
+												document.getElementById('mainForm').submit();
+												}">edit</a>
+										</td>
+										<td>
+											<a t:type="removerowlink" style="cursor:pointer;">delete</a>
+										</td>
+									</t:submitnotifier>
+									<t:parameter name="addRow">
+										<td colspan="4" style="text-align: right">
+											<t:addrowlink>Add a row</t:addrowlink>
+										</td>
+									</t:parameter>
+								</tr>
+							</tbody>
+						</table>
+						<input t:id="SaveIndexes"
+							style="margin-top:5px; position:relative; right:0px; text-align: right;"
+							t:type="submit" value="Save" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</t:zone>
+</html>
