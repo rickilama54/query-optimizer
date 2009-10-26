@@ -5,6 +5,13 @@ public class CompareSingleRowClause extends Clause {
 	private Term operand1;
 	private Term operand2;
 
+	public CompareSingleRowClause(Operator operator, Term operand1, Term operand2) {
+		super();
+		this.operator = operator;
+		this.operand1 = operand1;
+		this.operand2 = operand2;
+	}
+
 	public Operator getOperator() {
 		return operator;
 	}

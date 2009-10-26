@@ -4,7 +4,7 @@ import java.util.List;
 
 import queryopt.entities.Atribute;
 
-public class SPJQuery {
+public class SPJQuery implements Term {
 	private List<Term> projectionTerms;
 	private List<Clause> selectionCnfClauses;
 	private List<Atribute> groupingAtributes;
