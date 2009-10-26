@@ -1,14 +1,22 @@
 package queryopt.optimizer.entities;
 
+import queryopt.entities.Atribute;
+
 public class InClause extends Clause {
-	private Term operand;
+	private Atribute operand;
 	private SPJQuery subQuery;
 
-	public Term getOperand() {
+	public InClause(Atribute operand, SPJQuery subQuery) {
+		super();
+		this.operand = operand;
+		this.subQuery = subQuery;
+	}
+
+	public Atribute getOperand() {
 		return operand;
 	}
 
-	public void setOperand(Term operand) {
+	public void setOperand(Atribute operand) {
 		this.operand = operand;
 	}
 

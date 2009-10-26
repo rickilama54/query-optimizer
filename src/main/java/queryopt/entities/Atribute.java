@@ -27,13 +27,25 @@ public class Atribute implements Term {
 
 	}
 
-	public Atribute(int atributeId, String name, boolean pk, int sizeInBytes, int distinct) {
+	public Atribute(int atributeId, String name, boolean pk, int sizeInBytes, int distinct, Relation relation) {
 		super();
 		this.atributeId = atributeId;
 		this.name = name;
 		this.pk = pk;
 		this.sizeInBytes = sizeInBytes;
 		this.distinct = distinct;
+		this.relation = relation;
+	}
+	
+	public Atribute(int atributeId, String name, boolean pk, int sizeInBytes, int distinct, Relation relation, Atribute fkAtribute) {
+		super();
+		this.atributeId = atributeId;
+		this.name = name;
+		this.pk = pk;
+		this.sizeInBytes = sizeInBytes;
+		this.distinct = distinct;
+		this.relation = relation;
+		this.fkAtribute = fkAtribute;
 	}
 
 	@Id
