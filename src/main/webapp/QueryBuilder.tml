@@ -1,0 +1,26 @@
+<html t:type="layout" title="Query Builder"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd" xmlns:p="tapestry:parameter">
+	<t:zone t:id="mainZone">
+		<form t:type="form" t:zone="mainZone" t:id="mainForm">
+			<p t:type="if" test="message">
+				<t:if test="parseok">
+					<span style="color:green;">${message}</span>
+					<t:parameter name="else">
+						<span style="color:red;">${message}</span>
+					</t:parameter>
+				</t:if>
+			</p>
+			<p>
+				<input t:type="submit" t:id="parse" value="Parse Query" />
+			</p>
+			<p>
+				<t:textarea value="querytext" rows="15" cols="80" />
+			</p>
+			<p t:type="if" test="message">
+				<t:if test="parseok">
+					<a href="#" t:type="ActionLink" t:id="saveQueryLink" t:context="queryText" style="font-size: 1.2em;">Save</a>
+				</t:if>
+			</p>
+		</form>
+	</t:zone>
+</html>

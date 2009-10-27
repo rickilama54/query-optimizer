@@ -2,11 +2,11 @@ package queryopt.optimizer.entities;
 
 import queryopt.entities.Atribute;
 
-enum AggregateFunctionType {
-	SUM, MIN, MAX
-}
-
 public class AggregateFunction implements Term {
+	public enum AggregateFunctionType {
+		AVG, SUM, MIN, MAX
+	}
+
 	private Atribute atribute;
 	private AggregateFunctionType type;
 
