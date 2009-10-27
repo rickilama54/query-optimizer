@@ -1,0 +1,4 @@
+<html t:type="layout" title="Atributes"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd" xmlns:p="tapestry:parameter">
+	<div t:type="Grid" source="queries"/>
+</html>
