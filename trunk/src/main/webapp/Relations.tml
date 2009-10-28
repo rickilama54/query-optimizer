@@ -138,7 +138,7 @@
 													<tr class="nostyle">
 														<td t:type="Loop" class="nostyle" source="indexAtributes"
 															value="indexAtribute">
-															${indexAtribute.atribute.name}
+															<t:outputraw value="indexAtribute.atribute.name" />
 															<t:unless test="lastAtributeInIndex">;</t:unless>
 														</td>
 													</tr>

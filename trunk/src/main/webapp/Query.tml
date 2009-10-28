@@ -1,3 +1,65 @@
-<html t:type="layout" title="Atributes"
+<html t:type="layout" title="Atributes" t:id="layout"
 	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd" xmlns:p="tapestry:parameter">
+	<t:zone t:id="mainzone">
+		<t:delegate to="activeBlock" />
+	</t:zone>
+
+	<t:block t:id="viewBlock">
+		<form t:type="form" t:id="viewform" t:zone="mainzone">
+			<p>
+				<b>Query Name:</b>
+				${query.name}
+			</p>
+			<p>
+				<p>
+					<b>Query:</b>
+				</p>
+				<br />
+				<span style="font-size: 1.0em;font-family:Monospace;margin-top:50px;">
+					<t:outputraw value="query.text" />
+				</span>
+			</p>
+			<p>
+				<input t:id="edit" t:type="submit" value="Edit" />
+				<input style="margin-left:15px;" t:id="delete" t:type="submit"
+					value="Delete" />
+			</p>
+		</form>
+	</t:block>
+
+	<t:block t:id="editBlock">
+		<form t:type="form" t:id="editform" t:zone="mainzone">
+			<t:errors />
+			<p>
+				<a href="#" t:type="ActionLink" t:id="back">
+					<t:outputraw value="literal:&lt;- Back" t:zone="mainzone" />
+				</a>
+			</p>
+			<p>
+				<t:label for="queryNameTextField">Query Name: </t:label>
+				<input t:id="queryNameTextField" t:type="textfield" value="query.name" />
+			</p>
+			<p t:type="if" test="message">
+				<t:if test="parseok">
+					<span style="color:green;">${message}</span>
+					<t:parameter name="else">
+						<span style="color:red;">${message}</span>
+					</t:parameter>
+				</t:if>
+			</p>
+			<p>
+				<input t:type="submit" t:id="parse" value="Parse Query" />
+			</p>
+			<p>
+				<p>Query:</p>
+				<t:textarea value="query.text" rows="15" cols="80"
+					style="margin-top:5px;" />
+			</p>
+			<p t:type="if" test="message">
+				<t:if test="parseok">
+					<input t:type="submit" t:id="save" value="Save" />
+				</t:if>
+			</p>
+		</form>
+	</t:block>
 </html>

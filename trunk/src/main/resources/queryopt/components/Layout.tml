@@ -64,21 +64,24 @@
 					</li>
 					<li>
 						<h2>Queries</h2>
-						<div class="sidebar-content">
-							<ul>
-								<li>
-									<a href="#" t:type="PageLink" page="QueryBuilder">
-										<b>Query Builder</b>
-									</a>
+						<t:zone t:id="queriesZone">
+							<div class="sidebar-content">
+								<ul>
+									<li>
+										<a href="#" t:type="PageLink" page="Query" context="0">
+											<b>new Query</b>
+										</a>
+									</li>
+									<li t:type="Loop" source="queries" value="query">
+										<a href="#" t:type="PageLink" page="Query" context="query.queryId">${query.name}
+										</a>
+									</li>
+									<li t:type="unless" test="queries">
+										No Queries defined
 								</li>
-								<li t:type="Loop" source="queries" value="query">
-									<a href="#" t:type="PageLink" page="Query">${query.name}</a>
-								</li>
-								<li t:type="unless" test="queries">
-									No Queries defined
-								</li>
-							</ul>
-						</div>
+								</ul>
+							</div>
+						</t:zone>
 					</li>
 				</ul>
 			</div>

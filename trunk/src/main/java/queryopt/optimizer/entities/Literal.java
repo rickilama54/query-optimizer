@@ -3,6 +3,11 @@ package queryopt.optimizer.entities;
 public class Literal implements Term {
 	private String value;
 
+	public Literal(String value) {
+		super();
+		this.value = value;
+	}
+
 	public String getValue() {
 		return value;
 	}
