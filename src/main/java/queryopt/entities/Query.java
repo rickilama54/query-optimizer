@@ -14,6 +14,16 @@ public class Query {
 	private String name;
 	private String text;
 
+	public Query() {
+
+	}
+
+	public Query(String name, String text) {
+		super();
+		this.name = name;
+		this.text = text;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "query_id", unique = true, nullable = false)

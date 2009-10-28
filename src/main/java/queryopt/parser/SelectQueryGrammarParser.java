@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/SelectQueryGrammar.g 2009-10-27 09:32:57
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/SelectQueryGrammar.g 2009-10-27 23:19:47
 
 package queryopt.parser;
 import java.util.ArrayList;
@@ -14,24 +14,26 @@ import org.antlr.runtime.tree.*;
 
 public class SelectQueryGrammarParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "QUERY", "WS", "SELECT", "FROM", "WHERE", "AND", "OP", "IN", "AGGREGATE_FUNC", "NAME", "';'", "'*'", "','", "'('", "')'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "QUERY", "LITERAL", "WS", "SELECT", "STAR", "FROM", "WHERE", "AND", "OP", "IN", "AGGREGATE_FUNC", "NAME", "';'", "','", "'('", "')'", "'\\''"
     };
-    public static final int WHERE=8;
-    public static final int NAME=13;
-    public static final int WS=5;
+    public static final int WHERE=10;
+    public static final int STAR=8;
+    public static final int AGGREGATE_FUNC=14;
+    public static final int T__20=20;
+    public static final int LITERAL=5;
+    public static final int AND=11;
+    public static final int EOF=-1;
+    public static final int T__19=19;
+    public static final int NAME=15;
     public static final int T__16=16;
-    public static final int IN=11;
-    public static final int T__15=15;
-    public static final int AGGREGATE_FUNC=12;
+    public static final int WS=6;
+    public static final int IN=13;
     public static final int T__18=18;
     public static final int T__17=17;
-    public static final int T__14=14;
-    public static final int OP=10;
+    public static final int OP=12;
     public static final int QUERY=4;
-    public static final int AND=9;
-    public static final int FROM=7;
-    public static final int EOF=-1;
-    public static final int SELECT=6;
+    public static final int FROM=9;
+    public static final int SELECT=7;
 
     // delegates
     // delegators
@@ -87,7 +89,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "query"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:43:1: query : ( WS )? query_block ';' EOF ;
+    // /home/dragan/Dragan/SelectQueryGrammar.g:44:1: query : ( WS )? query_block ';' EOF ;
     public final SelectQueryGrammarParser.query_return query() throws RecognitionException {
         SelectQueryGrammarParser.query_return retval = new SelectQueryGrammarParser.query_return();
         retval.start = input.LT(1);
@@ -105,12 +107,12 @@ public class SelectQueryGrammarParser extends Parser {
         CommonTree EOF4_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:43:7: ( ( WS )? query_block ';' EOF )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:43:9: ( WS )? query_block ';' EOF
+            // /home/dragan/Dragan/SelectQueryGrammar.g:44:7: ( ( WS )? query_block ';' EOF )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:44:9: ( WS )? query_block ';' EOF
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            // /home/dragan/Dragan/SelectQueryGrammar.g:43:11: ( WS )?
+            // /home/dragan/Dragan/SelectQueryGrammar.g:44:11: ( WS )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -119,23 +121,23 @@ public class SelectQueryGrammarParser extends Parser {
             }
             switch (alt1) {
                 case 1 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:43:11: WS
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:44:11: WS
                     {
-                    WS1=(Token)match(input,WS,FOLLOW_WS_in_query56); 
+                    WS1=(Token)match(input,WS,FOLLOW_WS_in_query61); 
 
                     }
                     break;
 
             }
 
-            pushFollow(FOLLOW_query_block_in_query60);
+            pushFollow(FOLLOW_query_block_in_query65);
             query_block2=query_block();
 
             state._fsp--;
 
             adaptor.addChild(root_0, query_block2.getTree());
-            char_literal3=(Token)match(input,14,FOLLOW_14_in_query62); 
-            EOF4=(Token)match(input,EOF,FOLLOW_EOF_in_query65); 
+            char_literal3=(Token)match(input,16,FOLLOW_16_in_query67); 
+            EOF4=(Token)match(input,EOF,FOLLOW_EOF_in_query70); 
 
             }
 
@@ -163,7 +165,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "query_block"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:45:1: query_block : (select= select_block WS -> ^( QUERY $select) ) (from= from_block -> ^( QUERY $select $from) ) ( WS where= where_block -> ^( QUERY $select $from $where) )? ;
+    // /home/dragan/Dragan/SelectQueryGrammar.g:46:1: query_block : (select= select_block WS -> ^( QUERY $select) ) (from= from_block -> ^( QUERY $from $select) ) ( WS where= where_block -> ^( QUERY $from $select $where) )? ;
     public final SelectQueryGrammarParser.query_block_return query_block() throws RecognitionException {
         SelectQueryGrammarParser.query_block_return retval = new SelectQueryGrammarParser.query_block_return();
         retval.start = input.LT(1);
@@ -186,19 +188,19 @@ public class SelectQueryGrammarParser extends Parser {
         RewriteRuleSubtreeStream stream_from_block=new RewriteRuleSubtreeStream(adaptor,"rule from_block");
         RewriteRuleSubtreeStream stream_where_block=new RewriteRuleSubtreeStream(adaptor,"rule where_block");
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:45:13: ( (select= select_block WS -> ^( QUERY $select) ) (from= from_block -> ^( QUERY $select $from) ) ( WS where= where_block -> ^( QUERY $select $from $where) )? )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:45:15: (select= select_block WS -> ^( QUERY $select) ) (from= from_block -> ^( QUERY $select $from) ) ( WS where= where_block -> ^( QUERY $select $from $where) )?
+            // /home/dragan/Dragan/SelectQueryGrammar.g:46:13: ( (select= select_block WS -> ^( QUERY $select) ) (from= from_block -> ^( QUERY $from $select) ) ( WS where= where_block -> ^( QUERY $from $select $where) )? )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:46:15: (select= select_block WS -> ^( QUERY $select) ) (from= from_block -> ^( QUERY $from $select) ) ( WS where= where_block -> ^( QUERY $from $select $where) )?
             {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:45:15: (select= select_block WS -> ^( QUERY $select) )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:45:16: select= select_block WS
+            // /home/dragan/Dragan/SelectQueryGrammar.g:46:15: (select= select_block WS -> ^( QUERY $select) )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:46:16: select= select_block WS
             {
-            pushFollow(FOLLOW_select_block_in_query_block82);
+            pushFollow(FOLLOW_select_block_in_query_block87);
             select=select_block();
 
             state._fsp--;
 
             stream_select_block.add(select.getTree());
-            WS5=(Token)match(input,WS,FOLLOW_WS_in_query_block84);  
+            WS5=(Token)match(input,WS,FOLLOW_WS_in_query_block89);  
             stream_WS.add(WS5);
 
 
@@ -215,9 +217,9 @@ public class SelectQueryGrammarParser extends Parser {
             RewriteRuleSubtreeStream stream_select=new RewriteRuleSubtreeStream(adaptor,"rule select",select!=null?select.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 45:39: -> ^( QUERY $select)
+            // 46:39: -> ^( QUERY $select)
             {
-                // /home/dragan/Dragan/SelectQueryGrammar.g:45:41: ^( QUERY $select)
+                // /home/dragan/Dragan/SelectQueryGrammar.g:46:41: ^( QUERY $select)
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(QUERY, "QUERY"), root_1);
@@ -232,10 +234,10 @@ public class SelectQueryGrammarParser extends Parser {
             retval.tree = root_0;
             }
 
-            // /home/dragan/Dragan/SelectQueryGrammar.g:46:4: (from= from_block -> ^( QUERY $select $from) )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:46:5: from= from_block
+            // /home/dragan/Dragan/SelectQueryGrammar.g:47:4: (from= from_block -> ^( QUERY $from $select) )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:47:5: from= from_block
             {
-            pushFollow(FOLLOW_from_block_in_query_block102);
+            pushFollow(FOLLOW_from_block_in_query_block107);
             from=from_block();
 
             state._fsp--;
@@ -256,15 +258,15 @@ public class SelectQueryGrammarParser extends Parser {
             RewriteRuleSubtreeStream stream_from=new RewriteRuleSubtreeStream(adaptor,"rule from",from!=null?from.tree:null);
 
             root_0 = (CommonTree)adaptor.nil();
-            // 46:20: -> ^( QUERY $select $from)
+            // 47:20: -> ^( QUERY $from $select)
             {
-                // /home/dragan/Dragan/SelectQueryGrammar.g:46:23: ^( QUERY $select $from)
+                // /home/dragan/Dragan/SelectQueryGrammar.g:47:23: ^( QUERY $from $select)
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(QUERY, "QUERY"), root_1);
 
-                adaptor.addChild(root_1, stream_select.nextTree());
                 adaptor.addChild(root_1, stream_from.nextTree());
+                adaptor.addChild(root_1, stream_select.nextTree());
 
                 adaptor.addChild(root_0, root_1);
                 }
@@ -274,7 +276,7 @@ public class SelectQueryGrammarParser extends Parser {
             retval.tree = root_0;
             }
 
-            // /home/dragan/Dragan/SelectQueryGrammar.g:47:4: ( WS where= where_block -> ^( QUERY $select $from $where) )?
+            // /home/dragan/Dragan/SelectQueryGrammar.g:48:4: ( WS where= where_block -> ^( QUERY $from $select $where) )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -287,12 +289,12 @@ public class SelectQueryGrammarParser extends Parser {
             }
             switch (alt2) {
                 case 1 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:47:5: WS where= where_block
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:48:5: WS where= where_block
                     {
-                    WS6=(Token)match(input,WS,FOLLOW_WS_in_query_block120);  
+                    WS6=(Token)match(input,WS,FOLLOW_WS_in_query_block126);  
                     stream_WS.add(WS6);
 
-                    pushFollow(FOLLOW_where_block_in_query_block124);
+                    pushFollow(FOLLOW_where_block_in_query_block130);
                     where=where_block();
 
                     state._fsp--;
@@ -301,7 +303,7 @@ public class SelectQueryGrammarParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: from, where, select
+                    // elements: select, from, where
                     // token labels: 
                     // rule labels: retval, select, from, where
                     // token list labels: 
@@ -314,15 +316,15 @@ public class SelectQueryGrammarParser extends Parser {
                     RewriteRuleSubtreeStream stream_where=new RewriteRuleSubtreeStream(adaptor,"rule where",where!=null?where.tree:null);
 
                     root_0 = (CommonTree)adaptor.nil();
-                    // 47:25: -> ^( QUERY $select $from $where)
+                    // 48:25: -> ^( QUERY $from $select $where)
                     {
-                        // /home/dragan/Dragan/SelectQueryGrammar.g:47:28: ^( QUERY $select $from $where)
+                        // /home/dragan/Dragan/SelectQueryGrammar.g:48:28: ^( QUERY $from $select $where)
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
                         root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(QUERY, "QUERY"), root_1);
 
-                        adaptor.addChild(root_1, stream_select.nextTree());
                         adaptor.addChild(root_1, stream_from.nextTree());
+                        adaptor.addChild(root_1, stream_select.nextTree());
                         adaptor.addChild(root_1, stream_where.nextTree());
 
                         adaptor.addChild(root_0, root_1);
@@ -363,7 +365,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "select_block"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:49:1: select_block : SELECT WS select_clause ;
+    // /home/dragan/Dragan/SelectQueryGrammar.g:50:1: select_block : SELECT WS select_clause ;
     public final SelectQueryGrammarParser.select_block_return select_block() throws RecognitionException {
         SelectQueryGrammarParser.select_block_return retval = new SelectQueryGrammarParser.select_block_return();
         retval.start = input.LT(1);
@@ -379,17 +381,17 @@ public class SelectQueryGrammarParser extends Parser {
         CommonTree WS8_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:50:2: ( SELECT WS select_clause )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:50:5: SELECT WS select_clause
+            // /home/dragan/Dragan/SelectQueryGrammar.g:51:2: ( SELECT WS select_clause )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:51:5: SELECT WS select_clause
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            SELECT7=(Token)match(input,SELECT,FOLLOW_SELECT_in_select_block152); 
+            SELECT7=(Token)match(input,SELECT,FOLLOW_SELECT_in_select_block158); 
             SELECT7_tree = (CommonTree)adaptor.create(SELECT7);
             root_0 = (CommonTree)adaptor.becomeRoot(SELECT7_tree, root_0);
 
-            WS8=(Token)match(input,WS,FOLLOW_WS_in_select_block155); 
-            pushFollow(FOLLOW_select_clause_in_select_block158);
+            WS8=(Token)match(input,WS,FOLLOW_WS_in_select_block161); 
+            pushFollow(FOLLOW_select_clause_in_select_block164);
             select_clause9=select_clause();
 
             state._fsp--;
@@ -422,14 +424,14 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "select_clause"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:52:1: select_clause : ( '*' | term ( ( WS )? ',' ( WS )? term )* );
+    // /home/dragan/Dragan/SelectQueryGrammar.g:53:1: select_clause : ( STAR | term ( ( WS )? ',' ( WS )? term )* );
     public final SelectQueryGrammarParser.select_clause_return select_clause() throws RecognitionException {
         SelectQueryGrammarParser.select_clause_return retval = new SelectQueryGrammarParser.select_clause_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal10=null;
+        Token STAR10=null;
         Token WS12=null;
         Token char_literal13=null;
         Token WS14=null;
@@ -438,20 +440,20 @@ public class SelectQueryGrammarParser extends Parser {
         SelectQueryGrammarParser.term_return term15 = null;
 
 
-        CommonTree char_literal10_tree=null;
+        CommonTree STAR10_tree=null;
         CommonTree WS12_tree=null;
         CommonTree char_literal13_tree=null;
         CommonTree WS14_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:52:15: ( '*' | term ( ( WS )? ',' ( WS )? term )* )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:53:15: ( STAR | term ( ( WS )? ',' ( WS )? term )* )
             int alt6=2;
             int LA6_0 = input.LA(1);
 
-            if ( (LA6_0==15) ) {
+            if ( (LA6_0==STAR) ) {
                 alt6=1;
             }
-            else if ( ((LA6_0>=AGGREGATE_FUNC && LA6_0<=NAME)) ) {
+            else if ( ((LA6_0>=AGGREGATE_FUNC && LA6_0<=NAME)||LA6_0==20) ) {
                 alt6=2;
             }
             else {
@@ -462,29 +464,29 @@ public class SelectQueryGrammarParser extends Parser {
             }
             switch (alt6) {
                 case 1 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:52:17: '*'
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:53:17: STAR
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    char_literal10=(Token)match(input,15,FOLLOW_15_in_select_clause166); 
-                    char_literal10_tree = (CommonTree)adaptor.create(char_literal10);
-                    adaptor.addChild(root_0, char_literal10_tree);
+                    STAR10=(Token)match(input,STAR,FOLLOW_STAR_in_select_clause172); 
+                    STAR10_tree = (CommonTree)adaptor.create(STAR10);
+                    adaptor.addChild(root_0, STAR10_tree);
 
 
                     }
                     break;
                 case 2 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:53:4: term ( ( WS )? ',' ( WS )? term )*
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:54:4: term ( ( WS )? ',' ( WS )? term )*
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_term_in_select_clause171);
+                    pushFollow(FOLLOW_term_in_select_clause177);
                     term11=term();
 
                     state._fsp--;
 
                     adaptor.addChild(root_0, term11.getTree());
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:53:9: ( ( WS )? ',' ( WS )? term )*
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:54:9: ( ( WS )? ',' ( WS )? term )*
                     loop5:
                     do {
                         int alt5=2;
@@ -493,22 +495,22 @@ public class SelectQueryGrammarParser extends Parser {
                         if ( (LA5_0==WS) ) {
                             int LA5_1 = input.LA(2);
 
-                            if ( (LA5_1==16) ) {
+                            if ( (LA5_1==17) ) {
                                 alt5=1;
                             }
 
 
                         }
-                        else if ( (LA5_0==16) ) {
+                        else if ( (LA5_0==17) ) {
                             alt5=1;
                         }
 
 
                         switch (alt5) {
                     	case 1 :
-                    	    // /home/dragan/Dragan/SelectQueryGrammar.g:53:10: ( WS )? ',' ( WS )? term
+                    	    // /home/dragan/Dragan/SelectQueryGrammar.g:54:10: ( WS )? ',' ( WS )? term
                     	    {
-                    	    // /home/dragan/Dragan/SelectQueryGrammar.g:53:12: ( WS )?
+                    	    // /home/dragan/Dragan/SelectQueryGrammar.g:54:12: ( WS )?
                     	    int alt3=2;
                     	    int LA3_0 = input.LA(1);
 
@@ -517,17 +519,17 @@ public class SelectQueryGrammarParser extends Parser {
                     	    }
                     	    switch (alt3) {
                     	        case 1 :
-                    	            // /home/dragan/Dragan/SelectQueryGrammar.g:53:12: WS
+                    	            // /home/dragan/Dragan/SelectQueryGrammar.g:54:12: WS
                     	            {
-                    	            WS12=(Token)match(input,WS,FOLLOW_WS_in_select_clause174); 
+                    	            WS12=(Token)match(input,WS,FOLLOW_WS_in_select_clause180); 
 
                     	            }
                     	            break;
 
                     	    }
 
-                    	    char_literal13=(Token)match(input,16,FOLLOW_16_in_select_clause177); 
-                    	    // /home/dragan/Dragan/SelectQueryGrammar.g:53:21: ( WS )?
+                    	    char_literal13=(Token)match(input,17,FOLLOW_17_in_select_clause183); 
+                    	    // /home/dragan/Dragan/SelectQueryGrammar.g:54:21: ( WS )?
                     	    int alt4=2;
                     	    int LA4_0 = input.LA(1);
 
@@ -536,16 +538,16 @@ public class SelectQueryGrammarParser extends Parser {
                     	    }
                     	    switch (alt4) {
                     	        case 1 :
-                    	            // /home/dragan/Dragan/SelectQueryGrammar.g:53:21: WS
+                    	            // /home/dragan/Dragan/SelectQueryGrammar.g:54:21: WS
                     	            {
-                    	            WS14=(Token)match(input,WS,FOLLOW_WS_in_select_clause180); 
+                    	            WS14=(Token)match(input,WS,FOLLOW_WS_in_select_clause186); 
 
                     	            }
                     	            break;
 
                     	    }
 
-                    	    pushFollow(FOLLOW_term_in_select_clause184);
+                    	    pushFollow(FOLLOW_term_in_select_clause190);
                     	    term15=term();
 
                     	    state._fsp--;
@@ -589,7 +591,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "from_block"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:55:1: from_block : FROM WS from_clause ;
+    // /home/dragan/Dragan/SelectQueryGrammar.g:56:1: from_block : FROM WS from_clause ;
     public final SelectQueryGrammarParser.from_block_return from_block() throws RecognitionException {
         SelectQueryGrammarParser.from_block_return retval = new SelectQueryGrammarParser.from_block_return();
         retval.start = input.LT(1);
@@ -605,17 +607,17 @@ public class SelectQueryGrammarParser extends Parser {
         CommonTree WS17_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:56:2: ( FROM WS from_clause )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:56:5: FROM WS from_clause
+            // /home/dragan/Dragan/SelectQueryGrammar.g:57:2: ( FROM WS from_clause )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:57:5: FROM WS from_clause
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            FROM16=(Token)match(input,FROM,FOLLOW_FROM_in_from_block198); 
+            FROM16=(Token)match(input,FROM,FOLLOW_FROM_in_from_block204); 
             FROM16_tree = (CommonTree)adaptor.create(FROM16);
             root_0 = (CommonTree)adaptor.becomeRoot(FROM16_tree, root_0);
 
-            WS17=(Token)match(input,WS,FOLLOW_WS_in_from_block201); 
-            pushFollow(FOLLOW_from_clause_in_from_block204);
+            WS17=(Token)match(input,WS,FOLLOW_WS_in_from_block207); 
+            pushFollow(FOLLOW_from_clause_in_from_block210);
             from_clause18=from_clause();
 
             state._fsp--;
@@ -648,7 +650,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "from_clause"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:57:1: from_clause : nested_query ( ( WS )? ',' ( WS )? nested_query )* ;
+    // /home/dragan/Dragan/SelectQueryGrammar.g:58:1: from_clause : nested_query ( ( WS )? ',' ( WS )? nested_query )* ;
     public final SelectQueryGrammarParser.from_clause_return from_clause() throws RecognitionException {
         SelectQueryGrammarParser.from_clause_return retval = new SelectQueryGrammarParser.from_clause_return();
         retval.start = input.LT(1);
@@ -668,18 +670,18 @@ public class SelectQueryGrammarParser extends Parser {
         CommonTree WS22_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:57:13: ( nested_query ( ( WS )? ',' ( WS )? nested_query )* )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:57:15: nested_query ( ( WS )? ',' ( WS )? nested_query )*
+            // /home/dragan/Dragan/SelectQueryGrammar.g:58:13: ( nested_query ( ( WS )? ',' ( WS )? nested_query )* )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:58:15: nested_query ( ( WS )? ',' ( WS )? nested_query )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_nested_query_in_from_clause211);
+            pushFollow(FOLLOW_nested_query_in_from_clause217);
             nested_query19=nested_query();
 
             state._fsp--;
 
             adaptor.addChild(root_0, nested_query19.getTree());
-            // /home/dragan/Dragan/SelectQueryGrammar.g:57:28: ( ( WS )? ',' ( WS )? nested_query )*
+            // /home/dragan/Dragan/SelectQueryGrammar.g:58:28: ( ( WS )? ',' ( WS )? nested_query )*
             loop9:
             do {
                 int alt9=2;
@@ -688,22 +690,22 @@ public class SelectQueryGrammarParser extends Parser {
                 if ( (LA9_0==WS) ) {
                     int LA9_1 = input.LA(2);
 
-                    if ( (LA9_1==16) ) {
+                    if ( (LA9_1==17) ) {
                         alt9=1;
                     }
 
 
                 }
-                else if ( (LA9_0==16) ) {
+                else if ( (LA9_0==17) ) {
                     alt9=1;
                 }
 
 
                 switch (alt9) {
             	case 1 :
-            	    // /home/dragan/Dragan/SelectQueryGrammar.g:57:29: ( WS )? ',' ( WS )? nested_query
+            	    // /home/dragan/Dragan/SelectQueryGrammar.g:58:29: ( WS )? ',' ( WS )? nested_query
             	    {
-            	    // /home/dragan/Dragan/SelectQueryGrammar.g:57:31: ( WS )?
+            	    // /home/dragan/Dragan/SelectQueryGrammar.g:58:31: ( WS )?
             	    int alt7=2;
             	    int LA7_0 = input.LA(1);
 
@@ -712,17 +714,17 @@ public class SelectQueryGrammarParser extends Parser {
             	    }
             	    switch (alt7) {
             	        case 1 :
-            	            // /home/dragan/Dragan/SelectQueryGrammar.g:57:31: WS
+            	            // /home/dragan/Dragan/SelectQueryGrammar.g:58:31: WS
             	            {
-            	            WS20=(Token)match(input,WS,FOLLOW_WS_in_from_clause214); 
+            	            WS20=(Token)match(input,WS,FOLLOW_WS_in_from_clause220); 
 
             	            }
             	            break;
 
             	    }
 
-            	    char_literal21=(Token)match(input,16,FOLLOW_16_in_from_clause217); 
-            	    // /home/dragan/Dragan/SelectQueryGrammar.g:57:40: ( WS )?
+            	    char_literal21=(Token)match(input,17,FOLLOW_17_in_from_clause223); 
+            	    // /home/dragan/Dragan/SelectQueryGrammar.g:58:40: ( WS )?
             	    int alt8=2;
             	    int LA8_0 = input.LA(1);
 
@@ -731,16 +733,16 @@ public class SelectQueryGrammarParser extends Parser {
             	    }
             	    switch (alt8) {
             	        case 1 :
-            	            // /home/dragan/Dragan/SelectQueryGrammar.g:57:40: WS
+            	            // /home/dragan/Dragan/SelectQueryGrammar.g:58:40: WS
             	            {
-            	            WS22=(Token)match(input,WS,FOLLOW_WS_in_from_clause220); 
+            	            WS22=(Token)match(input,WS,FOLLOW_WS_in_from_clause226); 
 
             	            }
             	            break;
 
             	    }
 
-            	    pushFollow(FOLLOW_nested_query_in_from_clause224);
+            	    pushFollow(FOLLOW_nested_query_in_from_clause230);
             	    nested_query23=nested_query();
 
             	    state._fsp--;
@@ -782,7 +784,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "nested_query"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:59:1: nested_query : ( table | '(' ( WS )? query_block ( WS )? ')' );
+    // /home/dragan/Dragan/SelectQueryGrammar.g:60:1: nested_query : ( table | '(' ( WS )? query_block ( WS )? ')' );
     public final SelectQueryGrammarParser.nested_query_return nested_query() throws RecognitionException {
         SelectQueryGrammarParser.nested_query_return retval = new SelectQueryGrammarParser.nested_query_return();
         retval.start = input.LT(1);
@@ -804,14 +806,14 @@ public class SelectQueryGrammarParser extends Parser {
         CommonTree char_literal29_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:59:14: ( table | '(' ( WS )? query_block ( WS )? ')' )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:60:14: ( table | '(' ( WS )? query_block ( WS )? ')' )
             int alt12=2;
             int LA12_0 = input.LA(1);
 
             if ( (LA12_0==NAME) ) {
                 alt12=1;
             }
-            else if ( (LA12_0==17) ) {
+            else if ( (LA12_0==18) ) {
                 alt12=2;
             }
             else {
@@ -822,11 +824,11 @@ public class SelectQueryGrammarParser extends Parser {
             }
             switch (alt12) {
                 case 1 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:59:16: table
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:60:16: table
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_table_in_nested_query236);
+                    pushFollow(FOLLOW_table_in_nested_query242);
                     table24=table();
 
                     state._fsp--;
@@ -836,12 +838,12 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:59:24: '(' ( WS )? query_block ( WS )? ')'
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:60:24: '(' ( WS )? query_block ( WS )? ')'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    char_literal25=(Token)match(input,17,FOLLOW_17_in_nested_query240); 
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:59:31: ( WS )?
+                    char_literal25=(Token)match(input,18,FOLLOW_18_in_nested_query246); 
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:60:31: ( WS )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -850,22 +852,22 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     switch (alt10) {
                         case 1 :
-                            // /home/dragan/Dragan/SelectQueryGrammar.g:59:31: WS
+                            // /home/dragan/Dragan/SelectQueryGrammar.g:60:31: WS
                             {
-                            WS26=(Token)match(input,WS,FOLLOW_WS_in_nested_query243); 
+                            WS26=(Token)match(input,WS,FOLLOW_WS_in_nested_query249); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_query_block_in_nested_query247);
+                    pushFollow(FOLLOW_query_block_in_nested_query253);
                     query_block27=query_block();
 
                     state._fsp--;
 
                     adaptor.addChild(root_0, query_block27.getTree());
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:59:48: ( WS )?
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:60:48: ( WS )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -874,16 +876,16 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     switch (alt11) {
                         case 1 :
-                            // /home/dragan/Dragan/SelectQueryGrammar.g:59:48: WS
+                            // /home/dragan/Dragan/SelectQueryGrammar.g:60:48: WS
                             {
-                            WS28=(Token)match(input,WS,FOLLOW_WS_in_nested_query249); 
+                            WS28=(Token)match(input,WS,FOLLOW_WS_in_nested_query255); 
 
                             }
                             break;
 
                     }
 
-                    char_literal29=(Token)match(input,18,FOLLOW_18_in_nested_query253); 
+                    char_literal29=(Token)match(input,19,FOLLOW_19_in_nested_query259); 
 
                     }
                     break;
@@ -913,7 +915,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "where_block"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:61:1: where_block : WHERE WS where_clause ;
+    // /home/dragan/Dragan/SelectQueryGrammar.g:62:1: where_block : WHERE WS where_clause ;
     public final SelectQueryGrammarParser.where_block_return where_block() throws RecognitionException {
         SelectQueryGrammarParser.where_block_return retval = new SelectQueryGrammarParser.where_block_return();
         retval.start = input.LT(1);
@@ -929,17 +931,17 @@ public class SelectQueryGrammarParser extends Parser {
         CommonTree WS31_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:62:2: ( WHERE WS where_clause )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:62:5: WHERE WS where_clause
+            // /home/dragan/Dragan/SelectQueryGrammar.g:63:2: ( WHERE WS where_clause )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:63:5: WHERE WS where_clause
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            WHERE30=(Token)match(input,WHERE,FOLLOW_WHERE_in_where_block265); 
+            WHERE30=(Token)match(input,WHERE,FOLLOW_WHERE_in_where_block271); 
             WHERE30_tree = (CommonTree)adaptor.create(WHERE30);
             root_0 = (CommonTree)adaptor.becomeRoot(WHERE30_tree, root_0);
 
-            WS31=(Token)match(input,WS,FOLLOW_WS_in_where_block268); 
-            pushFollow(FOLLOW_where_clause_in_where_block271);
+            WS31=(Token)match(input,WS,FOLLOW_WS_in_where_block274); 
+            pushFollow(FOLLOW_where_clause_in_where_block277);
             where_clause32=where_clause();
 
             state._fsp--;
@@ -972,7 +974,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "where_clause"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:64:1: where_clause : where_condition ( WS AND WS where_condition )* ;
+    // /home/dragan/Dragan/SelectQueryGrammar.g:65:1: where_clause : where_condition ( WS AND WS where_condition )* ;
     public final SelectQueryGrammarParser.where_clause_return where_clause() throws RecognitionException {
         SelectQueryGrammarParser.where_clause_return retval = new SelectQueryGrammarParser.where_clause_return();
         retval.start = input.LT(1);
@@ -992,18 +994,18 @@ public class SelectQueryGrammarParser extends Parser {
         CommonTree WS36_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:64:14: ( where_condition ( WS AND WS where_condition )* )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:64:16: where_condition ( WS AND WS where_condition )*
+            // /home/dragan/Dragan/SelectQueryGrammar.g:65:14: ( where_condition ( WS AND WS where_condition )* )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:65:16: where_condition ( WS AND WS where_condition )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_where_condition_in_where_clause280);
+            pushFollow(FOLLOW_where_condition_in_where_clause286);
             where_condition33=where_condition();
 
             state._fsp--;
 
             adaptor.addChild(root_0, where_condition33.getTree());
-            // /home/dragan/Dragan/SelectQueryGrammar.g:64:32: ( WS AND WS where_condition )*
+            // /home/dragan/Dragan/SelectQueryGrammar.g:65:32: ( WS AND WS where_condition )*
             loop13:
             do {
                 int alt13=2;
@@ -1016,15 +1018,15 @@ public class SelectQueryGrammarParser extends Parser {
 
                 switch (alt13) {
             	case 1 :
-            	    // /home/dragan/Dragan/SelectQueryGrammar.g:64:33: WS AND WS where_condition
+            	    // /home/dragan/Dragan/SelectQueryGrammar.g:65:33: WS AND WS where_condition
             	    {
-            	    WS34=(Token)match(input,WS,FOLLOW_WS_in_where_clause283); 
-            	    AND35=(Token)match(input,AND,FOLLOW_AND_in_where_clause286); 
+            	    WS34=(Token)match(input,WS,FOLLOW_WS_in_where_clause289); 
+            	    AND35=(Token)match(input,AND,FOLLOW_AND_in_where_clause292); 
             	    AND35_tree = (CommonTree)adaptor.create(AND35);
             	    root_0 = (CommonTree)adaptor.becomeRoot(AND35_tree, root_0);
 
-            	    WS36=(Token)match(input,WS,FOLLOW_WS_in_where_clause289); 
-            	    pushFollow(FOLLOW_where_condition_in_where_clause292);
+            	    WS36=(Token)match(input,WS,FOLLOW_WS_in_where_clause295); 
+            	    pushFollow(FOLLOW_where_condition_in_where_clause298);
             	    where_condition37=where_condition();
 
             	    state._fsp--;
@@ -1066,7 +1068,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "where_condition"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:66:1: where_condition : ( column ( WS )? OP ( WS )? column | column ( WS )? OP ( WS )? query_block | query_block ( WS )? OP ( WS )? column | column WS IN ( WS )? '(' query_block ')' );
+    // /home/dragan/Dragan/SelectQueryGrammar.g:67:1: where_condition : ( column ( WS )? OP ( WS )? column | column ( WS )? OP ( WS )? query_block | query_block ( WS )? OP ( WS )? column | column WS IN ( WS )? '(' query_block ')' );
     public final SelectQueryGrammarParser.where_condition_return where_condition() throws RecognitionException {
         SelectQueryGrammarParser.where_condition_return retval = new SelectQueryGrammarParser.where_condition_return();
         retval.start = input.LT(1);
@@ -1120,131 +1122,22 @@ public class SelectQueryGrammarParser extends Parser {
         CommonTree char_literal59_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:66:16: ( column ( WS )? OP ( WS )? column | column ( WS )? OP ( WS )? query_block | query_block ( WS )? OP ( WS )? column | column WS IN ( WS )? '(' query_block ')' )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:67:16: ( column ( WS )? OP ( WS )? column | column ( WS )? OP ( WS )? query_block | query_block ( WS )? OP ( WS )? column | column WS IN ( WS )? '(' query_block ')' )
             int alt21=4;
-            int LA21_0 = input.LA(1);
-
-            if ( (LA21_0==NAME) ) {
-                int LA21_1 = input.LA(2);
-
-                if ( (LA21_1==WS) ) {
-                    int LA21_3 = input.LA(3);
-
-                    if ( (LA21_3==IN) ) {
-                        alt21=4;
-                    }
-                    else if ( (LA21_3==OP) ) {
-                        switch ( input.LA(4) ) {
-                        case WS:
-                            {
-                            int LA21_6 = input.LA(5);
-
-                            if ( (LA21_6==SELECT) ) {
-                                alt21=2;
-                            }
-                            else if ( (LA21_6==NAME) ) {
-                                alt21=1;
-                            }
-                            else {
-                                NoViableAltException nvae =
-                                    new NoViableAltException("", 21, 6, input);
-
-                                throw nvae;
-                            }
-                            }
-                            break;
-                        case NAME:
-                            {
-                            alt21=1;
-                            }
-                            break;
-                        case SELECT:
-                            {
-                            alt21=2;
-                            }
-                            break;
-                        default:
-                            NoViableAltException nvae =
-                                new NoViableAltException("", 21, 4, input);
-
-                            throw nvae;
-                        }
-
-                    }
-                    else {
-                        NoViableAltException nvae =
-                            new NoViableAltException("", 21, 3, input);
-
-                        throw nvae;
-                    }
-                }
-                else if ( (LA21_1==OP) ) {
-                    switch ( input.LA(3) ) {
-                    case WS:
-                        {
-                        int LA21_6 = input.LA(4);
-
-                        if ( (LA21_6==SELECT) ) {
-                            alt21=2;
-                        }
-                        else if ( (LA21_6==NAME) ) {
-                            alt21=1;
-                        }
-                        else {
-                            NoViableAltException nvae =
-                                new NoViableAltException("", 21, 6, input);
-
-                            throw nvae;
-                        }
-                        }
-                        break;
-                    case NAME:
-                        {
-                        alt21=1;
-                        }
-                        break;
-                    case SELECT:
-                        {
-                        alt21=2;
-                        }
-                        break;
-                    default:
-                        NoViableAltException nvae =
-                            new NoViableAltException("", 21, 4, input);
-
-                        throw nvae;
-                    }
-
-                }
-                else {
-                    NoViableAltException nvae =
-                        new NoViableAltException("", 21, 1, input);
-
-                    throw nvae;
-                }
-            }
-            else if ( (LA21_0==SELECT) ) {
-                alt21=3;
-            }
-            else {
-                NoViableAltException nvae =
-                    new NoViableAltException("", 21, 0, input);
-
-                throw nvae;
-            }
+            alt21 = dfa21.predict(input);
             switch (alt21) {
                 case 1 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:66:19: column ( WS )? OP ( WS )? column
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:67:19: column ( WS )? OP ( WS )? column
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_column_in_where_condition303);
+                    pushFollow(FOLLOW_column_in_where_condition309);
                     column38=column();
 
                     state._fsp--;
 
                     adaptor.addChild(root_0, column38.getTree());
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:66:28: ( WS )?
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:67:28: ( WS )?
                     int alt14=2;
                     int LA14_0 = input.LA(1);
 
@@ -1253,20 +1146,20 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     switch (alt14) {
                         case 1 :
-                            // /home/dragan/Dragan/SelectQueryGrammar.g:66:28: WS
+                            // /home/dragan/Dragan/SelectQueryGrammar.g:67:28: WS
                             {
-                            WS39=(Token)match(input,WS,FOLLOW_WS_in_where_condition305); 
+                            WS39=(Token)match(input,WS,FOLLOW_WS_in_where_condition311); 
 
                             }
                             break;
 
                     }
 
-                    OP40=(Token)match(input,OP,FOLLOW_OP_in_where_condition309); 
+                    OP40=(Token)match(input,OP,FOLLOW_OP_in_where_condition315); 
                     OP40_tree = (CommonTree)adaptor.create(OP40);
                     root_0 = (CommonTree)adaptor.becomeRoot(OP40_tree, root_0);
 
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:66:37: ( WS )?
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:67:37: ( WS )?
                     int alt15=2;
                     int LA15_0 = input.LA(1);
 
@@ -1275,16 +1168,16 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     switch (alt15) {
                         case 1 :
-                            // /home/dragan/Dragan/SelectQueryGrammar.g:66:37: WS
+                            // /home/dragan/Dragan/SelectQueryGrammar.g:67:37: WS
                             {
-                            WS41=(Token)match(input,WS,FOLLOW_WS_in_where_condition312); 
+                            WS41=(Token)match(input,WS,FOLLOW_WS_in_where_condition318); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_column_in_where_condition316);
+                    pushFollow(FOLLOW_column_in_where_condition322);
                     column42=column();
 
                     state._fsp--;
@@ -1294,17 +1187,17 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:67:4: column ( WS )? OP ( WS )? query_block
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:68:4: column ( WS )? OP ( WS )? query_block
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_column_in_where_condition321);
+                    pushFollow(FOLLOW_column_in_where_condition327);
                     column43=column();
 
                     state._fsp--;
 
                     adaptor.addChild(root_0, column43.getTree());
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:67:13: ( WS )?
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:68:13: ( WS )?
                     int alt16=2;
                     int LA16_0 = input.LA(1);
 
@@ -1313,20 +1206,20 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     switch (alt16) {
                         case 1 :
-                            // /home/dragan/Dragan/SelectQueryGrammar.g:67:13: WS
+                            // /home/dragan/Dragan/SelectQueryGrammar.g:68:13: WS
                             {
-                            WS44=(Token)match(input,WS,FOLLOW_WS_in_where_condition323); 
+                            WS44=(Token)match(input,WS,FOLLOW_WS_in_where_condition329); 
 
                             }
                             break;
 
                     }
 
-                    OP45=(Token)match(input,OP,FOLLOW_OP_in_where_condition327); 
+                    OP45=(Token)match(input,OP,FOLLOW_OP_in_where_condition333); 
                     OP45_tree = (CommonTree)adaptor.create(OP45);
                     root_0 = (CommonTree)adaptor.becomeRoot(OP45_tree, root_0);
 
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:67:22: ( WS )?
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:68:22: ( WS )?
                     int alt17=2;
                     int LA17_0 = input.LA(1);
 
@@ -1335,16 +1228,16 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     switch (alt17) {
                         case 1 :
-                            // /home/dragan/Dragan/SelectQueryGrammar.g:67:22: WS
+                            // /home/dragan/Dragan/SelectQueryGrammar.g:68:22: WS
                             {
-                            WS46=(Token)match(input,WS,FOLLOW_WS_in_where_condition330); 
+                            WS46=(Token)match(input,WS,FOLLOW_WS_in_where_condition336); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_query_block_in_where_condition334);
+                    pushFollow(FOLLOW_query_block_in_where_condition340);
                     query_block47=query_block();
 
                     state._fsp--;
@@ -1354,17 +1247,17 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:68:4: query_block ( WS )? OP ( WS )? column
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:69:4: query_block ( WS )? OP ( WS )? column
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_query_block_in_where_condition339);
+                    pushFollow(FOLLOW_query_block_in_where_condition345);
                     query_block48=query_block();
 
                     state._fsp--;
 
                     adaptor.addChild(root_0, query_block48.getTree());
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:68:18: ( WS )?
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:69:18: ( WS )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -1373,20 +1266,20 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     switch (alt18) {
                         case 1 :
-                            // /home/dragan/Dragan/SelectQueryGrammar.g:68:18: WS
+                            // /home/dragan/Dragan/SelectQueryGrammar.g:69:18: WS
                             {
-                            WS49=(Token)match(input,WS,FOLLOW_WS_in_where_condition341); 
+                            WS49=(Token)match(input,WS,FOLLOW_WS_in_where_condition347); 
 
                             }
                             break;
 
                     }
 
-                    OP50=(Token)match(input,OP,FOLLOW_OP_in_where_condition345); 
+                    OP50=(Token)match(input,OP,FOLLOW_OP_in_where_condition351); 
                     OP50_tree = (CommonTree)adaptor.create(OP50);
                     root_0 = (CommonTree)adaptor.becomeRoot(OP50_tree, root_0);
 
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:68:27: ( WS )?
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:69:27: ( WS )?
                     int alt19=2;
                     int LA19_0 = input.LA(1);
 
@@ -1395,16 +1288,16 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     switch (alt19) {
                         case 1 :
-                            // /home/dragan/Dragan/SelectQueryGrammar.g:68:27: WS
+                            // /home/dragan/Dragan/SelectQueryGrammar.g:69:27: WS
                             {
-                            WS51=(Token)match(input,WS,FOLLOW_WS_in_where_condition348); 
+                            WS51=(Token)match(input,WS,FOLLOW_WS_in_where_condition354); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_column_in_where_condition352);
+                    pushFollow(FOLLOW_column_in_where_condition358);
                     column52=column();
 
                     state._fsp--;
@@ -1414,22 +1307,22 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:69:4: column WS IN ( WS )? '(' query_block ')'
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:70:4: column WS IN ( WS )? '(' query_block ')'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_column_in_where_condition357);
+                    pushFollow(FOLLOW_column_in_where_condition363);
                     column53=column();
 
                     state._fsp--;
 
                     adaptor.addChild(root_0, column53.getTree());
-                    WS54=(Token)match(input,WS,FOLLOW_WS_in_where_condition359); 
-                    IN55=(Token)match(input,IN,FOLLOW_IN_in_where_condition362); 
+                    WS54=(Token)match(input,WS,FOLLOW_WS_in_where_condition365); 
+                    IN55=(Token)match(input,IN,FOLLOW_IN_in_where_condition368); 
                     IN55_tree = (CommonTree)adaptor.create(IN55);
                     root_0 = (CommonTree)adaptor.becomeRoot(IN55_tree, root_0);
 
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:69:21: ( WS )?
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:70:21: ( WS )?
                     int alt20=2;
                     int LA20_0 = input.LA(1);
 
@@ -1438,23 +1331,23 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     switch (alt20) {
                         case 1 :
-                            // /home/dragan/Dragan/SelectQueryGrammar.g:69:21: WS
+                            // /home/dragan/Dragan/SelectQueryGrammar.g:70:21: WS
                             {
-                            WS56=(Token)match(input,WS,FOLLOW_WS_in_where_condition365); 
+                            WS56=(Token)match(input,WS,FOLLOW_WS_in_where_condition371); 
 
                             }
                             break;
 
                     }
 
-                    char_literal57=(Token)match(input,17,FOLLOW_17_in_where_condition369); 
-                    pushFollow(FOLLOW_query_block_in_where_condition371);
+                    char_literal57=(Token)match(input,18,FOLLOW_18_in_where_condition375); 
+                    pushFollow(FOLLOW_query_block_in_where_condition377);
                     query_block58=query_block();
 
                     state._fsp--;
 
                     adaptor.addChild(root_0, query_block58.getTree());
-                    char_literal59=(Token)match(input,18,FOLLOW_18_in_where_condition372); 
+                    char_literal59=(Token)match(input,19,FOLLOW_19_in_where_condition378); 
 
                     }
                     break;
@@ -1484,7 +1377,7 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "term"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:71:1: term : ( column | AGGREGATE_FUNC '(' column ')' );
+    // /home/dragan/Dragan/SelectQueryGrammar.g:72:1: term : ( column | AGGREGATE_FUNC '(' column ')' );
     public final SelectQueryGrammarParser.term_return term() throws RecognitionException {
         SelectQueryGrammarParser.term_return retval = new SelectQueryGrammarParser.term_return();
         retval.start = input.LT(1);
@@ -1504,11 +1397,11 @@ public class SelectQueryGrammarParser extends Parser {
         CommonTree char_literal64_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:71:5: ( column | AGGREGATE_FUNC '(' column ')' )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:72:5: ( column | AGGREGATE_FUNC '(' column ')' )
             int alt22=2;
             int LA22_0 = input.LA(1);
 
-            if ( (LA22_0==NAME) ) {
+            if ( (LA22_0==NAME||LA22_0==20) ) {
                 alt22=1;
             }
             else if ( (LA22_0==AGGREGATE_FUNC) ) {
@@ -1522,11 +1415,11 @@ public class SelectQueryGrammarParser extends Parser {
             }
             switch (alt22) {
                 case 1 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:71:8: column
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:72:8: column
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_column_in_term381);
+                    pushFollow(FOLLOW_column_in_term387);
                     column60=column();
 
                     state._fsp--;
@@ -1536,22 +1429,22 @@ public class SelectQueryGrammarParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/dragan/Dragan/SelectQueryGrammar.g:72:4: AGGREGATE_FUNC '(' column ')'
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:73:4: AGGREGATE_FUNC '(' column ')'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    AGGREGATE_FUNC61=(Token)match(input,AGGREGATE_FUNC,FOLLOW_AGGREGATE_FUNC_in_term386); 
+                    AGGREGATE_FUNC61=(Token)match(input,AGGREGATE_FUNC,FOLLOW_AGGREGATE_FUNC_in_term392); 
                     AGGREGATE_FUNC61_tree = (CommonTree)adaptor.create(AGGREGATE_FUNC61);
                     root_0 = (CommonTree)adaptor.becomeRoot(AGGREGATE_FUNC61_tree, root_0);
 
-                    char_literal62=(Token)match(input,17,FOLLOW_17_in_term388); 
-                    pushFollow(FOLLOW_column_in_term390);
+                    char_literal62=(Token)match(input,18,FOLLOW_18_in_term394); 
+                    pushFollow(FOLLOW_column_in_term396);
                     column63=column();
 
                     state._fsp--;
 
                     adaptor.addChild(root_0, column63.getTree());
-                    char_literal64=(Token)match(input,18,FOLLOW_18_in_term391); 
+                    char_literal64=(Token)match(input,19,FOLLOW_19_in_term397); 
 
                     }
                     break;
@@ -1581,30 +1474,129 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "column"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:74:1: column : NAME ;
+    // /home/dragan/Dragan/SelectQueryGrammar.g:75:1: column : ( (col= NAME -> $col) | ( '\\'' literal= NAME '\\'' -> ^( LITERAL $literal) ) );
     public final SelectQueryGrammarParser.column_return column() throws RecognitionException {
         SelectQueryGrammarParser.column_return retval = new SelectQueryGrammarParser.column_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token NAME65=null;
+        Token col=null;
+        Token literal=null;
+        Token char_literal65=null;
+        Token char_literal66=null;
 
-        CommonTree NAME65_tree=null;
+        CommonTree col_tree=null;
+        CommonTree literal_tree=null;
+        CommonTree char_literal65_tree=null;
+        CommonTree char_literal66_tree=null;
+        RewriteRuleTokenStream stream_20=new RewriteRuleTokenStream(adaptor,"token 20");
+        RewriteRuleTokenStream stream_NAME=new RewriteRuleTokenStream(adaptor,"token NAME");
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:74:8: ( NAME )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:74:10: NAME
-            {
-            root_0 = (CommonTree)adaptor.nil();
+            // /home/dragan/Dragan/SelectQueryGrammar.g:75:8: ( (col= NAME -> $col) | ( '\\'' literal= NAME '\\'' -> ^( LITERAL $literal) ) )
+            int alt23=2;
+            int LA23_0 = input.LA(1);
 
-            NAME65=(Token)match(input,NAME,FOLLOW_NAME_in_column401); 
-            NAME65_tree = (CommonTree)adaptor.create(NAME65);
-            adaptor.addChild(root_0, NAME65_tree);
+            if ( (LA23_0==NAME) ) {
+                alt23=1;
+            }
+            else if ( (LA23_0==20) ) {
+                alt23=2;
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("", 23, 0, input);
 
+                throw nvae;
+            }
+            switch (alt23) {
+                case 1 :
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:75:10: (col= NAME -> $col)
+                    {
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:75:10: (col= NAME -> $col)
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:75:11: col= NAME
+                    {
+                    col=(Token)match(input,NAME,FOLLOW_NAME_in_column410);  
+                    stream_NAME.add(col);
+
+
+
+                    // AST REWRITE
+                    // elements: col
+                    // token labels: col
+                    // rule labels: retval
+                    // token list labels: 
+                    // rule list labels: 
+                    // wildcard labels: 
+                    retval.tree = root_0;
+                    RewriteRuleTokenStream stream_col=new RewriteRuleTokenStream(adaptor,"token col",col);
+                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
+
+                    root_0 = (CommonTree)adaptor.nil();
+                    // 75:20: -> $col
+                    {
+                        adaptor.addChild(root_0, stream_col.nextNode());
+
+                    }
+
+                    retval.tree = root_0;
+                    }
+
+
+                    }
+                    break;
+                case 2 :
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:76:5: ( '\\'' literal= NAME '\\'' -> ^( LITERAL $literal) )
+                    {
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:76:5: ( '\\'' literal= NAME '\\'' -> ^( LITERAL $literal) )
+                    // /home/dragan/Dragan/SelectQueryGrammar.g:76:6: '\\'' literal= NAME '\\''
+                    {
+                    char_literal65=(Token)match(input,20,FOLLOW_20_in_column424);  
+                    stream_20.add(char_literal65);
+
+                    literal=(Token)match(input,NAME,FOLLOW_NAME_in_column427);  
+                    stream_NAME.add(literal);
+
+                    char_literal66=(Token)match(input,20,FOLLOW_20_in_column428);  
+                    stream_20.add(char_literal66);
+
+
+
+                    // AST REWRITE
+                    // elements: literal
+                    // token labels: literal
+                    // rule labels: retval
+                    // token list labels: 
+                    // rule list labels: 
+                    // wildcard labels: 
+                    retval.tree = root_0;
+                    RewriteRuleTokenStream stream_literal=new RewriteRuleTokenStream(adaptor,"token literal",literal);
+                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
+
+                    root_0 = (CommonTree)adaptor.nil();
+                    // 76:26: -> ^( LITERAL $literal)
+                    {
+                        // /home/dragan/Dragan/SelectQueryGrammar.g:76:29: ^( LITERAL $literal)
+                        {
+                        CommonTree root_1 = (CommonTree)adaptor.nil();
+                        root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(LITERAL, "LITERAL"), root_1);
+
+                        adaptor.addChild(root_1, stream_literal.nextNode());
+
+                        adaptor.addChild(root_0, root_1);
+                        }
+
+                    }
+
+                    retval.tree = root_0;
+                    }
+
+
+                    }
+                    break;
 
             }
-
             retval.stop = input.LT(-1);
 
             retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
@@ -1629,26 +1621,26 @@ public class SelectQueryGrammarParser extends Parser {
     };
 
     // $ANTLR start "table"
-    // /home/dragan/Dragan/SelectQueryGrammar.g:75:1: table : NAME ;
+    // /home/dragan/Dragan/SelectQueryGrammar.g:77:1: table : NAME ;
     public final SelectQueryGrammarParser.table_return table() throws RecognitionException {
         SelectQueryGrammarParser.table_return retval = new SelectQueryGrammarParser.table_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token NAME66=null;
+        Token NAME67=null;
 
-        CommonTree NAME66_tree=null;
+        CommonTree NAME67_tree=null;
 
         try {
-            // /home/dragan/Dragan/SelectQueryGrammar.g:75:7: ( NAME )
-            // /home/dragan/Dragan/SelectQueryGrammar.g:75:9: NAME
+            // /home/dragan/Dragan/SelectQueryGrammar.g:77:7: ( NAME )
+            // /home/dragan/Dragan/SelectQueryGrammar.g:77:9: NAME
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            NAME66=(Token)match(input,NAME,FOLLOW_NAME_in_table408); 
-            NAME66_tree = (CommonTree)adaptor.create(NAME66);
-            adaptor.addChild(root_0, NAME66_tree);
+            NAME67=(Token)match(input,NAME,FOLLOW_NAME_in_table446); 
+            NAME67_tree = (CommonTree)adaptor.create(NAME67);
+            adaptor.addChild(root_0, NAME67_tree);
 
 
             }
@@ -1674,76 +1666,140 @@ public class SelectQueryGrammarParser extends Parser {
     // Delegated rules
 
 
+    protected DFA21 dfa21 = new DFA21(this);
+    static final String DFA21_eotS =
+        "\14\uffff";
+    static final String DFA21_eofS =
+        "\14\uffff";
+    static final String DFA21_minS =
+        "\1\7\1\6\1\17\1\uffff\1\14\1\6\1\24\1\uffff\1\7\2\uffff\1\6";
+    static final String DFA21_maxS =
+        "\1\24\1\14\1\17\1\uffff\1\15\2\24\1\uffff\1\24\2\uffff\1\14";
+    static final String DFA21_acceptS =
+        "\3\uffff\1\3\3\uffff\1\4\1\uffff\1\1\1\2\1\uffff";
+    static final String DFA21_specialS =
+        "\14\uffff}>";
+    static final String[] DFA21_transitionS = {
+            "\1\3\7\uffff\1\1\4\uffff\1\2",
+            "\1\4\5\uffff\1\5",
+            "\1\6",
+            "",
+            "\1\5\1\7",
+            "\1\10\1\12\7\uffff\1\11\4\uffff\1\11",
+            "\1\13",
+            "",
+            "\1\12\7\uffff\1\11\4\uffff\1\11",
+            "",
+            "",
+            "\1\4\5\uffff\1\5"
+    };
+
+    static final short[] DFA21_eot = DFA.unpackEncodedString(DFA21_eotS);
+    static final short[] DFA21_eof = DFA.unpackEncodedString(DFA21_eofS);
+    static final char[] DFA21_min = DFA.unpackEncodedStringToUnsignedChars(DFA21_minS);
+    static final char[] DFA21_max = DFA.unpackEncodedStringToUnsignedChars(DFA21_maxS);
+    static final short[] DFA21_accept = DFA.unpackEncodedString(DFA21_acceptS);
+    static final short[] DFA21_special = DFA.unpackEncodedString(DFA21_specialS);
+    static final short[][] DFA21_transition;
+
+    static {
+        int numStates = DFA21_transitionS.length;
+        DFA21_transition = new short[numStates][];
+        for (int i=0; i<numStates; i++) {
+            DFA21_transition[i] = DFA.unpackEncodedString(DFA21_transitionS[i]);
+        }
+    }
+
+    class DFA21 extends DFA {
+
+        public DFA21(BaseRecognizer recognizer) {
+            this.recognizer = recognizer;
+            this.decisionNumber = 21;
+            this.eot = DFA21_eot;
+            this.eof = DFA21_eof;
+            this.min = DFA21_min;
+            this.max = DFA21_max;
+            this.accept = DFA21_accept;
+            this.special = DFA21_special;
+            this.transition = DFA21_transition;
+        }
+        public String getDescription() {
+            return "67:1: where_condition : ( column ( WS )? OP ( WS )? column | column ( WS )? OP ( WS )? query_block | query_block ( WS )? OP ( WS )? column | column WS IN ( WS )? '(' query_block ')' );";
+        }
+    }
  
 
-    public static final BitSet FOLLOW_WS_in_query56 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_query_block_in_query60 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_14_in_query62 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_query65 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_select_block_in_query_block82 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_WS_in_query_block84 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_from_block_in_query_block102 = new BitSet(new long[]{0x0000000000000022L});
-    public static final BitSet FOLLOW_WS_in_query_block120 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_where_block_in_query_block124 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SELECT_in_select_block152 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_WS_in_select_block155 = new BitSet(new long[]{0x000000000000B000L});
-    public static final BitSet FOLLOW_select_clause_in_select_block158 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_15_in_select_clause166 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_term_in_select_clause171 = new BitSet(new long[]{0x0000000000010022L});
-    public static final BitSet FOLLOW_WS_in_select_clause174 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_16_in_select_clause177 = new BitSet(new long[]{0x000000000000B020L});
-    public static final BitSet FOLLOW_WS_in_select_clause180 = new BitSet(new long[]{0x000000000000B000L});
-    public static final BitSet FOLLOW_term_in_select_clause184 = new BitSet(new long[]{0x0000000000010022L});
-    public static final BitSet FOLLOW_FROM_in_from_block198 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_WS_in_from_block201 = new BitSet(new long[]{0x0000000000022000L});
-    public static final BitSet FOLLOW_from_clause_in_from_block204 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_nested_query_in_from_clause211 = new BitSet(new long[]{0x0000000000010022L});
-    public static final BitSet FOLLOW_WS_in_from_clause214 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_16_in_from_clause217 = new BitSet(new long[]{0x0000000000022020L});
-    public static final BitSet FOLLOW_WS_in_from_clause220 = new BitSet(new long[]{0x0000000000022000L});
-    public static final BitSet FOLLOW_nested_query_in_from_clause224 = new BitSet(new long[]{0x0000000000010022L});
-    public static final BitSet FOLLOW_table_in_nested_query236 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_nested_query240 = new BitSet(new long[]{0x0000000000000060L});
-    public static final BitSet FOLLOW_WS_in_nested_query243 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_query_block_in_nested_query247 = new BitSet(new long[]{0x0000000000040020L});
-    public static final BitSet FOLLOW_WS_in_nested_query249 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_18_in_nested_query253 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_WHERE_in_where_block265 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_WS_in_where_block268 = new BitSet(new long[]{0x0000000000002040L});
-    public static final BitSet FOLLOW_where_clause_in_where_block271 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_where_condition_in_where_clause280 = new BitSet(new long[]{0x0000000000000022L});
-    public static final BitSet FOLLOW_WS_in_where_clause283 = new BitSet(new long[]{0x0000000000000200L});
-    public static final BitSet FOLLOW_AND_in_where_clause286 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_WS_in_where_clause289 = new BitSet(new long[]{0x0000000000002040L});
-    public static final BitSet FOLLOW_where_condition_in_where_clause292 = new BitSet(new long[]{0x0000000000000022L});
-    public static final BitSet FOLLOW_column_in_where_condition303 = new BitSet(new long[]{0x0000000000000420L});
-    public static final BitSet FOLLOW_WS_in_where_condition305 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_OP_in_where_condition309 = new BitSet(new long[]{0x0000000000002020L});
-    public static final BitSet FOLLOW_WS_in_where_condition312 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_column_in_where_condition316 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_column_in_where_condition321 = new BitSet(new long[]{0x0000000000000420L});
-    public static final BitSet FOLLOW_WS_in_where_condition323 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_OP_in_where_condition327 = new BitSet(new long[]{0x0000000000000060L});
-    public static final BitSet FOLLOW_WS_in_where_condition330 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_query_block_in_where_condition334 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_query_block_in_where_condition339 = new BitSet(new long[]{0x0000000000000420L});
-    public static final BitSet FOLLOW_WS_in_where_condition341 = new BitSet(new long[]{0x0000000000000400L});
-    public static final BitSet FOLLOW_OP_in_where_condition345 = new BitSet(new long[]{0x0000000000002020L});
-    public static final BitSet FOLLOW_WS_in_where_condition348 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_column_in_where_condition352 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_column_in_where_condition357 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_WS_in_where_condition359 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_IN_in_where_condition362 = new BitSet(new long[]{0x0000000000020020L});
-    public static final BitSet FOLLOW_WS_in_where_condition365 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_17_in_where_condition369 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_query_block_in_where_condition371 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_18_in_where_condition372 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_column_in_term381 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_AGGREGATE_FUNC_in_term386 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_17_in_term388 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_column_in_term390 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_18_in_term391 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_column401 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_table408 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_WS_in_query61 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_query_block_in_query65 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_16_in_query67 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_query70 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_select_block_in_query_block87 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_WS_in_query_block89 = new BitSet(new long[]{0x0000000000000200L});
+    public static final BitSet FOLLOW_from_block_in_query_block107 = new BitSet(new long[]{0x0000000000000042L});
+    public static final BitSet FOLLOW_WS_in_query_block126 = new BitSet(new long[]{0x0000000000000400L});
+    public static final BitSet FOLLOW_where_block_in_query_block130 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SELECT_in_select_block158 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_WS_in_select_block161 = new BitSet(new long[]{0x000000000010C100L});
+    public static final BitSet FOLLOW_select_clause_in_select_block164 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STAR_in_select_clause172 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_term_in_select_clause177 = new BitSet(new long[]{0x0000000000020042L});
+    public static final BitSet FOLLOW_WS_in_select_clause180 = new BitSet(new long[]{0x0000000000020000L});
+    public static final BitSet FOLLOW_17_in_select_clause183 = new BitSet(new long[]{0x000000000010C140L});
+    public static final BitSet FOLLOW_WS_in_select_clause186 = new BitSet(new long[]{0x000000000010C100L});
+    public static final BitSet FOLLOW_term_in_select_clause190 = new BitSet(new long[]{0x0000000000020042L});
+    public static final BitSet FOLLOW_FROM_in_from_block204 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_WS_in_from_block207 = new BitSet(new long[]{0x0000000000048000L});
+    public static final BitSet FOLLOW_from_clause_in_from_block210 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_nested_query_in_from_clause217 = new BitSet(new long[]{0x0000000000020042L});
+    public static final BitSet FOLLOW_WS_in_from_clause220 = new BitSet(new long[]{0x0000000000020000L});
+    public static final BitSet FOLLOW_17_in_from_clause223 = new BitSet(new long[]{0x0000000000048040L});
+    public static final BitSet FOLLOW_WS_in_from_clause226 = new BitSet(new long[]{0x0000000000048000L});
+    public static final BitSet FOLLOW_nested_query_in_from_clause230 = new BitSet(new long[]{0x0000000000020042L});
+    public static final BitSet FOLLOW_table_in_nested_query242 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_18_in_nested_query246 = new BitSet(new long[]{0x00000000000000C0L});
+    public static final BitSet FOLLOW_WS_in_nested_query249 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_query_block_in_nested_query253 = new BitSet(new long[]{0x0000000000080040L});
+    public static final BitSet FOLLOW_WS_in_nested_query255 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_19_in_nested_query259 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_WHERE_in_where_block271 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_WS_in_where_block274 = new BitSet(new long[]{0x0000000000108080L});
+    public static final BitSet FOLLOW_where_clause_in_where_block277 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_where_condition_in_where_clause286 = new BitSet(new long[]{0x0000000000000042L});
+    public static final BitSet FOLLOW_WS_in_where_clause289 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_AND_in_where_clause292 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_WS_in_where_clause295 = new BitSet(new long[]{0x0000000000108080L});
+    public static final BitSet FOLLOW_where_condition_in_where_clause298 = new BitSet(new long[]{0x0000000000000042L});
+    public static final BitSet FOLLOW_column_in_where_condition309 = new BitSet(new long[]{0x0000000000001040L});
+    public static final BitSet FOLLOW_WS_in_where_condition311 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_OP_in_where_condition315 = new BitSet(new long[]{0x0000000000108040L});
+    public static final BitSet FOLLOW_WS_in_where_condition318 = new BitSet(new long[]{0x0000000000108000L});
+    public static final BitSet FOLLOW_column_in_where_condition322 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_column_in_where_condition327 = new BitSet(new long[]{0x0000000000001040L});
+    public static final BitSet FOLLOW_WS_in_where_condition329 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_OP_in_where_condition333 = new BitSet(new long[]{0x00000000000000C0L});
+    public static final BitSet FOLLOW_WS_in_where_condition336 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_query_block_in_where_condition340 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_query_block_in_where_condition345 = new BitSet(new long[]{0x0000000000001040L});
+    public static final BitSet FOLLOW_WS_in_where_condition347 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_OP_in_where_condition351 = new BitSet(new long[]{0x0000000000108040L});
+    public static final BitSet FOLLOW_WS_in_where_condition354 = new BitSet(new long[]{0x0000000000108000L});
+    public static final BitSet FOLLOW_column_in_where_condition358 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_column_in_where_condition363 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_WS_in_where_condition365 = new BitSet(new long[]{0x0000000000002000L});
+    public static final BitSet FOLLOW_IN_in_where_condition368 = new BitSet(new long[]{0x0000000000040040L});
+    public static final BitSet FOLLOW_WS_in_where_condition371 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_where_condition375 = new BitSet(new long[]{0x0000000000000080L});
+    public static final BitSet FOLLOW_query_block_in_where_condition377 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_19_in_where_condition378 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_column_in_term387 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_AGGREGATE_FUNC_in_term392 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_term394 = new BitSet(new long[]{0x0000000000108000L});
+    public static final BitSet FOLLOW_column_in_term396 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_19_in_term397 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_column410 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_20_in_column424 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_NAME_in_column427 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_20_in_column428 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_table446 = new BitSet(new long[]{0x0000000000000002L});
 
 }

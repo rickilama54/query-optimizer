@@ -14,6 +14,7 @@ import queryopt.optimizer.entities.AggregateFunction;
 import queryopt.optimizer.entities.Clause;
 import queryopt.optimizer.entities.CompareSingleRowClause;
 import queryopt.optimizer.entities.InClause;
+import queryopt.optimizer.entities.Literal;
 import queryopt.optimizer.entities.Operator;
 import queryopt.optimizer.entities.SPJQuery;
 import queryopt.optimizer.entities.Term;
@@ -22,10 +23,14 @@ import queryopt.parser.SelectQueryGrammarParser;
 
 public class SPJQueryBuilder {
 	private HashMap<String, HashMap<String, Atribute>> relationsAtributes;
+	private HashMap<String, Relation> namesRelations;
+	private List<Relation> relationsInFrom;
 
 	public SPJQueryBuilder(List<Relation> allRelations) {
 		relationsAtributes = new HashMap<String, HashMap<String, Atribute>>();
+		namesRelations = new HashMap<String, Relation>();
 		for (Relation r : allRelations) {
+			namesRelations.put(r.getName().toUpperCase(), r);
 			relationsAtributes.put(r.getName().toUpperCase(), new HashMap<String, Atribute>());
 			for (Atribute a : r.getAtributes())
 				relationsAtributes.get(r.getName().toUpperCase()).put(a.getName().toUpperCase(), a);
@@ -65,7 +70,7 @@ public class SPJQueryBuilder {
 				buildSelect(child, query);
 				break;
 			case SelectQueryGrammarParser.FROM:
-				buildFrom(child);
+				relationsInFrom = buildFrom(child);
 				break;
 			case SelectQueryGrammarParser.WHERE:
 				buildWhere(child, query);
@@ -103,23 +108,34 @@ public class SPJQueryBuilder {
 			case SelectQueryGrammarParser.NAME:
 				query.getProjectionTerms().add(getAtribute(child.toString()));
 				break;
+			case SelectQueryGrammarParser.LITERAL:
+				query.getProjectionTerms().add(new Literal(((CommonTree) child).getChild(0).toString()));
+				break;
+			case SelectQueryGrammarParser.STAR:
+				for (Relation r : relationsInFrom)
+					query.getProjectionTerms().addAll(r.getAtributes());
+				break;
 			default:
 				throw new IllegalArgumentException("Should not be here");
 			}
 		}
 	}
 
-	private void buildFrom(CommonTree fromTree) {
+	private List<Relation> buildFrom(CommonTree fromTree) {
+		List<Relation> relationsInFrom = new ArrayList<Relation>();
 		for (Object child : fromTree.getChildren()) {
 			switch (((CommonTree) child).getType()) {
 			case SelectQueryGrammarParser.NAME:
 				if (!relationsAtributes.containsKey(child.toString()))
 					throw new IllegalArgumentException("Table " + child.toString() + " is not defined.");
+				else
+					relationsInFrom.add(namesRelations.get(child.toString()));
 				break;
 			default:
 				throw new IllegalArgumentException("Should not be here");
 			}
 		}
+		return relationsInFrom;
 	}
 
 	private void buildWhere(CommonTree whereTree, SPJQuery query) {
@@ -145,6 +161,7 @@ public class SPJQueryBuilder {
 		switch (whereBlockTree.getType()) {
 		case SelectQueryGrammarParser.OP:
 			Operator operator = Operator.EQ;
+
 			if (whereBlockTree.toString().equals("="))
 				operator = Operator.EQ;
 			else if (whereBlockTree.toString().equals("<"))
@@ -167,6 +184,8 @@ public class SPJQueryBuilder {
 
 			if (leftOperand.getType() == SelectQueryGrammarParser.NAME)
 				operand1 = getAtribute(leftOperand.toString());
+			else if (leftOperand.getType() == SelectQueryGrammarParser.LITERAL)
+				operand1 = new Literal(leftOperand.getChild(0).toString());
 			else if (leftOperand.getType() == SelectQueryGrammarParser.QUERY)
 				operand1 = buildSpjQueryFromAst(leftOperand);
 			else
@@ -174,6 +193,8 @@ public class SPJQueryBuilder {
 
 			if (rightOperand.getType() == SelectQueryGrammarParser.NAME)
 				operand2 = getAtribute(rightOperand.toString());
+			else if (rightOperand.getType() == SelectQueryGrammarParser.LITERAL)
+				operand2 = new Literal(rightOperand.getChild(0).toString());
 			else if (rightOperand.getType() == SelectQueryGrammarParser.QUERY)
 				operand2 = buildSpjQueryFromAst(rightOperand);
 			else
@@ -181,6 +202,7 @@ public class SPJQueryBuilder {
 
 			query.getSelectionCnfClauses().add(new CompareSingleRowClause(operator, operand1, operand2));
 			break;
+			
 		case SelectQueryGrammarParser.IN:
 			CommonTree atribute = (CommonTree) whereBlockTree.getChild(0);
 			CommonTree subquery = (CommonTree) whereBlockTree.getChild(1);
@@ -188,7 +210,6 @@ public class SPJQueryBuilder {
 				throw new IllegalArgumentException("A sub query cannot be on the left side of an IN clause");
 			if (subquery.getType() != SelectQueryGrammarParser.QUERY)
 				throw new IllegalArgumentException("The right side of an IN clause must be a subquery");
-
 			Atribute atr = getAtribute(atribute.toString());
 			SPJQuery subq = buildSpjQueryFromAst(subquery);
 			query.getSelectionCnfClauses().add(new InClause(atr, subq));
@@ -225,7 +246,7 @@ public class SPJQueryBuilder {
 			}
 		}
 		if (a == null)
-			throw new IllegalArgumentException("Atribute name " + atributeName + " not defined");
+			throw new IllegalArgumentException("Atribute name " + atributeName + " is not defined");
 		return a;
 	}
 }
