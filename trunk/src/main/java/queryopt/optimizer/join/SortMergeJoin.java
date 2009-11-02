@@ -1,4 +1,4 @@
-package queryopt.optimizer;
+package queryopt.optimizer.join;
 
 public class SortMergeJoin {
 
