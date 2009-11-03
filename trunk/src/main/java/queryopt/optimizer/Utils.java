@@ -6,7 +6,9 @@ import java.util.List;
 
 import queryopt.entities.Atribute;
 import queryopt.entities.Index;
+import queryopt.entities.IndexAtribute;
 import queryopt.entities.Relation;
+import queryopt.entities.SystemInfo;
 import queryopt.optimizer.entities.Clause;
 import queryopt.optimizer.entities.CompareSingleRowClause;
 import queryopt.optimizer.entities.Literal;
@@ -47,5 +49,58 @@ public class Utils {
 				throw new Exception("Not implemented yet");
 		}
 		return matchingSelectionIndexes;
+	}
+
+	public static boolean isPkIndex(Index index) {
+		for (Atribute a : index.getRelation().getAtributes()) {
+			if (!a.isPk())
+				continue;
+			boolean found = false;
+			for (IndexAtribute ia : index.getIndexAtributes())
+				if (ia.getAtribute().equals(a)) {
+					found = true;
+					break;
+				}
+			if (!found)
+				return false;
+		}
+		return true;
+	}
+
+	public static int getRowSizeInBytes(Relation r) {
+		int rowSizeInBytes = 0;
+		for (Atribute a : r.getAtributes())
+			rowSizeInBytes += a.getSizeInBytes();
+		return rowSizeInBytes;
+	}
+
+	public static long getRelationSizeInPages(Relation r, SystemInfo systemInfo) {
+		int pagesize = systemInfo.getPageSizeInBytes();
+		long rowsize = Utils.getRowSizeInBytes(r);
+		int rows = r.getNoOfRows();
+		int blockingFactor = r.getBlockingFactor();
+		return rowsize * rows * blockingFactor / pagesize;
+	}
+
+	public static long getNoOfFirstLevelIndexPages(Index index, SystemInfo systemInfo) {
+		int rows = index.getRelation().getNoOfRows();
+		int blockingFactor = systemInfo.getBlockingFactorIndexFirstLevelRows();
+		int ridSize = systemInfo.getRidSizeInBytes();
+		int pageSize = systemInfo.getPageSizeInBytes();
+		return (long) Math.ceil(rows * blockingFactor * ridSize / pageSize);
+	}
+
+	public static boolean areAllAtributesInIndex(Index index, SingleRelationQuery srquery) {
+		List<Atribute> allAtributesInQuery = new ArrayList<Atribute>();
+		allAtributesInQuery.addAll(srquery.getGroupingAtributes());
+		allAtributesInQuery.addAll(srquery.getProjectionAtributes());
+		for (Clause clause : srquery.getSelectionCnfClauses())
+			allAtributesInQuery.addAll(clause.getAtributes());
+		for (IndexAtribute ia : index.getIndexAtributes())
+			if (!allAtributesInQuery.contains(ia.getAtribute()))
+				return false;
+		if (index.getIndexAtributes().size() == allAtributesInQuery.size())
+			return true;
+		return false;
 	}
 }

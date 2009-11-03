@@ -1,5 +1,8 @@
 package queryopt.optimizer.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import queryopt.entities.Atribute;
 
 public class InClause extends Clause {
@@ -32,6 +35,13 @@ public class InClause extends Clause {
 	protected double calcSelectivity() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<Atribute> getAtributes() {
+		List<Atribute> list = new ArrayList<Atribute>();
+		list.add(operand);
+		return list;
 	}
 
 }

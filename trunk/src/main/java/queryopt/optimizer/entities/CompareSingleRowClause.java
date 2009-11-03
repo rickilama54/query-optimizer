@@ -1,5 +1,8 @@
 package queryopt.optimizer.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import queryopt.entities.Atribute;
 
 public class CompareSingleRowClause extends Clause {
@@ -125,5 +128,15 @@ public class CompareSingleRowClause extends Clause {
 			break;
 		}
 		return condition ? 1.0 : 0.0;
+	}
+
+	@Override
+	public List<Atribute> getAtributes() {
+		List<Atribute> list = new ArrayList<Atribute>();
+		if (operand1 instanceof Atribute)
+			list.add((Atribute) operand1);
+		if (operand2 instanceof Atribute)
+			list.add((Atribute) operand2);
+		return list;
 	}
 }

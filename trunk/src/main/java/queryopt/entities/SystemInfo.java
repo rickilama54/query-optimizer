@@ -16,6 +16,8 @@ public class SystemInfo {
 	private String name;
 	private BigDecimal memorySizeInBytes;
 	private int pageSizeInBytes;
+	private int blockingFactorIndexFirstLevelRows;
+	private int ridSizeInBytes;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +55,24 @@ public class SystemInfo {
 
 	public void setPageSizeInBytes(int pageSizeInBytes) {
 		this.pageSizeInBytes = pageSizeInBytes;
+	}
+
+	@Column(name = "blocking_factor", nullable = false)
+	public int getBlockingFactorIndexFirstLevelRows() {
+		return blockingFactorIndexFirstLevelRows;
+	}
+
+	public void setBlockingFactorIndexFirstLevelRows(int blockingFactorIndexFirstLevelRows) {
+		this.blockingFactorIndexFirstLevelRows = blockingFactorIndexFirstLevelRows;
+	}
+
+	@Column(name = "rid_size_bytes", nullable = false)
+	public int getRidSizeInBytes() {
+		return ridSizeInBytes;
+	}
+
+	public void setRidSizeInBytes(int ridSizeInBytes) {
+		this.ridSizeInBytes = ridSizeInBytes;
 	}
 
 }
