@@ -28,4 +28,10 @@ public class InClause extends Clause {
 		this.subQuery = subQuery;
 	}
 
+	@Override
+	protected double calcSelectivity() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

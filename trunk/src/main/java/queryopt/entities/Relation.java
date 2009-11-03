@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 
@@ -69,6 +70,19 @@ public class Relation {
 	@Cascade( { org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	public List<Index> getIndexes() {
 		return indexes;
+	}
+
+	@Transient
+	public long getRowSizeInBytes() {
+		long rowSizeInBytes = 0;
+		for (Atribute a : atributes)
+			rowSizeInBytes += a.getSizeInBytes();
+		return rowSizeInBytes;
+	}
+
+	@Transient
+	public long getTotalSizeInBytes() {
+		return getRowSizeInBytes() * this.getNoOfRows();
 	}
 
 	public void setIndexes(List<Index> indexes) {

@@ -1,18 +1,23 @@
 package queryopt.optimizer.join;
 
+import java.util.List;
+
 import queryopt.entities.Relation;
 import queryopt.optimizer.RelAlgebraOperation;
+import queryopt.optimizer.entities.CompareSingleRowClause;
 import queryopt.optimizer.path.AccessPath;
 
-public class Join implements RelAlgebraOperation {
-	private RelAlgebraOperation left;
-	private AccessPath right;
-	private Relation outputRelation;
+public abstract class Join implements RelAlgebraOperation {
+	protected RelAlgebraOperation left;
+	protected AccessPath right;
+	protected Relation outputRelation;
+	protected long cost;
 
-	public Join(RelAlgebraOperation left, AccessPath right) {
+	public Join(RelAlgebraOperation left, AccessPath right, List<CompareSingleRowClause> joinClauses) {
 		super();
 		this.left = left;
 		this.right = right;
+		this.cost = calcCost(joinClauses);
 	}
 
 	public Relation getOutputRelation() {
@@ -26,5 +31,11 @@ public class Join implements RelAlgebraOperation {
 	public AccessPath getRight() {
 		return right;
 	}
+
+	public long getCost() {
+		return cost;
+	}
+
+	protected abstract long calcCost(List<CompareSingleRowClause> joinClauses);
 
 }
