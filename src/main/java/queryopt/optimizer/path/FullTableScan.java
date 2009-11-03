@@ -1,5 +1,6 @@
 package queryopt.optimizer.path;
 
+import queryopt.optimizer.Utils;
 import queryopt.optimizer.entities.Clause;
 import queryopt.optimizer.entities.SingleRelationQuery;
 
@@ -11,20 +12,20 @@ public class FullTableScan extends AccessPath {
 
 	@Override
 	protected long calcCost(SingleRelationQuery srquery) throws Exception {
-		long filescan = srquery.getRelation().getTotalSizeInBytes();
+		long tablesize = Utils.getRelationSizeInPages(srquery.getRelation(), srquery.getSystemInfo());
 
 		// Is there a group by clause in the query
 		if (srquery.getGroupingAtributes().size() == 0)
-			return filescan;
+			return tablesize;
 		else {
 			double selectivity = 1.0;
 			for (Clause clause : srquery.getSelectionCnfClauses())
 				selectivity *= clause.getSelectivity();
 
-			long sizeOfTempRelationBytes = (long) Math.ceil(filescan * selectivity);
-			long sortingCost = 3 * sizeOfTempRelationBytes;
+			long sizeOfTempRelation = (long) Math.ceil(tablesize * selectivity);
+			long sortingCost = 3 * sizeOfTempRelation;
 
-			return filescan + sizeOfTempRelationBytes + sortingCost;
+			return tablesize + sizeOfTempRelation + sortingCost;
 		}
 	}
 

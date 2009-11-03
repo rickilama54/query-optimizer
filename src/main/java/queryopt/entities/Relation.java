@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 
@@ -22,6 +21,7 @@ public class Relation {
 	private int noOfRows;
 	private List<Atribute> atributes;
 	private List<Index> indexes;
+	private int blockingFactor;
 
 	public Relation() {
 	}
@@ -55,6 +55,15 @@ public class Relation {
 		this.noOfRows = noOfRows;
 	}
 
+	@Column(name = "blocking_factor", nullable = false, columnDefinition = "bigint default 2")
+	public int getBlockingFactor() {
+		return blockingFactor;
+	}
+
+	public void setBlockingFactor(int blockingFactor) {
+		this.blockingFactor = blockingFactor;
+	}
+
 	@OneToMany(mappedBy = "relation", fetch = FetchType.LAZY)
 	@Cascade( { org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH,
 			org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
@@ -70,19 +79,6 @@ public class Relation {
 	@Cascade( { org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	public List<Index> getIndexes() {
 		return indexes;
-	}
-
-	@Transient
-	public long getRowSizeInBytes() {
-		long rowSizeInBytes = 0;
-		for (Atribute a : atributes)
-			rowSizeInBytes += a.getSizeInBytes();
-		return rowSizeInBytes;
-	}
-
-	@Transient
-	public long getTotalSizeInBytes() {
-		return getRowSizeInBytes() * this.getNoOfRows();
 	}
 
 	public void setIndexes(List<Index> indexes) {

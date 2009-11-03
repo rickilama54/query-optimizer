@@ -4,13 +4,24 @@ import java.util.List;
 
 import queryopt.entities.Atribute;
 import queryopt.entities.Relation;
+import queryopt.entities.SystemInfo;
 
 public class SingleRelationQuery {
+	private SystemInfo systemInfo;
+
 	private Relation relation;
 
 	private List<Atribute> projectionAtributes;
 	private List<Clause> selectionCnfClauses;
 	private List<Atribute> groupingAtributes;
+
+	public SystemInfo getSystemInfo() {
+		return systemInfo;
+	}
+
+	public void setSystemInfo(SystemInfo systemInfo) {
+		this.systemInfo = systemInfo;
+	}
 
 	public Relation getRelation() {
 		return relation;

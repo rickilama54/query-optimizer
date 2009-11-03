@@ -22,8 +22,12 @@ public class Index {
 	private int indexId;
 	private String name;
 	private boolean isBTree;
+	private int levels;
 	private Relation relation;
 	private List<IndexAtribute> indexAtributes;
+
+	private static final int RID_BYTES = 4;
+	private static final int BLOCKING_FACTOR = 2;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +63,15 @@ public class Index {
 		return isBTree;
 	}
 
+	@Column(name = "levels", nullable = false)
+	public int getLevels() {
+		return levels;
+	}
+
+	public void setLevels(int levels) {
+		this.levels = levels;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "relation_id", nullable = false)
 	public Relation getRelation() {
@@ -68,10 +81,9 @@ public class Index {
 	public void setRelation(Relation relation) {
 		this.relation = relation;
 	}
-	
+
 	@OneToMany(mappedBy = "index", fetch = FetchType.LAZY)
-	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-          org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	@Cascade( { org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	public List<IndexAtribute> getIndexAtributes() {
 		return indexAtributes;
 	}
