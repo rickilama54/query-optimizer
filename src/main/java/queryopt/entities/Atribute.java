@@ -22,6 +22,8 @@ public class Atribute implements Term {
 	private int distinct;
 	private Relation relation;
 	private Atribute fkAtribute;
+	private String high;
+	private String low;
 
 	public Atribute() {
 
@@ -36,8 +38,9 @@ public class Atribute implements Term {
 		this.distinct = distinct;
 		this.relation = relation;
 	}
-	
-	public Atribute(int atributeId, String name, boolean pk, int sizeInBytes, int distinct, Relation relation, Atribute fkAtribute) {
+
+	public Atribute(int atributeId, String name, boolean pk, int sizeInBytes, int distinct, Relation relation,
+			Atribute fkAtribute) {
 		super();
 		this.atributeId = atributeId;
 		this.name = name;
@@ -113,6 +116,22 @@ public class Atribute implements Term {
 
 	public void setFkAtribute(Atribute fkAtribute) {
 		this.fkAtribute = fkAtribute;
+	}
+
+	public String getHigh() {
+		return high;
+	}
+
+	public void setHigh(String high) {
+		this.high = high;
+	}
+
+	public String getLow() {
+		return low;
+	}
+
+	public void setLow(String low) {
+		this.low = low;
 	}
 
 	@Override
