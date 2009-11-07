@@ -26,9 +26,6 @@ public class Index {
 	private Relation relation;
 	private List<IndexAtribute> indexAtributes;
 
-	private static final int RID_BYTES = 4;
-	private static final int BLOCKING_FACTOR = 2;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "index_id", unique = true, nullable = false)

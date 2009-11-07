@@ -10,14 +10,14 @@ import org.antlr.runtime.tree.CommonTree;
 
 import queryopt.entities.Atribute;
 import queryopt.entities.Relation;
-import queryopt.optimizer.entities.AggregateFunction;
-import queryopt.optimizer.entities.Clause;
-import queryopt.optimizer.entities.CompareSingleRowClause;
-import queryopt.optimizer.entities.InClause;
-import queryopt.optimizer.entities.Literal;
-import queryopt.optimizer.entities.Operator;
-import queryopt.optimizer.entities.SPJQuery;
-import queryopt.optimizer.entities.Term;
+import queryopt.optimizer.query.AggregateFunction;
+import queryopt.optimizer.query.Clause;
+import queryopt.optimizer.query.CompareSingleRowClause;
+import queryopt.optimizer.query.InClause;
+import queryopt.optimizer.query.Literal;
+import queryopt.optimizer.query.Operator;
+import queryopt.optimizer.query.SPJQuery;
+import queryopt.optimizer.query.Term;
 import queryopt.parser.SelectQueryGrammarLexer;
 import queryopt.parser.SelectQueryGrammarParser;
 
