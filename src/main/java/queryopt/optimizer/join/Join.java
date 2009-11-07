@@ -4,8 +4,8 @@ import java.util.List;
 
 import queryopt.entities.Relation;
 import queryopt.optimizer.RelAlgebraOperation;
-import queryopt.optimizer.entities.CompareSingleRowClause;
 import queryopt.optimizer.path.AccessPath;
+import queryopt.optimizer.query.CompareSingleRowClause;
 
 public abstract class Join implements RelAlgebraOperation {
 	protected RelAlgebraOperation left;

@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import queryopt.optimizer.entities.Term;
+import queryopt.optimizer.query.Term;
 
 @Entity
 @Table(name = "atributes", schema = "public")

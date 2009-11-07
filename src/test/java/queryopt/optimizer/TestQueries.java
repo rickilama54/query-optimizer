@@ -6,11 +6,11 @@ import java.util.List;
 
 import queryopt.entities.Atribute;
 import queryopt.entities.Relation;
-import queryopt.optimizer.entities.Clause;
-import queryopt.optimizer.entities.CompareSingleRowClause;
-import queryopt.optimizer.entities.Operator;
-import queryopt.optimizer.entities.SPJQuery;
-import queryopt.optimizer.entities.Term;
+import queryopt.optimizer.query.Clause;
+import queryopt.optimizer.query.CompareSingleRowClause;
+import queryopt.optimizer.query.Operator;
+import queryopt.optimizer.query.SPJQuery;
+import queryopt.optimizer.query.Term;
 
 public class TestQueries {
 	void setup() {

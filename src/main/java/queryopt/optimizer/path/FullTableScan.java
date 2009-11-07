@@ -1,8 +1,8 @@
 package queryopt.optimizer.path;
 
 import queryopt.optimizer.Utils;
-import queryopt.optimizer.entities.Clause;
-import queryopt.optimizer.entities.SingleRelationQuery;
+import queryopt.optimizer.query.Clause;
+import queryopt.optimizer.query.SingleRelationQuery;
 
 public class FullTableScan extends AccessPath {
 

@@ -2,7 +2,7 @@ package queryopt.optimizer.path;
 
 import queryopt.entities.Relation;
 import queryopt.optimizer.RelAlgebraOperation;
-import queryopt.optimizer.entities.SingleRelationQuery;
+import queryopt.optimizer.query.SingleRelationQuery;
 
 public abstract class AccessPath implements RelAlgebraOperation {
 	private Relation outputRelation;

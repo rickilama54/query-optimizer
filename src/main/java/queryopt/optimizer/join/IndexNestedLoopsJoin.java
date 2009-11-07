@@ -3,8 +3,8 @@ package queryopt.optimizer.join;
 import java.util.List;
 
 import queryopt.optimizer.RelAlgebraOperation;
-import queryopt.optimizer.entities.CompareSingleRowClause;
 import queryopt.optimizer.path.AccessPath;
+import queryopt.optimizer.query.CompareSingleRowClause;
 
 public class IndexNestedLoopsJoin extends Join {
 
