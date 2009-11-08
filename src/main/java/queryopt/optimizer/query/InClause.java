@@ -5,11 +5,6 @@ import java.util.List;
 
 import queryopt.entities.Atribute;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import queryopt.entities.Atribute;
-
 public class InClause extends Clause {
 	private Atribute operand;
 	private SPJQuery subQuery;

@@ -46,16 +46,13 @@
 			<div id="sidebar">
 				<ul>
 					<li>
-						<h2>Metadata</h2>
+						<h2>
+							<a href="#" t:type="PageLink" t:page="metadata" style="color:white">Metadata
+							</a>
+						</h2>
 						<ul>
 							<li>
-								<a href="#" t:type="PageLink" page="Relations">Relations</a>
-							</li>
-							<li>
-								<a href="#" t:type="PageLink" page="Atributes">Atributes</a>
-							</li>
-							<li>
-								<a href="#" t:type="PageLink" page="Indexes">Indexes</a>
+								<a href="#" t:type="PageLink" page="Schemas">Schemas</a>
 							</li>
 							<li>
 								<a href="#" t:type="PageLink" page="SystemInfo">System Info</a>
@@ -63,15 +60,62 @@
 						</ul>
 					</li>
 					<li>
-						<h2>Queries</h2>
-						<t:zone t:id="queriesZone">
-							<div class="sidebar-content">
-								<ul>
-									<li>
-										<a href="#" t:type="PageLink" page="Query" context="0">
-											<b>new Query</b>
-										</a>
-									</li>
+						<h2>
+							<a href="#" t:type="PageLink" t:page="relations" style="color:white">
+								Relations
+							</a>
+						</h2>
+						<ul>
+							<t:zone t:id="relationsZone">
+								<li t:type="Loop" source="relations" value="relation">
+									<t:ActionLink t:id="expandCollapseRelations" zone="relationsZone"
+										context="relation.relationId">
+										<t:unless test="relationExpanded">
+											+
+											<t:parameter name="else"> -  </t:parameter>
+										</t:unless>
+									</t:ActionLink>
+									<a href="#" t:type="PageLink" page="Relations" context="relation.relationId">${relation.name}
+									</a>
+
+									<div t:type="if" test="relationExpanded" style="margin-left:20px;">
+										<table class="nostyle">
+											<th>Atributes</th>
+											<tr t:type="Loop" source="relation.atributes" value="atribute">
+												<td class="nostyle">
+													<span style="margin-left:10px;">${atribute.name}</span>
+												</td>
+											</tr>
+										</table>
+
+										<table class="nostyle">
+											<th>Indexes</th>
+											<tr t:type="Loop" source="relation.indexes" value="index">
+												<td class="nostyle">
+													<span style="margin-left:10px;">${index.name}</span>
+												</td>
+											</tr>
+										</table>
+									</div>
+
+								</li>
+							</t:zone>
+						</ul>
+					</li>
+					<li>
+						<h2>
+							<a href="#" t:type="PageLink" t:page="queries" style="color:white">Queries
+							</a>
+						</h2>
+
+						<div class="sidebar-content">
+							<ul>
+								<li>
+									<a href="#" t:type="PageLink" page="Query" context="0">
+										<b>new Query</b>
+									</a>
+								</li>
+								<t:zone t:id="queriesZone">
 									<li t:type="Loop" source="queries" value="query">
 										<a href="#" t:type="PageLink" page="Query" context="query.queryId">${query.name}
 										</a>
@@ -79,9 +123,10 @@
 									<li t:type="unless" test="queries">
 										No Queries defined
 								</li>
-								</ul>
-							</div>
-						</t:zone>
+								</t:zone>
+							</ul>
+						</div>
+
 					</li>
 				</ul>
 			</div>

@@ -2,6 +2,7 @@ package queryopt.pages;
 
 import java.util.List;
 
+import org.apache.tapestry5.EventContext;
 import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
@@ -52,14 +53,20 @@ public class Relations {
 	private boolean saveIndexes;
 
 	@SuppressWarnings("unchecked")
-	public void onPrepare() {
-		relations = (List<Relation>) hsm.getSession().createCriteria(Relation.class).addOrder(Order.asc("relationId"))
-				.list();
+	void onActivate(EventContext e) throws Exception {
+		if (e.getCount() == 0) {
+			relations = (List<Relation>) hsm.getSession().createCriteria(Relation.class).addOrder(
+					Order.asc("relationId")).list();
+		} else if (e.getCount() == 1) {
+			relations = (List<Relation>) hsm.getSession().createCriteria(Relation.class).add(
+					Restrictions.eq("relationId", e.get(Integer.class, 0))).addOrder(Order.asc("relationId")).list();
+		} else
+			throw new Exception("Invallid Number Of Arguments in Relations page");
+
 		for (Relation r : relations) {
 			Hibernate.initialize(r.getAtributes());
 			Hibernate.initialize(r.getIndexes());
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -95,7 +102,6 @@ public class Relations {
 		newAtribute.setSizeInBytes(10);
 		hsm.getSession().persist(newAtribute);
 		relation.getAtributes().add(newAtribute);
-		onPrepare();
 		this.relation = relation;
 		return newAtribute;
 	}
@@ -108,7 +114,7 @@ public class Relations {
 		if (hsm.getSession().createCriteria(IndexAtribute.class).add(
 				Restrictions.eq("atribute.atributeId", atribute.getAtributeId())).list().size() > 0)
 			mainForm.recordError(atribute.getName() + " is referenced by an index");
-		hsm.getSession().delete(atribute);
+		atribute.getRelation().getAtributes().remove(atribute);
 	}
 
 	@CommitAfter
@@ -122,7 +128,7 @@ public class Relations {
 
 	@CommitAfter
 	void onRemoveRowFromIndexesLoop(Index index) {
-		hsm.getSession().delete(index);
+		index.getRelation().getIndexes().remove(index);
 	}
 
 	@CommitAfter
@@ -135,7 +141,7 @@ public class Relations {
 
 	@CommitAfter
 	void onRemoveRowFromEditIndexLoop(IndexAtribute ia) {
-		hsm.getSession().delete(ia);
+		ia.getIndex().getIndexAtributes().remove(ia);
 	}
 
 	void onSelectedFromSaveAtributes() {

@@ -4,10 +4,6 @@ import java.util.List;
 
 import queryopt.entities.Atribute;
 
-import java.util.List;
-
-import queryopt.entities.Atribute;
-
 public abstract class Clause {
 	protected double selectivity;
 
