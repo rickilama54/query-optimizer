@@ -1,3 +1,46 @@
 <html t:type="layout" title="Schemas"
 	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd" xmlns:p="tapestry:parameter">
+	<t:zone t:id="mainZone">
+		<form t:type="form" zone="mainZone">
+			<table>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Default System Info</th>
+				<th>delete</th>
+				<tr t:type="AjaxFormLoop" t:id="SchemasLoop" source="schemas"
+					value="schema">
+					<t:submitnotifier>
+						<t:unless test="schemasEdit">
+							<td>${schema.name}</td>
+							<td>${schema.description}</td>
+							<td>${schema.defaultSystemInfo.name}</td>
+						</t:unless>
+						<t:if test="schemasEdit">
+							<td>
+								<input t:type="textField" value="schema.name" />
+							</td>
+							<td>
+								<input t:type="textField" value="schema.description" />
+							</td>
+							<td>
+								<t:selectObject list="systemInfos" value="schema.defaultSystemInfo"
+									labelField="literal:name" blankOption="NEVER" />
+							</td>
+						</t:if>
+						<td>
+							<a t:type="removerowlink" id="prop:schema.schemaId">delete</a>
+						</td>
+					</t:submitnotifier>
+					<t:parameter name="addRow">
+						<td colspan="5" style="text-align: right">
+							<t:addrowlink>Add a row</t:addrowlink>
+						</td>
+					</t:parameter>
+				</tr>
+			</table>
+			<p>
+				<input t:type="submit" t:id="edit" value="prop:editValue" />
+			</p>
+		</form>
+	</t:zone>
 </html>

@@ -55,7 +55,7 @@
 								<a href="#" t:type="PageLink" page="Schemas">Schemas</a>
 							</li>
 							<li>
-								<a href="#" t:type="PageLink" page="SystemInfo">System Info</a>
+								<a href="#" t:type="PageLink" page="SystemInfos">System Info</a>
 							</li>
 						</ul>
 					</li>

@@ -83,7 +83,6 @@ public class Layout {
 
 	@SuppressWarnings("unchecked")
 	void setupRender() {
-		System.out.println("GetRelations");
 		relations = hsm.getSession().createCriteria(Relation.class).list();
 		relationsExpanded = new HashMap<Integer, Boolean>();
 		for (Relation r : relations) {
@@ -98,12 +97,10 @@ public class Layout {
 	}
 
 	public boolean isRelationExpanded() {
-		System.out.println(relation.getRelationId() + " " + relationsExpanded.get(relation.getRelationId()));
 		return relationsExpanded.get(relation.getRelationId());
 	}
 
 	Object onActionFromExpandCollapseRelations(int relationId) {
-		System.out.println("relationsExpanded:" + relationsExpanded.get(relationId));
 		boolean expanded = relationsExpanded.get(relationId);
 		relationsExpanded.remove(relationId);
 		relationsExpanded.put(relationId, !expanded);
