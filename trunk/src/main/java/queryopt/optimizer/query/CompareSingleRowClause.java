@@ -5,11 +5,6 @@ import java.util.List;
 
 import queryopt.entities.Atribute;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import queryopt.entities.Atribute;
-
 public class CompareSingleRowClause extends Clause {
 	private Operator operator;
 	private Term operand1;

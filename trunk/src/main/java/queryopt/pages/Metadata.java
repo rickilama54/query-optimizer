@@ -1,5 +1,5 @@
 package queryopt.pages;
 
-public class Indexes {
+public class Metadata {
 
 }
