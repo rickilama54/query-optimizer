@@ -8,6 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -19,6 +21,7 @@ public class Relation {
 	private int relationId;
 	private String name;
 	private int noOfRows;
+	private Schema schema;
 	private List<Atribute> atributes;
 	private List<Index> indexes;
 	private int blockingFactor;
@@ -62,6 +65,16 @@ public class Relation {
 
 	public void setBlockingFactor(int blockingFactor) {
 		this.blockingFactor = blockingFactor;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "schema_id", nullable = false)
+	public Schema getSchema() {
+		return schema;
+	}
+
+	public void setSchema(Schema schema) {
+		this.schema = schema;
 	}
 
 	@OneToMany(mappedBy = "relation", fetch = FetchType.LAZY)

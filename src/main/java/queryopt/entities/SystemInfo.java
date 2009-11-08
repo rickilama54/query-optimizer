@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class SystemInfo {
 	private int systemInfoId;
 	private String name;
-	private BigDecimal memorySizeInBytes;
+	private long memorySizeInBytes;
 	private int pageSizeInBytes;
 	private int blockingFactorIndexFirstLevelRows;
 	private int ridSizeInBytes;
@@ -40,11 +40,11 @@ public class SystemInfo {
 	}
 
 	@Column(name = "memory_size_bytes", nullable = false)
-	public BigDecimal getMemorySizeInBytes() {
+	public long getMemorySizeInBytes() {
 		return memorySizeInBytes;
 	}
 
-	public void setMemorySizeInBytes(BigDecimal memorySizeInBytes) {
+	public void setMemorySizeInBytes(long memorySizeInBytes) {
 		this.memorySizeInBytes = memorySizeInBytes;
 	}
 
