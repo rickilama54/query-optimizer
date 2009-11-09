@@ -2,9 +2,12 @@ package queryopt.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -13,6 +16,7 @@ public class Query {
 	private int queryId;
 	private String name;
 	private String text;
+	private Schema schema;
 
 	public Query() {
 
@@ -51,6 +55,16 @@ public class Query {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "schema_id", nullable = false)
+	public Schema getSchema() {
+		return schema;
+	}
+
+	public void setSchema(Schema schema) {
+		this.schema = schema;
 	}
 
 }

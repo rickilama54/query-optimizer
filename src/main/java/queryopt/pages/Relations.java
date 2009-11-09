@@ -7,12 +7,13 @@ import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Form;
 import org.apache.tapestry5.corelib.components.Zone;
-import org.apache.tapestry5.hibernate.HibernateSessionManager;
 import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
@@ -20,6 +21,7 @@ import queryopt.entities.Atribute;
 import queryopt.entities.Index;
 import queryopt.entities.IndexAtribute;
 import queryopt.entities.Relation;
+import queryopt.model.SessionData;
 
 public class Relations {
 
@@ -41,7 +43,7 @@ public class Relations {
 	private IndexAtribute indexAtribute;
 
 	@Inject
-	private HibernateSessionManager hsm;
+	private Session session;
 
 	@InjectComponent
 	private Form mainForm;
@@ -49,16 +51,20 @@ public class Relations {
 	@InjectComponent
 	private Zone mainZone;
 
+	@SessionState
+	private SessionData sessionData;
+
 	private boolean saveAtributes;
 	private boolean saveIndexes;
 
 	@SuppressWarnings("unchecked")
 	void onActivate(EventContext e) throws Exception {
 		if (e.getCount() == 0) {
-			relations = (List<Relation>) hsm.getSession().createCriteria(Relation.class).addOrder(
-					Order.asc("relationId")).list();
+			relations = session.createCriteria(Relation.class).add(
+					Restrictions.eq("schema.schemaId", sessionData.getSelectedSchema().getSchemaId())).addOrder(
+					Order.asc("name")).list();
 		} else if (e.getCount() == 1) {
-			relations = (List<Relation>) hsm.getSession().createCriteria(Relation.class).add(
+			relations = session.createCriteria(Relation.class).add(
 					Restrictions.eq("relationId", e.get(Integer.class, 0))).addOrder(Order.asc("relationId")).list();
 		} else
 			throw new Exception("Invallid Number Of Arguments in Relations page");
@@ -71,21 +77,21 @@ public class Relations {
 
 	@SuppressWarnings("unchecked")
 	public List<Atribute> getFkCandidates() {
-		return (List<Atribute>) hsm.getSession().createCriteria(Atribute.class).add(
+		return session.createCriteria(Atribute.class).add(
 				Restrictions.not(Restrictions.eq("relation.relationId", relation.getRelationId()))).addOrder(
 				Order.asc("relation.relationId")).addOrder(Order.asc("atributeId")).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Atribute> getAtributes() {
-		return (List<Atribute>) hsm.getSession().createCriteria(Atribute.class).add(
+		return session.createCriteria(Atribute.class).add(
 				Restrictions.eq("relation.relationId", relation.getRelationId())).addOrder(Order.asc("atributeId"))
 				.list();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<IndexAtribute> getIndexAtributes() {
-		return (List<IndexAtribute>) hsm.getSession().createCriteria(IndexAtribute.class).add(
+		return session.createCriteria(IndexAtribute.class).add(
 				Restrictions.eq("index.indexId", index.getIndexId())).addOrder(Order.asc("indexAtributeId")).list();
 	}
 
@@ -100,7 +106,7 @@ public class Relations {
 		newAtribute.setRelation(relation);
 		newAtribute.setDistinct(10);
 		newAtribute.setSizeInBytes(10);
-		hsm.getSession().persist(newAtribute);
+		session.persist(newAtribute);
 		relation.getAtributes().add(newAtribute);
 		this.relation = relation;
 		return newAtribute;
@@ -108,10 +114,10 @@ public class Relations {
 
 	@CommitAfter
 	void onRemoveRowFromAtributesLoop(Atribute atribute) {
-		if (hsm.getSession().createCriteria(Atribute.class).add(
+		if (session.createCriteria(Atribute.class).add(
 				Restrictions.eq("fkAtribute.atributeId", atribute.getAtributeId())).list().size() > 0)
 			mainForm.recordError(atribute.getName() + " is referenced by another FK atribute");
-		if (hsm.getSession().createCriteria(IndexAtribute.class).add(
+		if (session.createCriteria(IndexAtribute.class).add(
 				Restrictions.eq("atribute.atributeId", atribute.getAtributeId())).list().size() > 0)
 			mainForm.recordError(atribute.getName() + " is referenced by an index");
 		atribute.getRelation().getAtributes().remove(atribute);
@@ -122,7 +128,7 @@ public class Relations {
 		Index newIndex = new Index();
 		newIndex.setName("new index");
 		newIndex.setRelation(relation);
-		hsm.getSession().persist(newIndex);
+		session.persist(newIndex);
 		return newIndex;
 	}
 
@@ -135,7 +141,7 @@ public class Relations {
 	IndexAtribute onAddRowFromEditIndexLoop(Index index) {
 		Atribute atribute = index.getRelation().getAtributes().get(0);
 		IndexAtribute ia = new IndexAtribute(0, index, atribute);
-		hsm.getSession().persist(ia);
+		session.persist(ia);
 		return ia;
 	}
 

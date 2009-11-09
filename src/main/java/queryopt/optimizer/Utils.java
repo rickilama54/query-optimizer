@@ -16,11 +16,19 @@ import queryopt.optimizer.query.SPJQuery;
 import queryopt.optimizer.query.SingleRelationQuery;
 
 public class Utils {
-	public static Relation performSelection(Relation relation, List<Clause> selectionClauses) {
+
+	// TODO
+	public static Relation getOutputRelation(SingleRelationQuery srquery) {
+		return srquery.getRelation();
+	}
+
+	// TODO
+	private static Relation performSelection(Relation relation, List<Clause> selectionClauses) {
 		return null;
 	}
 
-	public static Relation projectOutSingleRelation(Relation relation, SPJQuery query) {
+	// TODO
+	private static Relation projectOutSingleRelation(Relation relation, SPJQuery query) {
 		return null;
 	}
 
@@ -144,4 +152,11 @@ public class Utils {
 
 		return true;
 	}
+
+	public static HashMap<Relation, SingleRelationQuery> getSingleRelationQueriesFromSPJQuery(SPJQuery query) {
+		HashMap<Relation, SingleRelationQuery> singleRelationQueries = new HashMap<Relation, SingleRelationQuery>();
+
+		return singleRelationQueries;
+	}
+
 }

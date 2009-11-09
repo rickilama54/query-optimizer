@@ -2,13 +2,13 @@ package queryopt.optimizer.join;
 
 import java.util.List;
 
-import queryopt.optimizer.RelAlgebraOperation;
+import queryopt.optimizer.Plan;
 import queryopt.optimizer.path.AccessPath;
 import queryopt.optimizer.query.CompareSingleRowClause;
 
 public class IndexNestedLoopsJoin extends Join {
 
-	public IndexNestedLoopsJoin(RelAlgebraOperation left, AccessPath right, List<CompareSingleRowClause> joinClauses) {
+	public IndexNestedLoopsJoin(Plan left, AccessPath right, List<CompareSingleRowClause> joinClauses) {
 		super(left, right, joinClauses);
 		// TODO Auto-generated constructor stub
 	}

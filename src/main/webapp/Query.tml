@@ -24,6 +24,7 @@
 				<input style="margin-left:15px;" t:id="delete" t:type="submit"
 					value="Delete" />
 			</p>
+			<p><input t:id="explainPlan" t:type="submit" value="Explain Plan" /> </p>
 		</form>
 	</t:block>
 

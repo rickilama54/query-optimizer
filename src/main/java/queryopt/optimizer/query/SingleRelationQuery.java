@@ -1,5 +1,6 @@
 package queryopt.optimizer.query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import queryopt.entities.Atribute;
@@ -15,44 +16,33 @@ public class SingleRelationQuery {
 	private List<Clause> selectionCnfClauses;
 	private List<Atribute> groupingAtributes;
 
-	public SystemInfo getSystemInfo() {
-		return systemInfo;
+	public SingleRelationQuery(SystemInfo systemInfo, Relation relation) {
+		super();
+		this.systemInfo = systemInfo;
+		this.relation = relation;
+		projectionAtributes = new ArrayList<Atribute>();
+		selectionCnfClauses = new ArrayList<Clause>();
+		groupingAtributes = new ArrayList<Atribute>();
 	}
 
-	public void setSystemInfo(SystemInfo systemInfo) {
-		this.systemInfo = systemInfo;
+	public SystemInfo getSystemInfo() {
+		return systemInfo;
 	}
 
 	public Relation getRelation() {
 		return relation;
 	}
 
-	public void setRelation(Relation relation) {
-		this.relation = relation;
-	}
-
 	public List<Atribute> getProjectionAtributes() {
 		return projectionAtributes;
-	}
-
-	public void setProjectionAtributes(List<Atribute> projectionAtributes) {
-		this.projectionAtributes = projectionAtributes;
 	}
 
 	public List<Clause> getSelectionCnfClauses() {
 		return selectionCnfClauses;
 	}
 
-	public void setSelectionCnfClauses(List<Clause> selectionCnfClauses) {
-		this.selectionCnfClauses = selectionCnfClauses;
-	}
-
 	public List<Atribute> getGroupingAtributes() {
 		return groupingAtributes;
-	}
-
-	public void setGroupingAtributes(List<Atribute> groupingAtributes) {
-		this.groupingAtributes = groupingAtributes;
 	}
 
 }

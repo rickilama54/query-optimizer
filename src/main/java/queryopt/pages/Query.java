@@ -8,14 +8,16 @@ import org.apache.tapestry5.ajax.MultiZoneUpdate;
 import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Form;
-import org.apache.tapestry5.hibernate.HibernateSessionManager;
 import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
 import queryopt.components.Layout;
 import queryopt.entities.Relation;
+import queryopt.model.SessionData;
 import queryopt.optimizer.SPJQueryBuilder;
 
 public class Query {
@@ -47,26 +49,31 @@ public class Query {
 	private Form editForm;
 
 	@Inject
-	private HibernateSessionManager hsm;
+	private Session session;
+
+	@SessionState
+	private SessionData sessionData;
 
 	private boolean isSave;
 	private boolean isParse;
 	private boolean isEdit;
 	private boolean isDelete;
+	private boolean explainPlan;
+
 	@Persist
 	private boolean isNew;
 
 	void onActivate(EventContext e) {
-		System.out.println(e.getCount());
 		if (e.getCount() == 1) {
-			Integer queryId = (Integer) e.get(Integer.class, 0);
+			Integer queryId = e.get(Integer.class, 0);
 			if (queryId == 0) {
 				query = new queryopt.entities.Query("new query", "Enter an SQL query.");
+				query.setSchema(sessionData.getSelectedSchema());
 				isNew = true;
 				activeBlock = editBlock;
 			} else if (queryId > 0) {
 				isNew = false;
-				query = (queryopt.entities.Query) hsm.getSession().createCriteria(queryopt.entities.Query.class).add(
+				query = (queryopt.entities.Query) session.createCriteria(queryopt.entities.Query.class).add(
 						Restrictions.eq("queryId", queryId)).uniqueResult();
 				activeBlock = viewBlock;
 			}
@@ -75,7 +82,8 @@ public class Query {
 	}
 
 	Integer onPassivate() {
-		System.out.println("onPassivate:" + query.getQueryId());
+		if (query == null)
+			return 0;
 		return query.getQueryId() > 0 ? query.getQueryId() : null;
 	}
 
@@ -95,23 +103,25 @@ public class Query {
 		isDelete = true;
 	}
 
+	void onSelectedFromExplainPlan() {
+		explainPlan = true;
+	}
+
 	void onActionFromBack() {
 		activeBlock = viewBlock;
 	}
 
 	Object onSuccess() {
 		if (isSave) {
-			System.out.println(isNew);
 			if (isNew
-					&& hsm.getSession().createCriteria(queryopt.entities.Query.class).add(
+					&& session.createCriteria(queryopt.entities.Query.class).add(
 							Restrictions.eq("name", query.getName())).list().size() > 0) {
 				editForm.recordError("Query names must be unique!");
 				activeBlock = editBlock;
-				System.out.println("error");
 				return activeBlock;
 			} else {
 				activeBlock = viewBlock;
-				hsm.getSession().persist(query);
+				session.persist(query);
 				save();
 			}
 			return new MultiZoneUpdate("mainzone", activeBlock).add("queriesZone", layout.getQueriesZone().getBody());
@@ -132,9 +142,12 @@ public class Query {
 			activeBlock = editBlock;
 		}
 		if (isDelete) {
-			hsm.getSession().delete(query);
+			session.delete(query);
 			save();
 			return Index.class;
+		}
+		if (explainPlan) {
+			
 		}
 		return activeBlock;
 	}
@@ -145,6 +158,6 @@ public class Query {
 
 	@SuppressWarnings("unchecked")
 	private List<Relation> getRelations() {
-		return hsm.getSession().createCriteria(Relation.class).list();
+		return session.createCriteria(Relation.class).list();
 	}
 }
