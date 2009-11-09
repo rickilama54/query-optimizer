@@ -57,6 +57,13 @@
 							<li>
 								<a href="#" t:type="PageLink" page="SystemInfos">System Info</a>
 							</li>
+							<li>
+								Schema:
+								<form t:type="Form">
+									<t:selectObject list="schemas" value="selectedSchema"
+										labelField="literal:name" blankOption="NEVER" onchange="this.form.submit();" />
+								</form>
+							</li>
 						</ul>
 					</li>
 					<li>

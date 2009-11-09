@@ -1,10 +1,11 @@
 package queryopt.optimizer.path;
 
 import queryopt.entities.Relation;
-import queryopt.optimizer.RelAlgebraOperation;
+import queryopt.optimizer.Plan;
+import queryopt.optimizer.Utils;
 import queryopt.optimizer.query.SingleRelationQuery;
 
-public abstract class AccessPath implements RelAlgebraOperation {
+public abstract class AccessPath implements Plan {
 	private Relation outputRelation;
 	private Relation inputRelation;
 	private long cost;
@@ -13,6 +14,7 @@ public abstract class AccessPath implements RelAlgebraOperation {
 		super();
 		this.inputRelation = srquery.getRelation();
 		cost = calcCost(srquery);
+		this.outputRelation = Utils.getOutputRelation(srquery);
 	}
 
 	public Relation getOutputRelation() {

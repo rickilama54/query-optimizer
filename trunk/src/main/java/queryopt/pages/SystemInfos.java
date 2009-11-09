@@ -1,15 +1,14 @@
 package queryopt.pages;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.Zone;
-import org.apache.tapestry5.hibernate.HibernateSessionManager;
 import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
 import queryopt.entities.SystemInfo;
@@ -28,7 +27,7 @@ public class SystemInfos {
 	private Zone mainZone;
 
 	@Inject
-	private HibernateSessionManager hsm;
+	private Session session;
 
 	@Property
 	@Persist
@@ -40,7 +39,7 @@ public class SystemInfos {
 
 	@SuppressWarnings("unchecked")
 	public List<SystemInfo> getSystemInfos() {
-		return hsm.getSession().createCriteria(SystemInfo.class).addOrder(Order.asc("name")).list();
+		return session.createCriteria(SystemInfo.class).addOrder(Order.asc("name")).list();
 	}
 
 	public String getMemorySize() {
@@ -49,20 +48,20 @@ public class SystemInfos {
 
 	@CommitAfter
 	public SystemInfo onAddRowFromSchemasLoop() {
-		int systemInfosCount = hsm.getSession().createCriteria(queryopt.entities.Schema.class).list().size();
+		int systemInfosCount = session.createCriteria(queryopt.entities.Schema.class).list().size();
 		SystemInfo systemInfo = new SystemInfo();
 		systemInfo.setMemorySizeInBytes(MEMORY_SIZE_BYTES);
 		systemInfo.setBlockingFactorIndexFirstLevelRows(BLOCKING_FACTOR_INDEX_FIRST_LEVEL_ROWS);
 		systemInfo.setPageSizeInBytes(PAGE_SIZE_BYTES);
 		systemInfo.setRidSizeInBytes(RID_SIZE_BYTES);
 		systemInfo.setName("new system info " + systemInfosCount);
-		hsm.getSession().persist(systemInfo);
+		session.persist(systemInfo);
 		return systemInfo;
 	}
 
 	@CommitAfter
 	public void onRemoveRowFromSchemasLoop(SystemInfo systemInfo) {
-		hsm.getSession().delete(systemInfo);
+		session.delete(systemInfo);
 	}
 
 	public String getEditValue() {

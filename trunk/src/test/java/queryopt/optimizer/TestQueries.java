@@ -58,4 +58,8 @@ public class TestQueries {
 		selectionCnfClauses.add(new CompareSingleRowClause(Operator.EQ, departmentsDeptId, deptId));
 		query2.setSelectionCnfClauses(selectionCnfClauses);
 	}
+	
+	void test1() {
+		
+	}
 }

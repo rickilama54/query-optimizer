@@ -6,9 +6,9 @@ import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.Zone;
-import org.apache.tapestry5.hibernate.HibernateSessionManager;
 import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
 import queryopt.entities.Schema;
@@ -23,7 +23,7 @@ public class Schemas {
 	private Zone mainZone;
 
 	@Inject
-	private HibernateSessionManager hsm;
+	private Session session;
 
 	@Property
 	@Persist
@@ -37,29 +37,28 @@ public class Schemas {
 	@SuppressWarnings("unchecked")
 	void setupRender() {
 		schemasEdit = false;
-		systemInfos = hsm.getSession().createCriteria(queryopt.entities.SystemInfo.class).addOrder(Order.asc("name"))
-				.list();
+		systemInfos = session.createCriteria(queryopt.entities.SystemInfo.class).addOrder(Order.asc("name")).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Schema> getSchemas() {
-		return hsm.getSession().createCriteria(Schema.class).addOrder(Order.asc("name")).list();
+		return session.createCriteria(Schema.class).addOrder(Order.asc("name")).list();
 	}
 
 	@CommitAfter
 	public Schema onAddRowFromSchemasLoop() {
-		int schemasCount = hsm.getSession().createCriteria(queryopt.entities.Schema.class).list().size();
+		int schemasCount = session.createCriteria(queryopt.entities.Schema.class).list().size();
 		Schema schema = new Schema();
 		schema.setName("new schema " + schemasCount);
-		schema.setDefaultSystemInfo((queryopt.entities.SystemInfo) hsm.getSession().createCriteria(
+		schema.setDefaultSystemInfo((queryopt.entities.SystemInfo) session.createCriteria(
 				queryopt.entities.SystemInfo.class).list().get(0));
-		hsm.getSession().persist(schema);
+		session.persist(schema);
 		return schema;
 	}
 
 	@CommitAfter
 	public void onRemoveRowFromSchemasLoop(Schema schema) {
-		hsm.getSession().delete(schema);
+		session.delete(schema);
 	}
 
 	public String getEditValue() {

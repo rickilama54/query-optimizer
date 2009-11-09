@@ -5,11 +5,7 @@ import java.util.ArrayList;
 
 
 import org.antlr.runtime.*;
-import java.util.Stack;
 import java.util.List;
-import java.util.ArrayList;
-
-
 import org.antlr.runtime.tree.*;
 
 public class SelectQueryGrammarParser extends Parser {
@@ -56,13 +52,16 @@ public class SelectQueryGrammarParser extends Parser {
         return adaptor;
     }
 
-    public String[] getTokenNames() { return SelectQueryGrammarParser.tokenNames; }
-    public String getGrammarFileName() { return "/home/dragan/Dragan/SelectQueryGrammar.g"; }
+    @Override
+	public String[] getTokenNames() { return SelectQueryGrammarParser.tokenNames; }
+    @Override
+	public String getGrammarFileName() { return "/home/dragan/Dragan/SelectQueryGrammar.g"; }
 
 
     List<RecognitionException> exceptions = new ArrayList<RecognitionException>();
 
-    public void reportError(RecognitionException e)
+    @Override
+	public void reportError(RecognitionException e)
     {
         exceptions.add(e);
     }
@@ -74,18 +73,19 @@ public class SelectQueryGrammarParser extends Parser {
 
     public String getErrorMessage()
     {
-    	return this.getErrorMessage((RecognitionException)exceptions.get(0), this.getTokenNames()); 
+    	return this.getErrorMessage(exceptions.get(0), this.getTokenNames()); 
     }
 
     public String getErrorPosition()
     {
-     	return this.getErrorHeader((RecognitionException)exceptions.get(0)); 
+     	return this.getErrorHeader(exceptions.get(0)); 
     }
 
 
     public static class query_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "query"
@@ -161,7 +161,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class query_block_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "query_block"
@@ -222,7 +223,7 @@ public class SelectQueryGrammarParser extends Parser {
                 // /home/dragan/Dragan/SelectQueryGrammar.g:46:41: ^( QUERY $select)
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
-                root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(QUERY, "QUERY"), root_1);
+                root_1 = (CommonTree)adaptor.becomeRoot(adaptor.create(QUERY, "QUERY"), root_1);
 
                 adaptor.addChild(root_1, stream_select.nextTree());
 
@@ -263,7 +264,7 @@ public class SelectQueryGrammarParser extends Parser {
                 // /home/dragan/Dragan/SelectQueryGrammar.g:47:23: ^( QUERY $from $select)
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
-                root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(QUERY, "QUERY"), root_1);
+                root_1 = (CommonTree)adaptor.becomeRoot(adaptor.create(QUERY, "QUERY"), root_1);
 
                 adaptor.addChild(root_1, stream_from.nextTree());
                 adaptor.addChild(root_1, stream_select.nextTree());
@@ -321,7 +322,7 @@ public class SelectQueryGrammarParser extends Parser {
                         // /home/dragan/Dragan/SelectQueryGrammar.g:48:28: ^( QUERY $from $select $where)
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
-                        root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(QUERY, "QUERY"), root_1);
+                        root_1 = (CommonTree)adaptor.becomeRoot(adaptor.create(QUERY, "QUERY"), root_1);
 
                         adaptor.addChild(root_1, stream_from.nextTree());
                         adaptor.addChild(root_1, stream_select.nextTree());
@@ -361,7 +362,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class select_block_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "select_block"
@@ -420,7 +422,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class select_clause_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "select_clause"
@@ -587,7 +590,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class from_block_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "from_block"
@@ -646,7 +650,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class from_clause_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "from_clause"
@@ -780,7 +785,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class nested_query_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "nested_query"
@@ -911,7 +917,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class where_block_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "where_block"
@@ -970,7 +977,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class where_clause_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "where_clause"
@@ -1064,7 +1072,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class where_condition_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "where_condition"
@@ -1373,7 +1382,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class term_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "term"
@@ -1470,7 +1480,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class column_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "column"
@@ -1580,7 +1591,7 @@ public class SelectQueryGrammarParser extends Parser {
                         // /home/dragan/Dragan/SelectQueryGrammar.g:76:29: ^( LITERAL $literal)
                         {
                         CommonTree root_1 = (CommonTree)adaptor.nil();
-                        root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(LITERAL, "LITERAL"), root_1);
+                        root_1 = (CommonTree)adaptor.becomeRoot(adaptor.create(LITERAL, "LITERAL"), root_1);
 
                         adaptor.addChild(root_1, stream_literal.nextNode());
 
@@ -1617,7 +1628,8 @@ public class SelectQueryGrammarParser extends Parser {
 
     public static class table_return extends ParserRuleReturnScope {
         CommonTree tree;
-        public Object getTree() { return tree; }
+        @Override
+		public Object getTree() { return tree; }
     };
 
     // $ANTLR start "table"
@@ -1723,7 +1735,8 @@ public class SelectQueryGrammarParser extends Parser {
             this.special = DFA21_special;
             this.transition = DFA21_transition;
         }
-        public String getDescription() {
+        @Override
+		public String getDescription() {
             return "67:1: where_condition : ( column ( WS )? OP ( WS )? column | column ( WS )? OP ( WS )? query_block | query_block ( WS )? OP ( WS )? column | column WS IN ( WS )? '(' query_block ')' );";
         }
     }

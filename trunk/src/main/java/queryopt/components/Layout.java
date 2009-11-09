@@ -10,14 +10,19 @@ import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Zone;
-import org.apache.tapestry5.hibernate.HibernateSessionManager;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import queryopt.entities.Atribute;
 import queryopt.entities.Query;
 import queryopt.entities.Relation;
+import queryopt.entities.Schema;
+import queryopt.model.SessionData;
 
 /**
  * Layout component for pages of application query_optimizer.
@@ -38,7 +43,7 @@ public class Layout {
 	private Query query;
 
 	@Inject
-	private HibernateSessionManager hsm;
+	private Session session;
 
 	@Inject
 	private ComponentResources resources;
@@ -68,8 +73,16 @@ public class Layout {
 	@Property
 	private queryopt.entities.Index index;
 
+	@SessionState
+	private SessionData sessionData;
+
 	public String getClassForPageName() {
 		return resources.getPageName().equalsIgnoreCase(pageName) ? "current_page_item" : null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Schema> getSchemas() {
+		return session.createCriteria(Schema.class).addOrder(Order.asc("name")).list();
 	}
 
 	public String[] getPageNames() {
@@ -78,12 +91,16 @@ public class Layout {
 
 	@SuppressWarnings("unchecked")
 	public List<Query> getQueries() {
-		return (List<Query>) hsm.getSession().createCriteria(Query.class).list();
+		return session.createCriteria(Query.class).add(
+				Restrictions.eq("schema.schemaId", sessionData.getSelectedSchema().getSchemaId())).addOrder(
+				Order.asc("name")).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	void setupRender() {
-		relations = hsm.getSession().createCriteria(Relation.class).list();
+		relations = session.createCriteria(Relation.class).add(
+				Restrictions.eq("schema.schemaId", sessionData.getSelectedSchema().getSchemaId())).addOrder(
+				Order.asc("name")).list();
 		relationsExpanded = new HashMap<Integer, Boolean>();
 		for (Relation r : relations) {
 			relationsExpanded.put(r.getRelationId(), false);
@@ -106,4 +123,17 @@ public class Layout {
 		relationsExpanded.put(relationId, !expanded);
 		return relationsZone;
 	}
+
+	public Schema getSelectedSchema() {
+		return sessionData.getSelectedSchema();
+	}
+
+	public void setSelectedSchema(Schema selectedSchema) {
+		sessionData.setSelectedSchema(selectedSchema);
+	}
+
+	Object onSubmit() {
+		return this;
+	}
+
 }

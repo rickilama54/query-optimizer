@@ -2,9 +2,6 @@
 package queryopt.parser;
 
 import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
 
 public class SelectQueryGrammarLexer extends Lexer {
     public static final int WHERE=10;
@@ -37,7 +34,8 @@ public class SelectQueryGrammarLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "/home/dragan/Dragan/SelectQueryGrammar.g"; }
+    @Override
+	public String getGrammarFileName() { return "/home/dragan/Dragan/SelectQueryGrammar.g"; }
 
     // $ANTLR start "T__16"
     public final void mT__16() throws RecognitionException {
@@ -570,7 +568,8 @@ public class SelectQueryGrammarLexer extends Lexer {
     }
     // $ANTLR end "WS"
 
-    public void mTokens() throws RecognitionException {
+    @Override
+	public void mTokens() throws RecognitionException {
         // /home/dragan/Dragan/SelectQueryGrammar.g:1:8: ( T__16 | T__17 | T__18 | T__19 | T__20 | STAR | SELECT | FROM | WHERE | AND | IN | AGGREGATE_FUNC | NAME | OP | WS )
         int alt5=15;
         alt5 = dfa5.predict(input);
@@ -794,7 +793,8 @@ public class SelectQueryGrammarLexer extends Lexer {
             this.special = DFA5_special;
             this.transition = DFA5_transition;
         }
-        public String getDescription() {
+        @Override
+		public String getDescription() {
             return "1:1: Tokens : ( T__16 | T__17 | T__18 | T__19 | T__20 | STAR | SELECT | FROM | WHERE | AND | IN | AGGREGATE_FUNC | NAME | OP | WS );";
         }
     }
