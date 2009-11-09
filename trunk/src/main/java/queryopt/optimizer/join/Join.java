@@ -38,4 +38,9 @@ public abstract class Join implements Plan {
 
 	protected abstract long calcCost(List<CompareSingleRowClause> joinClauses);
 
+	public String getPlanAsTree() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

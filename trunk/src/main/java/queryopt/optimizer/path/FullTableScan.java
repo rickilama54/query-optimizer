@@ -6,8 +6,15 @@ import queryopt.optimizer.query.SingleRelationQuery;
 
 public class FullTableScan extends AccessPath {
 
+	private static final String NAME = "Full Table Scan";
+
 	public FullTableScan(SingleRelationQuery srquery) throws Exception {
 		super(srquery);
+	}
+
+	@Override
+	protected String getName() {
+		return NAME;
 	}
 
 	@Override
