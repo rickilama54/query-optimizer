@@ -84,10 +84,14 @@ public class Utils {
 
 	public static long getRelationSizeInPages(Relation r, SystemInfo systemInfo) {
 		int pagesize = systemInfo.getPageSizeInBytes();
+		return getRelationSizeInBytes(r, systemInfo) / pagesize;
+	}
+
+	public static long getRelationSizeInBytes(Relation r, SystemInfo systemInfo) {
 		long rowsize = Utils.getRowSizeInBytes(r);
 		int rows = r.getNoOfRows();
 		int blockingFactor = r.getBlockingFactor();
-		return rowsize * rows * blockingFactor / pagesize;
+		return rowsize * rows * blockingFactor;
 	}
 
 	public static long getNoOfFirstLevelIndexPages(Index index, SystemInfo systemInfo) {

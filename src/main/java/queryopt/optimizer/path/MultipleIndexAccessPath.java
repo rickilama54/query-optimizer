@@ -10,11 +10,17 @@ import queryopt.optimizer.query.Clause;
 import queryopt.optimizer.query.SingleRelationQuery;
 
 public class MultipleIndexAccessPath extends AccessPath {
+	private static final String NAME = "Miltiple index RID intersection";
 
 	private List<Index> ridIndexes;
 
 	public MultipleIndexAccessPath(SingleRelationQuery srquery) throws Exception {
 		super(srquery);
+	}
+
+	@Override
+	protected String getName() {
+		return NAME;
 	}
 
 	@Override
