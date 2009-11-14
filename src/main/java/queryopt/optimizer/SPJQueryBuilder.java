@@ -9,6 +9,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.tree.CommonTree;
 
 import queryopt.entities.Atribute;
+import queryopt.entities.ExecutionPlan;
 import queryopt.entities.Relation;
 import queryopt.optimizer.query.AggregateFunction;
 import queryopt.optimizer.query.Clause;
@@ -25,6 +26,7 @@ public class SPJQueryBuilder {
 	private HashMap<String, HashMap<String, Atribute>> relationsAtributes;
 	private HashMap<String, Relation> namesRelations;
 	private List<Relation> relationsInFrom;
+	CommonTree ast;
 
 	public SPJQueryBuilder(List<Relation> allRelations) {
 		relationsAtributes = new HashMap<String, HashMap<String, Atribute>>();
@@ -37,9 +39,15 @@ public class SPJQueryBuilder {
 		}
 	}
 
-	public SPJQuery build(String query) throws Exception {
-		CommonTree ast = getAstFromString(query.toUpperCase() + ";");
-		return buildSpjQueryFromAst(ast);
+	public void parse(String query) throws Exception {
+		ast = getAstFromString(query.toUpperCase() + ";");
+	}
+
+	public SPJQuery build(ExecutionPlan executionPlan) throws Exception {
+		SPJQuery spjQuery = buildSpjQueryFromAst(ast);
+		spjQuery.setSystemInfo(executionPlan.getSystemInfo());
+		spjQuery.setDisabledIndexes(executionPlan.getDisabledIndexes());
+		return spjQuery;
 	}
 
 	private CommonTree getAstFromString(String query) throws Exception {
@@ -202,7 +210,7 @@ public class SPJQueryBuilder {
 
 			query.getSelectionCnfClauses().add(new CompareSingleRowClause(operator, operand1, operand2));
 			break;
-			
+
 		case SelectQueryGrammarParser.IN:
 			CommonTree atribute = (CommonTree) whereBlockTree.getChild(0);
 			CommonTree subquery = (CommonTree) whereBlockTree.getChild(1);

@@ -22,8 +22,8 @@ public class Atribute implements Term {
 	private int distinct;
 	private Relation relation;
 	private Atribute fkAtribute;
-	private String high;
-	private String low;
+	private String highValue;
+	private String lowValue;
 
 	public Atribute() {
 
@@ -118,20 +118,22 @@ public class Atribute implements Term {
 		this.fkAtribute = fkAtribute;
 	}
 
-	public String getHigh() {
-		return high;
+	@Column(name = "high_value", nullable = false)
+	public String getHighValue() {
+		return highValue;
 	}
 
-	public void setHigh(String high) {
-		this.high = high;
+	public void setHighValue(String highValue) {
+		this.highValue = highValue;
 	}
 
-	public String getLow() {
-		return low;
+	@Column(name = "low_value", nullable = false)
+	public String getLowValue() {
+		return lowValue;
 	}
 
-	public void setLow(String low) {
-		this.low = low;
+	public void setLowValue(String lowValue) {
+		this.lowValue = lowValue;
 	}
 
 	@Override

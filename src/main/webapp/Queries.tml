@@ -2,7 +2,7 @@
 	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd" xmlns:p="tapestry:parameter">
 	<div t:type="Grid" source="queries" t:exclude="queryId" t:row="query">
 		<t:parameter name="nameCell">
-			<a href="#" t:type="PageLink" t:page="Query" t:parameter="query.queryId">${query.name}</a>
+			<a href="#" t:type="PageLink" t:page="Query" context="query.queryId">${query.name}</a>
 		</t:parameter>
 	</div>
 </html>

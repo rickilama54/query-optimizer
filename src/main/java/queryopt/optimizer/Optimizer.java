@@ -24,9 +24,9 @@ public class Optimizer {
 	}
 
 	public Plan generateBestPlan() throws Exception {
-		singleRelationAccessPathsWithRemainingAccessPaths = generateSingleRelationPlans(singleRelationQueries);
-
+		
 		singleRelationQueries = Utils.getSingleRelationQueriesFromSPJQuery(query);
+		singleRelationAccessPathsWithRemainingAccessPaths = generateSingleRelationPlans(singleRelationQueries);
 
 		plansWithRemainingRelations.add(singleRelationAccessPathsWithRemainingAccessPaths);
 

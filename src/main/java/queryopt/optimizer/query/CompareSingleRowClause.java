@@ -63,8 +63,8 @@ public class CompareSingleRowClause extends Clause {
 	}
 
 	private static double calcSelectivityLiteralAtribute(Literal l1, Atribute atribute, Operator operator) {
-		String high = atribute.getHigh();
-		String low = atribute.getLow();
+		String high = atribute.getHighValue();
+		String low = atribute.getLowValue();
 		String literal = l1.getValue();
 
 		if (literal.compareTo(high) > 0)

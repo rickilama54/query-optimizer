@@ -132,7 +132,7 @@ public class Query {
 		if (isParse) {
 			SPJQueryBuilder queryBuilder = new SPJQueryBuilder(getRelations());
 			try {
-				queryBuilder.build(query.getText());
+				queryBuilder.parse(query.getText());
 				parseok = true;
 				message = "OK";
 			} catch (Exception e) {
@@ -147,7 +147,7 @@ public class Query {
 			return Index.class;
 		}
 		if (explainPlan) {
-			
+
 		}
 		return activeBlock;
 	}
