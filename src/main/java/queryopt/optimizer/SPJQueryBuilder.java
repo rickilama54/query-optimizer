@@ -12,7 +12,6 @@ import queryopt.entities.Atribute;
 import queryopt.entities.ExecutionPlan;
 import queryopt.entities.Relation;
 import queryopt.optimizer.query.AggregateFunction;
-import queryopt.optimizer.query.Clause;
 import queryopt.optimizer.query.CompareSingleRowClause;
 import queryopt.optimizer.query.InClause;
 import queryopt.optimizer.query.Literal;
@@ -46,7 +45,8 @@ public class SPJQueryBuilder {
 	public SPJQuery build(ExecutionPlan executionPlan) throws Exception {
 		SPJQuery spjQuery = buildSpjQueryFromAst(ast);
 		spjQuery.setSystemInfo(executionPlan.getSystemInfo());
-		spjQuery.setDisabledIndexes(executionPlan.getDisabledIndexes());
+		spjQuery.getDisabledIndexes().clear();
+		spjQuery.getDisabledIndexes().addAll(executionPlan.getDisabledIndexes());
 		return spjQuery;
 	}
 
@@ -91,8 +91,6 @@ public class SPJQueryBuilder {
 	}
 
 	private void buildSelect(CommonTree selectTree, SPJQuery query) {
-		query.setProjectionTerms(new ArrayList<Term>());
-
 		for (Object child : selectTree.getChildren()) {
 
 			switch (((CommonTree) child).getType()) {
@@ -147,7 +145,6 @@ public class SPJQueryBuilder {
 	}
 
 	private void buildWhere(CommonTree whereTree, SPJQuery query) {
-		query.setSelectionCnfClauses(new ArrayList<Clause>());
 		for (Object child : whereTree.getChildren()) {
 			switch (((CommonTree) child).getType()) {
 			case SelectQueryGrammarParser.AND:

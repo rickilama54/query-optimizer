@@ -82,9 +82,9 @@
 											</div>
 										</td>
 										<td>
-											<div class="edit">${atribute.distinct}</div>
+											<div class="edit">${atribute.distinctPercent} %</div>
 											<div class="edit" style="display:none">
-												<input t:type="textfield" value="atribute.distinct" />
+												<input t:type="textfield" value="atribute.distinctPercent" />
 											</div>
 										</td>
 										<td>

@@ -9,7 +9,7 @@ import queryopt.optimizer.query.Clause;
 import queryopt.optimizer.query.SingleRelationQuery;
 
 public class SingleIndexAccessPath extends AccessPath {
-	private static final String NAME = "Miltiple index RID intersection";
+	private static final String NAME = "Index scan";
 
 	private Index index;
 
@@ -27,12 +27,17 @@ public class SingleIndexAccessPath extends AccessPath {
 	}
 
 	@Override
+	protected String getClassSpecificOutput() {
+		return "using " + this.getIndex().getName();
+	}
+
+	@Override
 	protected long calcCost(SingleRelationQuery srquery) throws Exception {
 		List<Index> indexes = srquery.getRelation().getIndexes();
 		if (indexes.size() == 0)
 			throw new Exception("No indexes");
 
-		HashMap<Clause, List<Index>> matchingSelectionIndexes = Utils.getMatchingIndexes(srquery, indexes);
+		HashMap<Clause, List<Index>> matchingSelectionIndexes = Utils.getMatchingSelectionIndexes(srquery, indexes);
 
 		long cost = Long.MAX_VALUE;
 

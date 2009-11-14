@@ -28,6 +28,7 @@ public class Optimizer {
 		singleRelationQueries = Utils.getSingleRelationQueriesFromSPJQuery(query);
 		singleRelationAccessPathsWithRemainingAccessPaths = generateSingleRelationPlans(singleRelationQueries);
 
+		plansWithRemainingRelations = new ArrayList<HashMap<? extends Plan, List<AccessPath>>>();
 		plansWithRemainingRelations.add(singleRelationAccessPathsWithRemainingAccessPaths);
 
 		for (int i = 1; i < singleRelationAccessPathsWithRemainingAccessPaths.size(); i++)
@@ -60,15 +61,15 @@ public class Optimizer {
 			// INDEX plans: single and multiple
 			if (srquery.getRelation().getIndexes().size() > 0) {
 				SingleIndexAccessPath singleIndex = new SingleIndexAccessPath(srquery);
-				if (singleIndex.getCost() > cost) {
+				if (singleIndex.getCost() < cost) {
 					cost = singleIndex.getCost();
 					accessPath = singleIndex;
 				}
 				MultipleIndexAccessPath multipleIndex = new MultipleIndexAccessPath(srquery);
-				if (multipleIndex.getCost() > cost) {
+				//if (multipleIndex.getCost() < cost) {
 					cost = multipleIndex.getCost();
 					accessPath = multipleIndex;
-				}
+				//}
 			}
 			singleRelationAccessPaths.put(accessPath, new ArrayList<Relation>());
 		}

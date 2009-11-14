@@ -15,6 +15,7 @@ public class CompareSingleRowClause extends Clause {
 		this.operator = operator;
 		this.operand1 = operand1;
 		this.operand2 = operand2;
+		this.selectivity = this.calcSelectivity();
 	}
 
 	public Operator getOperator() {
@@ -75,21 +76,28 @@ public class CompareSingleRowClause extends Clause {
 		double selectivity = 1.0;
 		switch (operator) {
 		case EQ:
-			selectivity = atribute.getDistinct() / atribute.getRelation().getNoOfRows();
+			if (atribute.getDistinctPercent() == 100)
+				selectivity = 1 / (double) atribute.getRelation().getNoOfRows();
+			else
+				selectivity = (1 - 0.01 * atribute.getDistinctPercent());
 			break;
 		case DIFF:
-			selectivity = 1 - atribute.getDistinct() / atribute.getRelation().getNoOfRows();
+			if (atribute.getDistinctPercent() == 100)
+				selectivity = ((double) atribute.getRelation().getNoOfRows() - 1.0)
+						/ (double) atribute.getRelation().getNoOfRows();
+			else
+				selectivity = 0.01 * atribute.getDistinctPercent();
 			break;
 		case GT:
 		case GT_EQ:
 			double distanceLow = literal.compareTo(low);
-			double distanceHigh = literal.compareTo(high);
+			double distanceHigh = -literal.compareTo(high);
 			selectivity = distanceHigh / (distanceHigh + distanceLow);
 			break;
 		case LS:
 		case LS_EQ:
 			distanceLow = literal.compareTo(low);
-			distanceHigh = literal.compareTo(high);
+			distanceHigh = -literal.compareTo(high);
 			selectivity = distanceLow / (distanceHigh + distanceLow);
 			break;
 		}
@@ -139,4 +147,13 @@ public class CompareSingleRowClause extends Clause {
 			list.add((Atribute) operand2);
 		return list;
 	}
+
+	@Override
+	public boolean isJoinClause() {
+		if (operand1 instanceof Atribute || operand1 instanceof SPJQuery)
+			if (operand2 instanceof Atribute || operand2 instanceof SPJQuery)
+				return true;
+		return false;
+	}
+
 }

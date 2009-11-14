@@ -20,9 +20,8 @@ public class IndexAtribute {
 	public IndexAtribute() {
 	}
 
-	public IndexAtribute(int indexAtributeId, Index index, Atribute atribute) {
+	public IndexAtribute(Index index, Atribute atribute) {
 		super();
-		this.indexAtributeId = indexAtributeId;
 		this.index = index;
 		this.atribute = atribute;
 	}
