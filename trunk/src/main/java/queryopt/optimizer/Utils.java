@@ -159,7 +159,7 @@ public class Utils {
 
 	public static HashMap<Relation, SingleRelationQuery> getSingleRelationQueriesFromSPJQuery(SPJQuery query) {
 		HashMap<Relation, SingleRelationQuery> singleRelationQueries = new HashMap<Relation, SingleRelationQuery>();
-
+		
 		return singleRelationQueries;
 	}
 

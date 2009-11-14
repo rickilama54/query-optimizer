@@ -6,6 +6,7 @@ import java.util.List;
 
 import queryopt.entities.Atribute;
 import queryopt.entities.Relation;
+import queryopt.entities.SystemInfo;
 import queryopt.optimizer.query.Clause;
 import queryopt.optimizer.query.CompareSingleRowClause;
 import queryopt.optimizer.query.Operator;
@@ -13,7 +14,17 @@ import queryopt.optimizer.query.SPJQuery;
 import queryopt.optimizer.query.Term;
 
 public class TestQueries {
+	SPJQuery query1;
+	SPJQuery query2;
+
 	void setup() {
+		SystemInfo systemInfo = new SystemInfo();
+		systemInfo.setBlockingFactorIndexFirstLevelRows(2);
+		systemInfo.setMemorySizeInBytes(4000000);
+		systemInfo.setName("systemInfo1");
+		systemInfo.setPageSizeInBytes(4000);
+		systemInfo.setRidSizeInBytes(4);
+		
 		Relation departments = new Relation();
 		departments.setName("DEPARTMENTS");
 		departments.setNoOfRows(50);
@@ -35,17 +46,16 @@ public class TestQueries {
 		employees.setAtributes(Arrays.asList(epmId, empName, empSalary, departmentsDeptId));
 
 		// SELECT EMP_NAME FROM EMPLOYEES
-		SPJQuery query = new SPJQuery();
-
+		query1 = new SPJQuery();
 		List<Term> projectionTerms = new ArrayList<Term>();
 		projectionTerms.add(empName);
-		query.setProjectionTerms(projectionTerms);
+		query1.setProjectionTerms(projectionTerms);
 		//
 
 		// SELECT EMP_NAME, EMP_SALARY, DEPT_NAME, DEPT_SALARY
 		// FROM EMPLOYEES, DEPARTMENTS
 		// WHERE DEPARTMENTS_DEPT_ID = DEPT_ID
-		SPJQuery query2 = new SPJQuery();
+		query2 = new SPJQuery();
 
 		projectionTerms = new ArrayList<Term>();
 		projectionTerms.add(empName);
@@ -58,8 +68,9 @@ public class TestQueries {
 		selectionCnfClauses.add(new CompareSingleRowClause(Operator.EQ, departmentsDeptId, deptId));
 		query2.setSelectionCnfClauses(selectionCnfClauses);
 	}
-	
-	void test1() {
-		
+
+	void test1() throws Exception {
+		Optimizer optimizer = new Optimizer(query1);
+		Plan bestPlan = optimizer.generateBestPlan();
 	}
 }

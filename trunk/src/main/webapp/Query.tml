@@ -7,6 +7,11 @@
 	<t:block t:id="viewBlock">
 		<form t:type="form" t:id="viewform" t:zone="mainzone">
 			<p>
+				<a href="#" t:type="PageLink" page="Queries">
+					<t:outputraw value="literal:&lt;- All Queries" />
+				</a>
+			</p>
+			<p>
 				<b>Query Name:</b>
 				${query.name}
 			</p>
@@ -24,7 +29,9 @@
 				<input style="margin-left:15px;" t:id="delete" t:type="submit"
 					value="Delete" />
 			</p>
-			<p><input t:id="explainPlan" t:type="submit" value="Explain Plan" /> </p>
+			<p>
+				<input t:id="explainPlan" t:type="submit" value="Explain Plan" />
+			</p>
 		</form>
 	</t:block>
 

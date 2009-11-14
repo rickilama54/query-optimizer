@@ -3,12 +3,17 @@ package queryopt.optimizer.query;
 import java.util.List;
 
 import queryopt.entities.Atribute;
+import queryopt.entities.Index;
+import queryopt.entities.SystemInfo;
 
 public class SPJQuery implements Term {
 	private List<Term> projectionTerms;
 	private List<Clause> selectionCnfClauses;
 	private List<Atribute> groupingAtributes;
 	private List<Clause> havingCnfClauses;
+
+	private SystemInfo systemInfo;
+	private List<Index> disabledIndexes;
 
 	public List<Term> getProjectionTerms() {
 		return projectionTerms;
@@ -40,6 +45,22 @@ public class SPJQuery implements Term {
 
 	public void setHavingCnfClauses(List<Clause> havingCnfClauses) {
 		this.havingCnfClauses = havingCnfClauses;
+	}
+
+	public SystemInfo getSystemInfo() {
+		return systemInfo;
+	}
+
+	public void setSystemInfo(SystemInfo systemInfo) {
+		this.systemInfo = systemInfo;
+	}
+
+	public List<Index> getDisabledIndexes() {
+		return disabledIndexes;
+	}
+
+	public void setDisabledIndexes(List<Index> disabledIndexes) {
+		this.disabledIndexes = disabledIndexes;
 	}
 
 }
