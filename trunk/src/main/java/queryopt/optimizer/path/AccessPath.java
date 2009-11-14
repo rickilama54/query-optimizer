@@ -13,6 +13,7 @@ public abstract class AccessPath implements Plan {
 
 	public AccessPath(SingleRelationQuery srquery) throws Exception {
 		super();
+		this.srquery = srquery;
 		this.inputRelation = srquery.getRelation();
 		cost = calcCost(srquery);
 		this.outputRelation = Utils.getOutputRelation(srquery);
@@ -34,18 +35,24 @@ public abstract class AccessPath implements Plan {
 
 	protected abstract String getName();
 
+	protected abstract String getClassSpecificOutput();
+
 	public String getPlanAsTree() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getName());
 		sb.append(" on ");
 		sb.append(this.getInputRelation().getName());
+		String specificOutput = this.getClassSpecificOutput();
+		if (specificOutput != null)
+			sb.append(" " + specificOutput);
 		sb.append(" (");
 		sb.append("cost=" + cost);
 		sb.append(" ");
 		sb.append("rows=" + this.getOutputRelation().getNoOfRows());
 		sb.append(" ");
-		sb.append("width=" + Utils.getRelationSizeInBytes(this.getOutputRelation(), srquery.getSystemInfo()) + " b");
+		sb.append("width=" + (double) Utils.getRelationSizeInBytes(this.getOutputRelation(), srquery.getSystemInfo())
+				/ 1000 + " kB");
 		sb.append(")");
-		return null;
+		return sb.toString();
 	}
 }

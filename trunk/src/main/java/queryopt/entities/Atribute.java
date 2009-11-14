@@ -19,7 +19,7 @@ public class Atribute implements Term {
 	private String name;
 	private boolean pk;
 	private int sizeInBytes;
-	private int distinct;
+	private double distinctPercent;
 	private Relation relation;
 	private Atribute fkAtribute;
 	private String highValue;
@@ -29,24 +29,24 @@ public class Atribute implements Term {
 
 	}
 
-	public Atribute(int atributeId, String name, boolean pk, int sizeInBytes, int distinct, Relation relation) {
+	public Atribute(int atributeId, String name, boolean pk, int sizeInBytes, double distinctPercent, Relation relation) {
 		super();
 		this.atributeId = atributeId;
 		this.name = name;
 		this.pk = pk;
 		this.sizeInBytes = sizeInBytes;
-		this.distinct = distinct;
+		this.distinctPercent = distinctPercent;
 		this.relation = relation;
 	}
 
-	public Atribute(int atributeId, String name, boolean pk, int sizeInBytes, int distinct, Relation relation,
-			Atribute fkAtribute) {
+	public Atribute(int atributeId, String name, boolean pk, int sizeInBytes, double distinctPercent,
+			Relation relation, Atribute fkAtribute) {
 		super();
 		this.atributeId = atributeId;
 		this.name = name;
 		this.pk = pk;
 		this.sizeInBytes = sizeInBytes;
-		this.distinct = distinct;
+		this.distinctPercent = distinctPercent;
 		this.relation = relation;
 		this.fkAtribute = fkAtribute;
 	}
@@ -89,13 +89,13 @@ public class Atribute implements Term {
 		this.sizeInBytes = sizeInBytes;
 	}
 
-	@Column(name = "no_distinct", nullable = false)
-	public int getDistinct() {
-		return distinct;
+	@Column(name = "distinct_percent", nullable = false)
+	public double getDistinctPercent() {
+		return distinctPercent;
 	}
 
-	public void setDistinct(int distinct) {
-		this.distinct = distinct;
+	public void setDistinctPercent(double distinctPercent) {
+		this.distinctPercent = distinctPercent;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

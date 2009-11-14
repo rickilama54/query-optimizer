@@ -18,6 +18,11 @@ public class FullTableScan extends AccessPath {
 	}
 
 	@Override
+	protected String getClassSpecificOutput() {
+		return null;
+	}
+
+	@Override
 	protected long calcCost(SingleRelationQuery srquery) throws Exception {
 		long tablesize = Utils.getRelationSizeInPages(srquery.getRelation(), srquery.getSystemInfo());
 

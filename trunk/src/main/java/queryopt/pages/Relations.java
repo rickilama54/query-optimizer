@@ -104,7 +104,7 @@ public class Relations {
 		Atribute newAtribute = new Atribute();
 		newAtribute.setName("new atribute");
 		newAtribute.setRelation(relation);
-		newAtribute.setDistinct(10);
+		newAtribute.setDistinctPercent(10);
 		newAtribute.setSizeInBytes(10);
 		session.persist(newAtribute);
 		relation.getAtributes().add(newAtribute);
@@ -140,7 +140,7 @@ public class Relations {
 	@CommitAfter
 	IndexAtribute onAddRowFromEditIndexLoop(Index index) {
 		Atribute atribute = index.getRelation().getAtributes().get(0);
-		IndexAtribute ia = new IndexAtribute(0, index, atribute);
+		IndexAtribute ia = new IndexAtribute(index, atribute);
 		session.persist(ia);
 		return ia;
 	}
@@ -165,7 +165,7 @@ public class Relations {
 				if (a.getFkAtribute() != null) {
 					System.out.println(a.getName() + " " + a.getFkAtribute().getName());
 					a.setSizeInBytes(a.getFkAtribute().getSizeInBytes());
-					a.setDistinct(a.getFkAtribute().getDistinct());
+					a.setDistinctPercent(a.getFkAtribute().getDistinctPercent());
 				}
 
 		if (saveAtributes || saveIndexes) {

@@ -14,4 +14,6 @@ public abstract class Clause {
 	protected abstract double calcSelectivity();
 	
 	public abstract List<Atribute> getAtributes();
+	
+	public abstract boolean isJoinClause();
 }

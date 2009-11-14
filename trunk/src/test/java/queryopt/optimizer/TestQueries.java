@@ -2,20 +2,24 @@ package queryopt.optimizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import queryopt.entities.Atribute;
+import queryopt.entities.Index;
+import queryopt.entities.IndexAtribute;
 import queryopt.entities.Relation;
 import queryopt.entities.SystemInfo;
-import queryopt.optimizer.query.Clause;
 import queryopt.optimizer.query.CompareSingleRowClause;
+import queryopt.optimizer.query.Literal;
 import queryopt.optimizer.query.Operator;
 import queryopt.optimizer.query.SPJQuery;
-import queryopt.optimizer.query.Term;
 
 public class TestQueries {
 	SPJQuery query1;
 	SPJQuery query2;
+	SPJQuery query3;
+	SPJQuery query4;
+	SPJQuery query5;
+	SPJQuery query6;
 
 	void setup() {
 		SystemInfo systemInfo = new SystemInfo();
@@ -24,53 +28,107 @@ public class TestQueries {
 		systemInfo.setName("systemInfo1");
 		systemInfo.setPageSizeInBytes(4000);
 		systemInfo.setRidSizeInBytes(4);
-		
+
 		Relation departments = new Relation();
+		departments.setBlockingFactor(1);
+		departments.setIndexes(new ArrayList<Index>());
 		departments.setName("DEPARTMENTS");
 		departments.setNoOfRows(50);
 
-		Atribute deptId = new Atribute(5, "DEPT_ID", true, 4, 50, departments);
-		Atribute deptName = new Atribute(1, "DEPT_NAME", false, 100, 50, departments);
-		Atribute deptSalary = new Atribute(1, "DEPT_AVG_SALARY", false, 10, 1000, departments);
+		Atribute deptId = new Atribute(1, "DEPT_ID", true, 4, 50, departments);
+		Atribute deptName = new Atribute(2, "DEPT_NAME", false, 100, 100, departments);
+		Atribute deptSalary = new Atribute(3, "DEPT_AVG_SALARY", false, 10, 100, departments);
 		departments.setAtributes(Arrays.asList(deptId, deptName, deptSalary));
 
 		Relation employees = new Relation();
+		employees.setBlockingFactor(2);
+		employees.setIndexes(new ArrayList<Index>());
 		employees.setName("EMPLOYEES");
 		employees.setNoOfRows(1000);
 
-		Atribute epmId = new Atribute(1, "EMP_ID", true, 4, 1000, employees);
-		Atribute empName = new Atribute(1, "EMP_NAME", false, 100, 1000, employees);
-		Atribute empSalary = new Atribute(1, "EMP_SALARY", false, 4, 15, employees);
-		Atribute departmentsDeptId = new Atribute(1, "DEPARTMENTS_DEPT_ID", false, 4, 30, employees, deptId);
+		Atribute empId = new Atribute(4, "EMP_ID", true, 4, 1000, employees);
+		Atribute empName = new Atribute(5, "EMP_NAME", false, 100, 100, employees);
+		Atribute empSalary = new Atribute(6, "EMP_SALARY", false, 4, 15, employees);
+		Atribute departmentsDeptId = new Atribute(7, "DEPARTMENTS_DEPT_ID", false, 4, 30, employees, deptId);
 
-		employees.setAtributes(Arrays.asList(epmId, empName, empSalary, departmentsDeptId));
+		empName.setHighValue("ZZZZZZ");
+		empName.setLowValue("A");
+		Index indexEmpId = new Index();
+		indexEmpId.setBTree(true);
+		indexEmpId.setLevels(2);
+		indexEmpId.setName("indexEmpId");
+		indexEmpId.setRelation(employees);
+		indexEmpId.setIndexAtributes(Arrays.asList(new IndexAtribute(indexEmpId, empId)));
+
+		Index indexEmpName = new Index();
+		indexEmpName.setBTree(true);
+		indexEmpName.setLevels(2);
+		indexEmpName.setName("indexEmpName");
+		indexEmpName.setRelation(employees);
+		indexEmpName.setIndexAtributes(Arrays.asList(new IndexAtribute(indexEmpName, empName)));
+
+		employees.setIndexes(Arrays.asList(indexEmpId, indexEmpName));
+		employees.setAtributes(Arrays.asList(empId, empName, empSalary, departmentsDeptId));
 
 		// SELECT EMP_NAME FROM EMPLOYEES
 		query1 = new SPJQuery();
-		List<Term> projectionTerms = new ArrayList<Term>();
-		projectionTerms.add(empName);
-		query1.setProjectionTerms(projectionTerms);
+		query1.getProjectionTerms().add(empName);
+		query1.setSystemInfo(systemInfo);
+		//
+
+		// SELECT EMP_ID FROM EMPLOYEES
+		query5 = new SPJQuery();
+		query5.getProjectionTerms().add(empId);
+		query5.setSystemInfo(systemInfo);
+		//
+
+		// SELECT EMP_ID FROM EMPLOYEES
+		query6 = new SPJQuery();
+		query6.getProjectionTerms().add(empName);
+		query6.getProjectionTerms().add(empSalary);
+		query6.setSystemInfo(systemInfo);
+		//
+
+		// SELECT EMP_NAME FROM EMPLOYEES WHERE EMP_NAME = 'JOHNY'
+		query3 = new SPJQuery();
+		query3.getProjectionTerms().add(empName);
+		query3.setSystemInfo(systemInfo);
+		query3.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.EQ, empName, new Literal("JOHNY")));
+		//
+
+		// SELECT EMP_NAME FROM EMPLOYEES WHERE EMP_NAME >= 'A'
+		query4 = new SPJQuery();
+		query4.getProjectionTerms().add(empName);
+		query4.setSystemInfo(systemInfo);
+		query4.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.GT_EQ, empName, new Literal("A")));
 		//
 
 		// SELECT EMP_NAME, EMP_SALARY, DEPT_NAME, DEPT_SALARY
 		// FROM EMPLOYEES, DEPARTMENTS
 		// WHERE DEPARTMENTS_DEPT_ID = DEPT_ID
 		query2 = new SPJQuery();
+		query2.setSystemInfo(systemInfo);
+		query2.getProjectionTerms().add(empName);
+		query2.getProjectionTerms().add(empSalary);
+		query2.getProjectionTerms().add(deptName);
+		query2.getProjectionTerms().add(deptSalary);
 
-		projectionTerms = new ArrayList<Term>();
-		projectionTerms.add(empName);
-		projectionTerms.add(empSalary);
-		projectionTerms.add(deptName);
-		projectionTerms.add(deptSalary);
-		query2.setProjectionTerms(projectionTerms);
-
-		List<Clause> selectionCnfClauses = new ArrayList<Clause>();
-		selectionCnfClauses.add(new CompareSingleRowClause(Operator.EQ, departmentsDeptId, deptId));
-		query2.setSelectionCnfClauses(selectionCnfClauses);
+		query2.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.EQ, departmentsDeptId, deptId));
 	}
 
-	void test1() throws Exception {
-		Optimizer optimizer = new Optimizer(query1);
+	void test(SPJQuery query) throws Exception {
+		Optimizer optimizer = new Optimizer(query);
 		Plan bestPlan = optimizer.generateBestPlan();
+		System.out.println(bestPlan.getPlanAsTree());
+	}
+
+	public static void main(String[] args) throws Exception {
+		TestQueries testQueries = new TestQueries();
+		testQueries.setup();
+		testQueries.test(testQueries.query1);
+		testQueries.test(testQueries.query3);
+		testQueries.test(testQueries.query4);
+		testQueries.test(testQueries.query5);
+		testQueries.test(testQueries.query6);
 	}
 }

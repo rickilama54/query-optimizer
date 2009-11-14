@@ -13,6 +13,7 @@ public class InClause extends Clause {
 		super();
 		this.operand = operand;
 		this.subQuery = subQuery;
+		this.selectivity = this.calcSelectivity();
 	}
 
 	public Atribute getOperand() {
@@ -42,6 +43,11 @@ public class InClause extends Clause {
 		List<Atribute> list = new ArrayList<Atribute>();
 		list.add(operand);
 		return list;
+	}
+
+	@Override
+	public boolean isJoinClause() {
+		return false;
 	}
 
 }
