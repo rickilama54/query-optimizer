@@ -1,8 +1,10 @@
 package queryopt.optimizer.path;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import queryopt.entities.Atribute;
 import queryopt.entities.Index;
 import queryopt.optimizer.Utils;
 import queryopt.optimizer.query.Clause;
@@ -37,8 +39,6 @@ public class SingleIndexAccessPath extends AccessPath {
 		if (indexes.size() == 0)
 			throw new Exception("No indexes");
 
-		HashMap<Clause, List<Index>> matchingSelectionIndexes = Utils.getMatchingSelectionIndexes(srquery, indexes);
-
 		long cost = Long.MAX_VALUE;
 
 		// Search through index only scans
@@ -46,7 +46,7 @@ public class SingleIndexAccessPath extends AccessPath {
 			long costIndexOnlyScan = Long.MAX_VALUE;
 			if (Utils.areAllAtributesInIndexAndSelectionClauseIsPrefix(index, srquery))
 				costIndexOnlyScan = this.getCostSecondaryIndexOnlyAccess(true, index, srquery);
-			else if (Utils.areAllAtributesInIndexAndSelectionClauseIsNotPrefix(index, srquery))
+			else if (Utils.areAllAtributesInIndex(index, srquery))
 				costIndexOnlyScan = this.getCostSecondaryIndexOnlyAccess(false, index, srquery);
 
 			if (costIndexOnlyScan < cost) {
@@ -55,21 +55,24 @@ public class SingleIndexAccessPath extends AccessPath {
 			}
 		}
 
+		HashMap<Index, HashMap<Clause, Atribute>> matchingSelectionIndexes = Utils.getMatchingSelectionIndexes(srquery,
+				indexes);
 		// Search through primary indexes and secondary indexes
-		for (Clause clause : matchingSelectionIndexes.keySet()) {
-			for (Index index : matchingSelectionIndexes.get(clause)) {
-				long costIndexClause = 0;
+		for (Index index : matchingSelectionIndexes.keySet()) {
+			long costIndexClause = 0;
 
-				if (Utils.isPkIndex(index))
-					costIndexClause = this.getCostPrimaryIndex(clause, index, srquery);
-				else
-					costIndexClause = this.getCostSecondaryIndex(clause, index, srquery);
+			if (Utils.isPkIndex(index))
+				costIndexClause = this
+						.getCostPrimaryIndex(index, matchingSelectionIndexes.get(index).keySet(), srquery);
+			else
+				costIndexClause = this.getCostSecondaryIndex(index, matchingSelectionIndexes.get(index).keySet(),
+						srquery);
 
-				if (costIndexClause < cost) {
-					cost = costIndexClause;
-					this.index = index;
-				}
+			if (costIndexClause < cost) {
+				cost = costIndexClause;
+				this.index = index;
 			}
+
 		}
 		return cost;
 	}
@@ -78,16 +81,21 @@ public class SingleIndexAccessPath extends AccessPath {
 	 * The primary key index is always an ordered index. Only index.getLevels()
 	 * steps to retrieve first record.
 	 */
-	private long getCostPrimaryIndex(Clause clause, Index index, SingleRelationQuery srquery) {
+	private long getCostPrimaryIndex(Index index, Collection<Clause> matchingClauses, SingleRelationQuery srquery) {
+
+		double selectivityOfClauses = 1.0;
+		for (Clause clause : matchingClauses)
+			selectivityOfClauses *= clause.getSelectivity();
+
 		long relationPages = Utils.getRelationSizeInPages(srquery.getRelation(), srquery.getSystemInfo());
 		long cost = index.getLevels();
 
 		// Index Scan
-		cost += (long) Math.ceil(clause.getSelectivity()
+		cost += (long) Math.ceil(selectivityOfClauses
 				* Utils.getNoOfFirstLevelIndexPages(index, srquery.getSystemInfo()));
 
 		// Table scan
-		cost += (long) Math.ceil(clause.getSelectivity() * relationPages);
+		cost += (long) Math.ceil(selectivityOfClauses * relationPages);
 
 		return cost;
 	}
@@ -96,15 +104,20 @@ public class SingleIndexAccessPath extends AccessPath {
 	 * B+ tree index. The table file is not clustered on the indexing attribute.
 	 * Therefore at most selectivity * rows pages are read from disk.
 	 */
-	private long getCostSecondaryIndex(Clause clause, Index index, SingleRelationQuery srquery) {
+	private long getCostSecondaryIndex(Index index, Collection<Clause> matchingClauses, SingleRelationQuery srquery) {
+
+		double selectivityOfClauses = 1.0;
+		for (Clause clause : matchingClauses)
+			selectivityOfClauses *= clause.getSelectivity();
+
 		long rows = srquery.getRelation().getNoOfRows();
 		long cost = index.getLevels();
 
 		// Index Scan
-		cost += (long) Math.ceil(clause.getSelectivity()
+		cost += (long) Math.ceil(selectivityOfClauses
 				* Utils.getNoOfFirstLevelIndexPages(index, srquery.getSystemInfo()));
 		// Table Scan
-		cost += (long) Math.ceil(clause.getSelectivity() * rows);
+		cost += (long) Math.ceil(selectivityOfClauses * rows);
 		return cost;
 	}
 

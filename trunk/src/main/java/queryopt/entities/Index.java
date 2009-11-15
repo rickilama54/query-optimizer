@@ -1,5 +1,6 @@
 package queryopt.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -87,6 +88,14 @@ public class Index {
 
 	public void setIndexAtributes(List<IndexAtribute> indexAtributes) {
 		this.indexAtributes = indexAtributes;
+	}
+
+	@Transient
+	public List<Atribute> getAtributes() {
+		List<Atribute> atributes = new ArrayList<Atribute>();
+		for (IndexAtribute ia : getIndexAtributes())
+			atributes.add(ia.getAtribute());
+		return atributes;
 	}
 
 }

@@ -1,6 +1,7 @@
 package queryopt.optimizer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -67,6 +68,14 @@ public class Utils {
 		return allAtributesInQuery;
 	}
 
+	public static boolean isIndexOnlyScanPossible(Collection<Index> indexes, SingleRelationQuery srquery) {
+		List<Atribute> atributes = Utils.getAllAtributesInSingleRelationQuery(srquery);
+		List<Atribute> atributesInIndexes = new ArrayList<Atribute>();
+		for(Index index : indexes)
+			atributesInIndexes.addAll(index.getAtributes());
+		return atributes.containsAll(atributesInIndexes);
+	}
+
 	/*
 	 * // TODO private static Relation performSelection(Relation relation,
 	 * List<Clause> selectionClauses) { return null; }
@@ -75,11 +84,70 @@ public class Utils {
 	 * relation, SPJQuery query) { return null; }
 	 */
 
-	// Treba i nesto kako project out atributes after Join
-	public static HashMap<Clause, List<Index>> getMatchingSelectionIndexes(SingleRelationQuery srquery, List<Index> indexes)
-			throws Exception {
-		HashMap<Clause, List<Index>> matchingSelectionIndexes = new HashMap<Clause, List<Index>>();
+	public static HashMap<Index, List<Atribute>> getMatchingIndexes(List<Index> indexes, SingleRelationQuery srquery) {
+		HashMap<Index, List<Atribute>> matchingIndexes = new HashMap<Index, List<Atribute>>();
+		List<Atribute> atributes = Utils.getAllAtributesInSingleRelationQuery(srquery);
 
+		for (Index index : indexes) {
+			boolean found = false;
+			int atributeIndex = 0;
+			List<Atribute> indexAtributes = index.getAtributes();
+			do {
+				found = false;
+				for (Atribute atribute : atributes)
+					if (indexAtributes.get(atributeIndex).equals(atribute)) {
+						found = true;
+						atributeIndex++;
+						if (!matchingIndexes.containsKey(index))
+							matchingIndexes.put(index, new ArrayList<Atribute>());
+						matchingIndexes.get(index).add(atribute);
+						break;
+					}
+			} while (found);
+		}
+		return matchingIndexes;
+	}
+
+	public static HashMap<Index, List<Atribute>> getMinimalSetIndexesForAtributes(List<Atribute> atributes,
+			List<Index> candidateIndexes) {
+		HashMap<Index, List<Atribute>> indexes = new HashMap<Index, List<Atribute>>();
+
+		for (Index index : candidateIndexes) {
+			boolean found;
+			int atributeIndex = 0;
+			List<Atribute> indexAtributes = index.getAtributes();
+			do {
+				found = false;
+				for (Atribute atribute : atributes)
+					if (atributes.contains(indexAtributes.get(atributeIndex))) {
+						found = true;
+						atributeIndex++;
+						if (!indexes.containsKey(index))
+							indexes.put(index, new ArrayList<Atribute>());
+						indexes.get(index).add(atribute);
+						break;
+					}
+			} while (found);
+		}
+
+		// Find and remove redundant indexes
+		List<Index> redundantIndexes = new ArrayList<Index>();
+		for (Index index1 : indexes.keySet())
+			for (Index index2 : indexes.keySet())
+				if (!index2.equals(index1) && indexes.get(index1).containsAll(indexes.get(index2)))
+					redundantIndexes.add(index2);
+		for (Index index : redundantIndexes)
+			indexes.remove(index);
+		//
+
+		return indexes;
+	}
+
+	// Treba i nesto kako project out atributes after Join
+	public static HashMap<Index, HashMap<Clause, Atribute>> getMatchingSelectionIndexes(SingleRelationQuery srquery,
+			List<Index> indexes) throws Exception {
+
+		HashMap<Clause, Atribute> clausesAtributes = new HashMap<Clause, Atribute>();
 		for (Clause clause : srquery.getSelectionCnfClauses()) {
 			if (clause instanceof CompareSingleRowClause) {
 				CompareSingleRowClause csrclause = (CompareSingleRowClause) clause;
@@ -88,17 +156,30 @@ public class Utils {
 					atribute = (Atribute) csrclause.getOperand2();
 				else if (csrclause.getOperand1() instanceof Atribute && csrclause.getOperand2() instanceof Literal)
 					atribute = (Atribute) csrclause.getOperand1();
-
-				if (atribute != null)
-					for (Index index : indexes)
-						if (atribute.equals(index.getIndexAtributes().get(0))) {
-							if (!matchingSelectionIndexes.containsKey(clause))
-								matchingSelectionIndexes.put(clause, new ArrayList<Index>());
-							matchingSelectionIndexes.get(clause).add(index);
-						}
+				clausesAtributes.put(clause, atribute);
 			} else
 				throw new Exception("Not implemented yet");
 		}
+
+		HashMap<Index, HashMap<Clause, Atribute>> matchingSelectionIndexes = new HashMap<Index, HashMap<Clause, Atribute>>();
+		for (Index index : indexes) {
+			boolean found;
+			int atributeIndex = 0;
+			List<Atribute> indexAtributes = index.getAtributes();
+			do {
+				found = false;
+				for (Clause clause : clausesAtributes.keySet())
+					if (indexAtributes.get(atributeIndex).equals(clausesAtributes.get(clause))) {
+						found = true;
+						atributeIndex++;
+						if (!matchingSelectionIndexes.containsKey(index))
+							matchingSelectionIndexes.put(index, new HashMap<Clause, Atribute>());
+						matchingSelectionIndexes.get(index).put(clause, clausesAtributes.get(clause));
+						break;
+					}
+			} while (found);
+		}
+
 		return matchingSelectionIndexes;
 	}
 
@@ -145,7 +226,7 @@ public class Utils {
 		return (long) Math.ceil(rows * blockingFactor * ridSize / pageSize);
 	}
 
-	public static boolean areAllAtributesInIndexAndSelectionClauseIsNotPrefix(Index index, SingleRelationQuery srquery) {
+	public static boolean areAllAtributesInIndex(Index index, SingleRelationQuery srquery) {
 		List<Atribute> allAtributesInQuery = getAllAtributesInSingleRelationQuery(srquery);
 
 		for (Atribute a : allAtributesInQuery) {
