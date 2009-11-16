@@ -60,7 +60,7 @@ public class SPJQueryBuilder {
 		return ast;
 	}
 
-	private SPJQuery buildSpjQueryFromAst(CommonTree ast) {
+	private SPJQuery buildSpjQueryFromAst(CommonTree ast) throws Exception {
 		if (ast == null)
 			throw new NullPointerException("ast");
 
@@ -84,10 +84,10 @@ public class SPJQueryBuilder {
 				buildWhere(child, query);
 				break;
 			default:
-				return null;
+				throw new Exception("Should not be here child.getType()=" + child.getType());
 			}
 		}
-		return null;
+		return query;
 	}
 
 	private void buildSelect(CommonTree selectTree, SPJQuery query) {
@@ -144,7 +144,7 @@ public class SPJQueryBuilder {
 		return relationsInFrom;
 	}
 
-	private void buildWhere(CommonTree whereTree, SPJQuery query) {
+	private void buildWhere(CommonTree whereTree, SPJQuery query) throws Exception {
 		for (Object child : whereTree.getChildren()) {
 			switch (((CommonTree) child).getType()) {
 			case SelectQueryGrammarParser.AND:
@@ -162,7 +162,7 @@ public class SPJQueryBuilder {
 		}
 	}
 
-	private void buildWhereBlock(CommonTree whereBlockTree, SPJQuery query) {
+	private void buildWhereBlock(CommonTree whereBlockTree, SPJQuery query) throws Exception {
 		switch (whereBlockTree.getType()) {
 		case SelectQueryGrammarParser.OP:
 			Operator operator = Operator.EQ;
@@ -244,12 +244,6 @@ public class SPJQueryBuilder {
 					a = relationsAtributes.get(r).get(atributeName);
 				else
 					throw new IllegalArgumentException("Atribute name " + atributeName + " is ambiguous");
-		for (String rname : relationsAtributes.keySet()) {
-			System.out.println("rel:" + rname);
-			for (String aname : relationsAtributes.get(rname).keySet()) {
-				System.out.print("a:" + aname + " ");
-			}
-		}
 		if (a == null)
 			throw new IllegalArgumentException("Atribute name " + atributeName + " is not defined");
 		return a;
