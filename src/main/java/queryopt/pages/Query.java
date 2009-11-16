@@ -10,6 +10,7 @@ import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Form;
+import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.hibernate.Session;
@@ -189,13 +190,16 @@ public class Query {
 
 	@SuppressWarnings("unchecked")
 	public List<Schema> getExecutionPlans() {
-		return session.createCriteria(ExecutionPlan.class).list();
+		return session.createCriteria(ExecutionPlan.class).add(Restrictions.eq("query.queryId", query.getQueryId()))
+				.list();
 	}
 
 	@CommitAfter
 	public ExecutionPlan onAddRowFromExecutionPlansLoop() {
 		ExecutionPlan ep = new ExecutionPlan();
 		ep.setQuery(query);
+		ep.setError(false);
+		ep.setMessage("not yet executed");
 		ep.setExecutionPlanText(" ");
 		ep.setSystemInfo(query.getSchema().getDefaultSystemInfo());
 		session.persist(ep);
@@ -210,4 +214,9 @@ public class Query {
 	public String getEditValue() {
 		return executionPlansEdit ? "save" : "edit";
 	}
+
+	Object onActionFromExecutionPlanView() {
+		return ExecutionPlanView.class;
+	}
+
 }

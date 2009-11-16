@@ -1,32 +1,71 @@
 <html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
 	xmlns:p="tapestry:parameter">
+	<t:zone t:id="mainZone">
+		<h2 style="margin-left:30%">Execution Plan</h2>
 
-	<h3>System Info</h3>
-	<table class="nostyle">
-		<tr>
-			<td class="nostyle">Name:</td>
-			<td class="nostyle">${executionPlan.systemInfo.name}</td>
 
-		</tr>
-		<tr>
-			<td class="nostyle">Memory Size:</td>
-			<td class="nostyle">${MemorySizeKilobytes}</td>
-		</tr>
-		<tr>
-			<td class="nostyle">Page Size:</td>
-			<td class="nostyle">${PageSizeKilobytes}</td>
-		</tr>
-		<tr>
-			<td class="nostyle">
-				Blocking Factor
-				<br />
-				for Index Leaves:
-			</td>
-			<td class="nostyle">${executionPlan.systemInfo.blockingFactorIndexFirstLevelRows}</td>
-		</tr>
-		<td class="nostyle">RID size:</td>
-		<td class="nostyle">${RIDSizeKilobytes}</td>
-		<tr>
-		</tr>
-	</table>
+
+		<div t:type="zone" style="position:absolute; left:80%;">
+			<form t:type="form" zone="executionPlanZone">
+				<a href="#" t:type="ActionLink" zone="mainZone" t:id="calculateExecutionPlan">Calculate
+					Execution Plan</a>
+			</form>
+		</div>
+
+		<div style="position:absolute; left:40%; margin-top:20px">
+			<div>
+				Message:
+				<t:unless test="executionPlan.error">
+					<span style="color:green;">${executionPlan.message}</span>
+					<t:parameter name="else">
+						<span style="color:red;">${executionPlan.message}</span>
+					</t:parameter>
+				</t:unless>
+			</div>
+			<p>
+				<div>
+					ExecutionPlan:
+					<p> ${executionPlan.executionPlanText}</p>
+				</div>
+			</p>
+		</div>
+
+		<div>
+			<h3>Query:</h3>
+			${executionPlan.query.text}
+		</div>
+
+
+		<div style="margin-top:20px">
+			<table style="width:150px">
+				<th colspan="2">System Info</th>
+				<tr>
+					<td>Name:</td>
+					<td>${executionPlan.systemInfo.name}</td>
+
+				</tr>
+				<tr>
+					<td>Memory Size:</td>
+					<td>${MemorySizeKilobytes}</td>
+				</tr>
+				<tr>
+					<td>Page Size:</td>
+					<td>${PageSizeKilobytes}</td>
+				</tr>
+				<tr>
+					<td>
+						Blocking Factor
+						<br />
+						for Index Leaves:
+					</td>
+					<td>${executionPlan.systemInfo.blockingFactorIndexFirstLevelRows}</td>
+				</tr>
+				<td>RID size:</td>
+				<td>${RIDSizeKilobytes}</td>
+				<tr>
+				</tr>
+			</table>
+		</div>
+	</t:zone>
 </html>
+

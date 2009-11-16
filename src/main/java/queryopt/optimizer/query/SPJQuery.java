@@ -21,6 +21,7 @@ public class SPJQuery implements Term {
 		selectionCnfClauses = new ArrayList<Clause>();
 		groupingAtributes = new ArrayList<Atribute>();
 		havingCnfClauses = new ArrayList<Clause>();
+		disabledIndexes = new ArrayList<Index>();
 	}
 
 	public List<Term> getProjectionTerms() {

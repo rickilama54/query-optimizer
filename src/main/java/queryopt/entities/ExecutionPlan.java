@@ -18,6 +18,8 @@ import javax.persistence.Table;
 @Table(name = "execution_plans", schema = "public")
 public class ExecutionPlan {
 	private int executionPlanId;
+	private boolean error;
+	private String message;
 	private String executionPlanText;
 	private SystemInfo systemInfo;
 	private Query query;
@@ -32,6 +34,24 @@ public class ExecutionPlan {
 
 	public void setExecutionPlanId(int executionPlanId) {
 		this.executionPlanId = executionPlanId;
+	}
+
+	@Column(name = "error", nullable = false)
+	public boolean isError() {
+		return error;
+	}
+
+	public void setError(boolean error) {
+		this.error = error;
+	}
+
+	@Column(name = "message", nullable = false)
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	@Column(name = "execution_plan_text", nullable = false)

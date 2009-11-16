@@ -34,8 +34,9 @@
 				<li>
 					<a href="#" rel="#default" class="selected">Execution Plans</a>
 				</li>
+
 				<li t:type="Loop" source="executionPlans" value="executionPlan">
-					<a href="#" t:type="PageLink" page="ExecutionPlanView"
+					<a href="#" t:type="ActionLink" t:id="ExecutionPlanView"
 						context="executionPlan.executionPlanId" rel="countrycontainer">
 						${executionPlan.SystemInfo.name}</a>
 				</li>
@@ -115,13 +116,4 @@
 		</form>
 	</t:block>
 
-	<script type="text/javascript">
-
-		var countries=new ddajaxtabs("countrytabs",
-		"countrydivcontainer")
-		countries.setpersist(true)
-		countries.setselectedClassTarget("link") //"link" or "linkparent"
-		countries.init()
-
-        </script>
 </html>
