@@ -24,7 +24,7 @@ public class Optimizer {
 	}
 
 	public Plan generateBestPlan() throws Exception {
-		
+
 		singleRelationQueries = Utils.getSingleRelationQueriesFromSPJQuery(query);
 		singleRelationAccessPathsWithRemainingAccessPaths = generateSingleRelationPlans(singleRelationQueries);
 
@@ -66,10 +66,10 @@ public class Optimizer {
 					accessPath = singleIndex;
 				}
 				MultipleIndexAccessPath multipleIndex = new MultipleIndexAccessPath(srquery);
-				//if (multipleIndex.getCost() < cost) {
+				if (multipleIndex.getCost() < cost) {
 					cost = multipleIndex.getCost();
 					accessPath = multipleIndex;
-				//}
+				}
 			}
 			singleRelationAccessPaths.put(accessPath, new ArrayList<Relation>());
 		}

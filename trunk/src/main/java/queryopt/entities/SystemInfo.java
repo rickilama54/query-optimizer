@@ -6,12 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "system_infos", schema = "public")
 public class SystemInfo {
 	private int systemInfoId;
-	private String name;
 	private long memorySizeInBytes;
 	private int pageSizeInBytes;
 	private int blockingFactorIndexFirstLevelRows;
@@ -28,13 +28,10 @@ public class SystemInfo {
 		this.systemInfoId = systemInfoId;
 	}
 
-	@Column(name = "name", nullable = false)
+	@Transient
 	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+		return "mem: " + (double) this.getMemorySizeInBytes() / 1000000 + "MB, page:" + (double) this.pageSizeInBytes
+				/ 1000 + "K, block:" + this.blockingFactorIndexFirstLevelRows + ", rid:" + this.ridSizeInBytes;
 	}
 
 	@Column(name = "memory_size_bytes", nullable = false)

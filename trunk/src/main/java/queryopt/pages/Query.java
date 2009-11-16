@@ -16,7 +16,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
 import queryopt.components.Layout;
+import queryopt.entities.ExecutionPlan;
 import queryopt.entities.Relation;
+import queryopt.entities.Schema;
 import queryopt.model.SessionData;
 import queryopt.optimizer.SPJQueryBuilder;
 
@@ -58,7 +60,7 @@ public class Query {
 	private boolean isParse;
 	private boolean isEdit;
 	private boolean isDelete;
-	private boolean explainPlan;
+	private boolean editExecutionPlan;
 
 	@Persist
 	private boolean isNew;
@@ -104,7 +106,11 @@ public class Query {
 	}
 
 	void onSelectedFromExplainPlan() {
-		explainPlan = true;
+		editExecutionPlan = true;
+	}
+
+	void onSelectedFromEditExecutionPlan() {
+		editExecutionPlan = true;
 	}
 
 	void onActionFromBack() {
@@ -146,8 +152,9 @@ public class Query {
 			save();
 			return Index.class;
 		}
-		if (explainPlan) {
-
+		if (editExecutionPlan) {
+			executionPlansEdit = !executionPlansEdit;
+			save();
 		}
 		return activeBlock;
 	}
@@ -159,5 +166,48 @@ public class Query {
 	@SuppressWarnings("unchecked")
 	private List<Relation> getRelations() {
 		return session.createCriteria(Relation.class).list();
+	}
+
+	@SuppressWarnings("unused")
+	@Property
+	private ExecutionPlan executionPlan;
+
+	@Property
+	@Persist
+	private boolean executionPlansEdit;
+
+	@SuppressWarnings("unused")
+	@Property
+	@Persist
+	private List<SystemInfos> systemInfos;
+
+	@SuppressWarnings("unchecked")
+	void setupRender() {
+		executionPlansEdit = false;
+		systemInfos = session.createCriteria(queryopt.entities.SystemInfo.class).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Schema> getExecutionPlans() {
+		return session.createCriteria(ExecutionPlan.class).list();
+	}
+
+	@CommitAfter
+	public ExecutionPlan onAddRowFromExecutionPlansLoop() {
+		ExecutionPlan ep = new ExecutionPlan();
+		ep.setQuery(query);
+		ep.setExecutionPlanText(" ");
+		ep.setSystemInfo(query.getSchema().getDefaultSystemInfo());
+		session.persist(ep);
+		return ep;
+	}
+
+	@CommitAfter
+	public void onRemoveRowFromExecutionPlansLoop(ExecutionPlan executionPlan) {
+		session.delete(executionPlan);
+	}
+
+	public String getEditValue() {
+		return executionPlansEdit ? "save" : "edit";
 	}
 }
