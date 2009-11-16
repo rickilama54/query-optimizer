@@ -48,13 +48,11 @@ public class SystemInfos {
 
 	@CommitAfter
 	public SystemInfo onAddRowFromSchemasLoop() {
-		int systemInfosCount = session.createCriteria(queryopt.entities.Schema.class).list().size();
 		SystemInfo systemInfo = new SystemInfo();
 		systemInfo.setMemorySizeInBytes(MEMORY_SIZE_BYTES);
 		systemInfo.setBlockingFactorIndexFirstLevelRows(BLOCKING_FACTOR_INDEX_FIRST_LEVEL_ROWS);
 		systemInfo.setPageSizeInBytes(PAGE_SIZE_BYTES);
 		systemInfo.setRidSizeInBytes(RID_SIZE_BYTES);
-		systemInfo.setName("new system info " + systemInfosCount);
 		session.persist(systemInfo);
 		return systemInfo;
 	}

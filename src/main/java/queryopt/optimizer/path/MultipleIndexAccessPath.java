@@ -29,10 +29,10 @@ public class MultipleIndexAccessPath extends AccessPath {
 	@Override
 	protected String getClassSpecificOutput() {
 		StringBuilder specificOutput = new StringBuilder();
-		specificOutput.append("using ");
+		specificOutput.append("using indexes:");
 		for (Index index : ridIndexes)
 			specificOutput.append(index.getName() + ", ");
-		specificOutput.replace(specificOutput.length() - 3, specificOutput.length() - 1, "");
+		specificOutput.replace(specificOutput.length() - 2, specificOutput.length() - 1, "");
 		return specificOutput.toString();
 	}
 
@@ -112,7 +112,7 @@ public class MultipleIndexAccessPath extends AccessPath {
 
 			List<Index> repeatingIndexes = new ArrayList<Index>();
 			for (Index index : fullIndexScanIndexes.keySet())
-				if (fullIndexScanIndexes.containsKey(index))
+				if (ridIndexesIntersection.containsKey(index))
 					repeatingIndexes.add(index);
 			for (Index index : repeatingIndexes)
 				fullIndexScanIndexes.remove(index);

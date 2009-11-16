@@ -30,7 +30,7 @@ public class SingleIndexAccessPath extends AccessPath {
 
 	@Override
 	protected String getClassSpecificOutput() {
-		return "using " + this.getIndex().getName();
+		return "using index:" + this.getIndex().getName();
 	}
 
 	@Override

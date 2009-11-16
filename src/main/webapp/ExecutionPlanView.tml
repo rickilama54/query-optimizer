@@ -1,0 +1,32 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
+	xmlns:p="tapestry:parameter">
+
+	<h3>System Info</h3>
+	<table class="nostyle">
+		<tr>
+			<td class="nostyle">Name:</td>
+			<td class="nostyle">${executionPlan.systemInfo.name}</td>
+
+		</tr>
+		<tr>
+			<td class="nostyle">Memory Size:</td>
+			<td class="nostyle">${MemorySizeKilobytes}</td>
+		</tr>
+		<tr>
+			<td class="nostyle">Page Size:</td>
+			<td class="nostyle">${PageSizeKilobytes}</td>
+		</tr>
+		<tr>
+			<td class="nostyle">
+				Blocking Factor
+				<br />
+				for Index Leaves:
+			</td>
+			<td class="nostyle">${executionPlan.systemInfo.blockingFactorIndexFirstLevelRows}</td>
+		</tr>
+		<td class="nostyle">RID size:</td>
+		<td class="nostyle">${RIDSizeKilobytes}</td>
+		<tr>
+		</tr>
+	</table>
+</html>

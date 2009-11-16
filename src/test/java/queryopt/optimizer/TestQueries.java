@@ -25,7 +25,6 @@ public class TestQueries {
 		SystemInfo systemInfo = new SystemInfo();
 		systemInfo.setBlockingFactorIndexFirstLevelRows(2);
 		systemInfo.setMemorySizeInBytes(4000000);
-		systemInfo.setName("systemInfo1");
 		systemInfo.setPageSizeInBytes(4000);
 		systemInfo.setRidSizeInBytes(4);
 
@@ -76,18 +75,17 @@ public class TestQueries {
 		query1.setSystemInfo(systemInfo);
 		//
 
-		// SELECT EMP_ID FROM EMPLOYEES
-		query5 = new SPJQuery();
-		query5.getProjectionTerms().add(empId);
-		query5.setSystemInfo(systemInfo);
-		//
+		// SELECT EMP_NAME, EMP_SALARY, DEPT_NAME, DEPT_SALARY
+		// FROM EMPLOYEES, DEPARTMENTS
+		// WHERE DEPARTMENTS_DEPT_ID = DEPT_ID
+		query2 = new SPJQuery();
+		query2.setSystemInfo(systemInfo);
+		query2.getProjectionTerms().add(empName);
+		query2.getProjectionTerms().add(empSalary);
+		query2.getProjectionTerms().add(deptName);
+		query2.getProjectionTerms().add(deptSalary);
 
-		// SELECT EMP_ID FROM EMPLOYEES
-		query6 = new SPJQuery();
-		query6.getProjectionTerms().add(empName);
-		query6.getProjectionTerms().add(empSalary);
-		query6.setSystemInfo(systemInfo);
-		//
+		query2.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.EQ, departmentsDeptId, deptId));
 
 		// SELECT EMP_NAME FROM EMPLOYEES WHERE EMP_NAME = 'JOHNY'
 		query3 = new SPJQuery();
@@ -103,17 +101,18 @@ public class TestQueries {
 		query4.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.GT_EQ, empName, new Literal("A")));
 		//
 
-		// SELECT EMP_NAME, EMP_SALARY, DEPT_NAME, DEPT_SALARY
-		// FROM EMPLOYEES, DEPARTMENTS
-		// WHERE DEPARTMENTS_DEPT_ID = DEPT_ID
-		query2 = new SPJQuery();
-		query2.setSystemInfo(systemInfo);
-		query2.getProjectionTerms().add(empName);
-		query2.getProjectionTerms().add(empSalary);
-		query2.getProjectionTerms().add(deptName);
-		query2.getProjectionTerms().add(deptSalary);
+		// SELECT EMP_ID FROM EMPLOYEES
+		query5 = new SPJQuery();
+		query5.getProjectionTerms().add(empId);
+		query5.setSystemInfo(systemInfo);
+		//
 
-		query2.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.EQ, departmentsDeptId, deptId));
+		// SELECT EMP_NAME, EMP_SALARY FROM EMPLOYEES
+		query6 = new SPJQuery();
+		query6.getProjectionTerms().add(empName);
+		query6.getProjectionTerms().add(empSalary);
+		query6.setSystemInfo(systemInfo);
+		//
 	}
 
 	void test(SPJQuery query) throws Exception {
@@ -126,9 +125,11 @@ public class TestQueries {
 		TestQueries testQueries = new TestQueries();
 		testQueries.setup();
 		testQueries.test(testQueries.query1);
+
 		testQueries.test(testQueries.query3);
 		testQueries.test(testQueries.query4);
 		testQueries.test(testQueries.query5);
 		testQueries.test(testQueries.query6);
+
 	}
 }

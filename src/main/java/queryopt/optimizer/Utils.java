@@ -71,9 +71,9 @@ public class Utils {
 	public static boolean isIndexOnlyScanPossible(Collection<Index> indexes, SingleRelationQuery srquery) {
 		List<Atribute> atributes = Utils.getAllAtributesInSingleRelationQuery(srquery);
 		List<Atribute> atributesInIndexes = new ArrayList<Atribute>();
-		for(Index index : indexes)
+		for (Index index : indexes)
 			atributesInIndexes.addAll(index.getAtributes());
-		return atributes.containsAll(atributesInIndexes);
+		return atributesInIndexes.containsAll(atributes);
 	}
 
 	/*
@@ -127,7 +127,7 @@ public class Utils {
 						indexes.get(index).add(atribute);
 						break;
 					}
-			} while (found);
+			} while (found && atributeIndex < indexAtributes.size());
 		}
 
 		// Find and remove redundant indexes
@@ -177,7 +177,7 @@ public class Utils {
 						matchingSelectionIndexes.get(index).put(clause, clausesAtributes.get(clause));
 						break;
 					}
-			} while (found);
+			} while (found && atributeIndex < indexAtributes.size());
 		}
 
 		return matchingSelectionIndexes;
@@ -222,8 +222,12 @@ public class Utils {
 		int rows = index.getRelation().getNoOfRows();
 		int blockingFactor = systemInfo.getBlockingFactorIndexFirstLevelRows();
 		int ridSize = systemInfo.getRidSizeInBytes();
+		long atributesSize = 0;
+		for (Atribute atribute : index.getAtributes())
+			atributesSize += atribute.getSizeInBytes();
 		int pageSize = systemInfo.getPageSizeInBytes();
-		return (long) Math.ceil(rows * blockingFactor * ridSize / pageSize);
+		long leafSize = ridSize + atributesSize;
+		return (long) Math.ceil(rows * blockingFactor * leafSize / pageSize);
 	}
 
 	public static boolean areAllAtributesInIndex(Index index, SingleRelationQuery srquery) {

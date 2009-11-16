@@ -1,0 +1,92 @@
+/* ######### CSS for Shade Tabs. Remove if not using ######### */
+
+.shadetabs{
+    	clear: none;
+        padding: 3px 0;
+        margin-left: 0;
+        margin-top: 0;
+        margin-right: 5px;
+        margin-bottom: 0;
+        padding-top:5px;
+        list-style-type: none;
+        text-align: right; /*set to left, center, or right to align the menu as desired*/
+}
+
+.shadetabs li{
+        display: inline;
+        margin: 0;
+}
+
+.shadetabs li a{
+        text-decoration: none;
+        position: relative;
+        z-index: 1;
+        padding: 3px 7px;
+        margin-right: 2px;
+        margin-left: 0px;
+        margin-bottom: 0px;
+        margin-top:0px;
+        border: 1px solid #778;
+        color: #2d2b2b;
+        background: #edeff4;
+}
+
+.shadetabs li a:visited{
+        color: #2d2b2b;
+}
+
+.shadetabs li a:hover{
+        text-decoration: none;
+         color: #000;
+         background: #6B9ABC;
+
+}
+
+.shadetabs li a.selected{ /*selected main tab style */
+        position: relative;
+        top: 1px;
+}
+
+.shadetabs li a.selected{ /*selected main tab style */
+        background-image: url(shadeactive.gif);
+        border-bottom-color: white;
+}
+
+.shadetabs li a.selected:hover{ /*selected main tab style */
+        text-decoration: none;
+} 
+.content{
+        border-top:1px solid #666;
+        margin-left: 5px;
+        margin-top: 0;
+        margin-right: 7px;
+        margin-bottom: 0;
+        padding:0;
+        min-width:650px;
+        min-height:380px;
+        text-align:left;
+}
+
+
+.content  a:link {
+	text-decoration: none;	
+	color:#324E63;
+}
+
+.content a:visited {
+	text-decoration: none;
+	color:#324E63;
+}
+
+.content a:hover {
+	text-decoration: none;
+	color:#6B9ABC;
+}
+
+.content a:active {
+	text-decoration: none;
+}
+
+.greyText{
+	color:#666;
+}

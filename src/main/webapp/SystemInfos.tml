@@ -20,11 +20,13 @@
 							<td>${systemInfo.ridSizeInBytes}</td>
 						</t:unless>
 						<t:if test="systemInfosEdit">
+							<td />
 							<td>
-								<input t:type="textField" value="systemInfo.name" />
-							</td>
-							<td>
-								<span><input t:type="textField" value="systemInfo.memorySizeInBytes" style="width:80px;"/> B</span>
+								<span>
+									<input t:type="textField" value="systemInfo.memorySizeInBytes"
+										style="width:80px;" />
+									B
+								</span>
 							</td>
 							<td>
 								<input t:type="textField" value="systemInfo.pageSizeInBytes" />

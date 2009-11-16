@@ -29,9 +29,53 @@
 				<input style="margin-left:15px;" t:id="delete" t:type="submit"
 					value="Delete" />
 			</p>
-			<p>
-				<input t:id="explainPlan" t:type="submit" value="Explain Plan" />
-			</p>
+			<p />
+			<ul id="countrytabs" class="shadetabs">
+				<li>
+					<a href="#" rel="#default" class="selected">Execution Plans</a>
+				</li>
+				<li t:type="Loop" source="executionPlans" value="executionPlan">
+					<a href="#" t:type="PageLink" page="ExecutionPlanView"
+						context="executionPlan.executionPlanId" rel="countrycontainer">
+						${executionPlan.SystemInfo.name}</a>
+				</li>
+			</ul>
+			<div id="countrydivcontainer" class="content">
+
+				<h2 style="margin-top:30px;">Execution Plans</h2>
+				<table>
+					<th>System Info</th>
+					<th>Disabled Indexes</th>
+					<th>delete</th>
+					<tr t:type="AjaxFormLoop" t:id="ExecutionPlansLoop" source="executionPlans"
+						value="executionPlan">
+						<t:submitnotifier>
+							<t:unless test="executionPlansEdit">
+								<td>${executionPlan.systemInfo.name}</td>
+								<td>disabled indexes</td>
+							</t:unless>
+							<t:if test="executionPlansEdit">
+								<td>
+									<t:selectObject list="systemInfos" value="executionPlan.systemInfo"
+										labelField="literal:name" blankOption="NEVER" />
+								</td>
+								<td>disabled indexes</td>
+							</t:if>
+							<td>
+								<a t:type="removerowlink" id="prop:executionPlan.executionPlanId">delete</a>
+							</td>
+						</t:submitnotifier>
+						<t:parameter name="addRow">
+							<td colspan="5" style="text-align: right">
+								<t:addrowlink>Add a row</t:addrowlink>
+							</td>
+						</t:parameter>
+					</tr>
+				</table>
+				<p>
+					<input t:type="submit" t:id="editExecutionPlan" value="prop:editValue" />
+				</p>
+			</div>
 		</form>
 	</t:block>
 
@@ -70,4 +114,14 @@
 			</p>
 		</form>
 	</t:block>
+
+	<script type="text/javascript">
+
+		var countries=new ddajaxtabs("countrytabs",
+		"countrydivcontainer")
+		countries.setpersist(true)
+		countries.setselectedClassTarget("link") //"link" or "linkparent"
+		countries.init()
+
+        </script>
 </html>

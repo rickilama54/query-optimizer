@@ -13,6 +13,7 @@ import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.Request;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -41,6 +42,11 @@ public class Layout {
 	@SuppressWarnings("unused")
 	@Property
 	private Query query;
+
+	@SuppressWarnings("unused")
+	@Property
+	@Inject
+	private Request request;
 
 	@Inject
 	private Session session;
