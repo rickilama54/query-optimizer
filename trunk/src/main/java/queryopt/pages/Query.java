@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.EventContext;
-import org.apache.tapestry5.ajax.MultiZoneUpdate;
 import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
@@ -13,10 +12,11 @@ import org.apache.tapestry5.corelib.components.Form;
 import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.Request;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import queryopt.components.Layout;
+import queryopt.components.ExecutionPlanView;
 import queryopt.entities.ExecutionPlan;
 import queryopt.entities.Relation;
 import queryopt.entities.Schema;
@@ -24,6 +24,11 @@ import queryopt.model.SessionData;
 import queryopt.optimizer.SPJQueryBuilder;
 
 public class Query {
+	@SuppressWarnings("unused")
+	@Property
+	@Inject
+	private Request request;
+
 	@Property
 	@Persist
 	private queryopt.entities.Query query;
@@ -46,7 +51,10 @@ public class Query {
 	private Block activeBlock;
 
 	@InjectComponent
-	private Layout layout;
+	private Zone executionPlansZone;
+
+	//@InjectComponent
+	//private Layout layout;
 
 	@InjectComponent
 	private Form editForm;
@@ -118,7 +126,20 @@ public class Query {
 		activeBlock = viewBlock;
 	}
 
-	Object onSuccess() {
+	Object onSuccessFromViewForm() {
+		if (isEdit) {
+			System.out.println("isEdit:" + isEdit);
+			activeBlock = editBlock;
+		}
+		if (isDelete) {
+			session.delete(query);
+			save();
+			return Index.class;
+		}
+		return activeBlock;
+	}
+
+	Object onSuccessFromEditForm() {
 		if (isSave) {
 			if (isNew
 					&& session.createCriteria(queryopt.entities.Query.class).add(
@@ -130,13 +151,12 @@ public class Query {
 				activeBlock = viewBlock;
 				session.persist(query);
 				save();
+				return Query.class;
 			}
-			return new MultiZoneUpdate("mainzone", activeBlock).add("queriesZone", layout.getQueriesZone().getBody());
-		}
-		if (isEdit) {
-			activeBlock = editBlock;
+			// return new MultiZoneUpdate("mainzone", activeBlock).add("queriesZone", layout.getQueriesZone().getBody());
 		}
 		if (isParse) {
+			System.out.println("isParse:" + isParse);
 			SPJQueryBuilder queryBuilder = new SPJQueryBuilder(getRelations());
 			try {
 				queryBuilder.parse(query.getText());
@@ -148,16 +168,15 @@ public class Query {
 			}
 			activeBlock = editBlock;
 		}
-		if (isDelete) {
-			session.delete(query);
-			save();
-			return Index.class;
-		}
+		return activeBlock;
+	}
+
+	Object onSuccessFromExecutionPlansForm() {
 		if (editExecutionPlan) {
 			executionPlansEdit = !executionPlansEdit;
 			save();
 		}
-		return activeBlock;
+		return executionPlansZone.getBody();
 	}
 
 	@CommitAfter

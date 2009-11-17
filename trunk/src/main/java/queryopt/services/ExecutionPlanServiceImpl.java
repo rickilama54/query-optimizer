@@ -2,7 +2,6 @@ package queryopt.services;
 
 import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
@@ -18,7 +17,7 @@ public class ExecutionPlanServiceImpl implements ExecutionPlanService {
 
 	@CommitAfter
 	public void calculateExecutionPlan(int executionPlanId) {
-		session.beginTransaction();
+		// session.beginTransaction();
 		ExecutionPlan executionPlan = (ExecutionPlan) session.createCriteria(ExecutionPlan.class).add(
 				Restrictions.eq("executionPlanId", executionPlanId)).uniqueResult();
 		Query query = executionPlan.getQuery();
@@ -32,7 +31,7 @@ public class ExecutionPlanServiceImpl implements ExecutionPlanService {
 			executionPlan.setError(false);
 			executionPlan.setMessage("OK");
 			session.save(executionPlan);
-			session.getTransaction().commit();
+			//session.getTransaction().commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			executionPlan.setMessage(e.getMessage());

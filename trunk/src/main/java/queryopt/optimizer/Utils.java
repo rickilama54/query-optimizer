@@ -108,34 +108,27 @@ public class Utils {
 		return matchingIndexes;
 	}
 
-	public static HashMap<Index, List<Atribute>> getMinimalSetIndexesForAtributes(List<Atribute> atributes,
+	public static HashMap<Index, List<Atribute>> getMinimalSetOfIndexesForAtributes(List<Atribute> atributes,
 			List<Index> candidateIndexes) {
 		HashMap<Index, List<Atribute>> indexes = new HashMap<Index, List<Atribute>>();
 
 		for (Index index : candidateIndexes) {
-			boolean found;
-			int atributeIndex = 0;
 			List<Atribute> indexAtributes = index.getAtributes();
-			do {
-				found = false;
-				for (Atribute atribute : atributes)
-					if (atributes.contains(indexAtributes.get(atributeIndex))) {
-						found = true;
-						atributeIndex++;
-						if (!indexes.containsKey(index))
-							indexes.put(index, new ArrayList<Atribute>());
-						indexes.get(index).add(atribute);
-						break;
-					}
-			} while (found && atributeIndex < indexAtributes.size());
+			for (Atribute atribute : indexAtributes)
+				if (atributes.contains(atribute)) {
+					if (!indexes.containsKey(index))
+						indexes.put(index, new ArrayList<Atribute>());
+					indexes.get(index).add(atribute);
+				}
 		}
 
 		// Find and remove redundant indexes
 		List<Index> redundantIndexes = new ArrayList<Index>();
 		for (Index index1 : indexes.keySet())
 			for (Index index2 : indexes.keySet())
-				if (!index2.equals(index1) && indexes.get(index1).containsAll(indexes.get(index2)))
-					redundantIndexes.add(index2);
+				if (!redundantIndexes.contains(index1))
+					if (!index2.equals(index1) && indexes.get(index1).containsAll(indexes.get(index2)))
+						redundantIndexes.add(index2);
 		for (Index index : redundantIndexes)
 			indexes.remove(index);
 		//
@@ -252,24 +245,18 @@ public class Utils {
 		for (Clause clause : srquery.getSelectionCnfClauses())
 			selectionClause.addAll(clause.getAtributes());
 
-		for (Atribute a : allAtributesInQuery) {
-			boolean found = false;
-			for (IndexAtribute ia : index.getIndexAtributes())
-				if (ia.getAtribute().equals(a))
-					found = true;
-			if (!found)
-				return false;
-		}
+		if (!index.getAtributes().containsAll(allAtributesInQuery))
+			return false;
 
 		// We should secure that the index contains all the selection (WHERE)
 		// attributes in a prefix on its list of attributes
 		boolean notContainPrevious = false;
 		for (IndexAtribute ia : index.getIndexAtributes())
-			if (selectionClause.contains(ia.getAtribute()))
+			if (selectionClause.contains(ia.getAtribute())) {
 				if (notContainPrevious == true)
 					return false;
-				else
-					notContainPrevious = true;
+			} else
+				notContainPrevious = true;
 
 		return true;
 	}

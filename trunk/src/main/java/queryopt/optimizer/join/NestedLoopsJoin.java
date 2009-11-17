@@ -19,6 +19,4 @@ public class NestedLoopsJoin extends Join {
 		return 0;
 	}
 
-	
-
 }

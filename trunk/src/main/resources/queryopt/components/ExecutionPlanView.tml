@@ -1,0 +1,71 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
+	xmlns:p="tapestry:parameter">
+
+	<h2 style="margin-left:30%">Execution Plan</h2>
+
+	<div style="position:absolute; left:80%;">
+		<a href="#" t:type="ActionLink" t:id="calculateExecutionPlan"
+			zone="executionPlanZone">Calculate
+			Execution Plan</a>
+	</div>
+
+	<div t:type="zone" t:id="executionPlanZone">
+
+		<div style="position:absolute; left:40%; margin-top:20px">
+			<div>
+				Message:
+				<t:unless test="executionPlan.error">
+					<span style="color:green;">${executionPlan.message}</span>
+					<t:parameter name="else">
+						<span style="color:red;">${executionPlan.message}</span>
+					</t:parameter>
+				</t:unless>
+			</div>
+			<p>
+				<div>
+					ExecutionPlan:
+					<p> ${executionPlan.executionPlanText}</p>
+				</div>
+			</p>
+		</div>
+	</div>
+
+	<div>
+		<h3>Query:</h3>
+		${executionPlan.query.text}
+	</div>
+
+
+	<div style="margin-top:20px">
+		<table style="width:150px">
+			<th colspan="2">System Info</th>
+			<tr>
+				<td>Name:</td>
+				<td>${executionPlan.systemInfo.name}</td>
+
+			</tr>
+			<tr>
+				<td>Memory Size:</td>
+				<td>${MemorySizeKilobytes}</td>
+			</tr>
+			<tr>
+				<td>Page Size:</td>
+				<td>${PageSizeKilobytes}</td>
+			</tr>
+			<tr>
+				<td>
+					Blocking Factor
+					<br />
+					for Index Leaves:
+				</td>
+				<td>${executionPlan.systemInfo.blockingFactorIndexFirstLevelRows}</td>
+			</tr>
+			<td>RID size:</td>
+			<td>${RIDSizeKilobytes}</td>
+			<tr>
+			</tr>
+		</table>
+	</div>
+
+</html>
+

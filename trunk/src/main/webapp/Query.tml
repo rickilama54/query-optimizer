@@ -1,5 +1,13 @@
 <html t:type="layout" title="Atributes" t:id="layout"
 	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd" xmlns:p="tapestry:parameter">
+	<head>
+		<link href="${request.contextPath}/tabber/example.css" rel="stylesheet"
+			type="text/css" />
+		<script src="${request.contextPath}/tabber/tabber.js" type="text/javascript" />
+		<script src="${request.contextPath}/tabber/tabber-minimized.js"
+			type="text/javascript" />
+	</head>
+
 	<t:zone t:id="mainzone">
 		<t:delegate to="activeBlock" />
 	</t:zone>
@@ -30,54 +38,62 @@
 					value="Delete" />
 			</p>
 			<p />
-			<ul id="countrytabs" class="shadetabs">
-				<li>
-					<a href="#" rel="#default" class="selected">Execution Plans</a>
-				</li>
+		</form>
 
-				<li t:type="Loop" source="executionPlans" value="executionPlan">
-					<a href="#" t:type="ActionLink" t:id="ExecutionPlanView"
-						context="executionPlan.executionPlanId" rel="countrycontainer">
-						${executionPlan.SystemInfo.name}</a>
-				</li>
-			</ul>
-			<div id="countrydivcontainer" class="content">
+		<div class="tabber">
 
-				<h2 style="margin-top:30px;">Execution Plans</h2>
-				<table>
-					<th>System Info</th>
-					<th>Disabled Indexes</th>
-					<th>delete</th>
-					<tr t:type="AjaxFormLoop" t:id="ExecutionPlansLoop" source="executionPlans"
-						value="executionPlan">
-						<t:submitnotifier>
-							<t:unless test="executionPlansEdit">
-								<td>${executionPlan.systemInfo.name}</td>
-								<td>disabled indexes</td>
-							</t:unless>
-							<t:if test="executionPlansEdit">
-								<td>
-									<t:selectObject list="systemInfos" value="executionPlan.systemInfo"
-										labelField="literal:name" blankOption="NEVER" />
-								</td>
-								<td>disabled indexes</td>
-							</t:if>
-							<td>
-								<a t:type="removerowlink" id="prop:executionPlan.executionPlanId">delete</a>
-							</td>
-						</t:submitnotifier>
-						<t:parameter name="addRow">
-							<td colspan="5" style="text-align: right">
-								<t:addrowlink>Add a row</t:addrowlink>
-							</td>
-						</t:parameter>
-					</tr>
-				</table>
+			<div class="tabbertab">
+				<div t:type="zone" t:id="ExecutionPlansZone">
+					<form t:type="form" t:id="executionPlansForm" zone="ExecutionPlansZone">
+						<h2>Execution Plans</h2>
+						<h2 style="margin-top:30px;">Execution Plans</h2>
+						<table>
+							<th>System Info</th>
+							<th>Disabled Indexes</th>
+							<th>delete</th>
+							<tr t:type="AjaxFormLoop" t:id="ExecutionPlansLoop" source="executionPlans"
+								value="executionPlan">
+								<t:submitnotifier>
+									<t:unless test="executionPlansEdit">
+										<td>${executionPlan.systemInfo.name}</td>
+										<td>disabled indexes</td>
+									</t:unless>
+									<t:if test="executionPlansEdit">
+										<td>
+											<t:selectObject list="systemInfos"
+												value="executionPlan.systemInfo" labelField="literal:name"
+												blankOption="NEVER" />
+										</td>
+										<td>disabled indexes</td>
+									</t:if>
+									<td>
+										<a t:type="removerowlink" id="prop:executionPlan.executionPlanId">delete</a>
+									</td>
+								</t:submitnotifier>
+								<t:parameter name="addRow">
+									<td colspan="5" style="text-align: right">
+										<t:addrowlink>Add a row</t:addrowlink>
+									</td>
+								</t:parameter>
+							</tr>
+						</table>
+						<p>
+							<input t:type="submit" t:id="editExecutionPlan" value="prop:editValue" />
+						</p>
+					</form>
+				</div>
+			</div>
+
+			<div class="tabbertab" t:type="Loop" source="executionPlans"
+				value="executionPlan">
+				<h2>${executionPlan.systemInfo.name}</h2>
 				<p>
-					<input t:type="submit" t:id="editExecutionPlan" value="prop:editValue" />
+					<t:ExecutionPlanView executionPlanId="prop:executionPlan.executionPlanId" />
 				</p>
 			</div>
-		</form>
+		</div>
+
+
 	</t:block>
 
 	<t:block t:id="editBlock">
@@ -115,5 +131,6 @@
 			</p>
 		</form>
 	</t:block>
+
 
 </html>
