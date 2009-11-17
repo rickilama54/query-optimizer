@@ -14,6 +14,7 @@ import queryopt.entities.Relation;
 import queryopt.optimizer.query.AggregateFunction;
 import queryopt.optimizer.query.CompareSingleRowClause;
 import queryopt.optimizer.query.InClause;
+import queryopt.optimizer.query.JoinClause;
 import queryopt.optimizer.query.Literal;
 import queryopt.optimizer.query.Operator;
 import queryopt.optimizer.query.SPJQuery;
@@ -205,7 +206,10 @@ public class SPJQueryBuilder {
 			else
 				throw new IllegalArgumentException("Should not be here");
 
-			query.getSelectionCnfClauses().add(new CompareSingleRowClause(operator, operand1, operand2));
+			if (operand1 instanceof Atribute && operand2 instanceof Atribute)
+				query.getSelectionCnfClauses().add(new JoinClause(operator, (Atribute) operand1, (Atribute) operand2));
+			else
+				query.getSelectionCnfClauses().add(new CompareSingleRowClause(operator, operand1, operand2));
 			break;
 
 		case SelectQueryGrammarParser.IN:

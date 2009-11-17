@@ -1,20 +1,16 @@
 package queryopt.optimizer.join;
 
-import java.util.List;
-
-import queryopt.optimizer.Plan;
-import queryopt.optimizer.path.AccessPath;
-import queryopt.optimizer.query.CompareSingleRowClause;
+import queryopt.optimizer.query.JoinQuery;
 
 public class SortMergeJoin extends Join {
 
-	public SortMergeJoin(Plan left, AccessPath right, List<CompareSingleRowClause> joinClauses) {
-		super(left, right, joinClauses);
+	public SortMergeJoin(JoinQuery joinQuery) {
+		super(joinQuery);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected long calcCost(List<CompareSingleRowClause> joinClauses) {
+	protected long calcCost(JoinQuery joinQuery) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

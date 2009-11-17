@@ -5,18 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 
 import queryopt.entities.Relation;
+import queryopt.optimizer.join.IndexNestedLoopsJoin;
 import queryopt.optimizer.join.Join;
+import queryopt.optimizer.join.NestedLoopsJoin;
 import queryopt.optimizer.path.AccessPath;
 import queryopt.optimizer.path.FullTableScan;
 import queryopt.optimizer.path.MultipleIndexAccessPath;
 import queryopt.optimizer.path.SingleIndexAccessPath;
+import queryopt.optimizer.query.JoinQuery;
 import queryopt.optimizer.query.SPJQuery;
 import queryopt.optimizer.query.SingleRelationQuery;
 
 public class Optimizer {
 	private SPJQuery query;
-	private List<HashMap<? extends Plan, List<AccessPath>>> plansWithRemainingRelations;
-	private HashMap<AccessPath, List<AccessPath>> singleRelationAccessPathsWithRemainingAccessPaths;
+	private List<List<? extends Plan>> allLeftDeepPlanTrees;
+	private List<AccessPath> allAccessPaths;
 	private HashMap<Relation, SingleRelationQuery> singleRelationQueries;
 
 	public Optimizer(SPJQuery query) throws Exception {
@@ -26,17 +29,18 @@ public class Optimizer {
 	public Plan generateBestPlan() throws Exception {
 
 		singleRelationQueries = Utils.getSingleRelationQueriesFromSPJQuery(query);
-		singleRelationAccessPathsWithRemainingAccessPaths = generateSingleRelationPlans(singleRelationQueries);
+		allAccessPaths = generateSingleRelationPlans(singleRelationQueries);
 
-		plansWithRemainingRelations = new ArrayList<HashMap<? extends Plan, List<AccessPath>>>();
-		plansWithRemainingRelations.add(singleRelationAccessPathsWithRemainingAccessPaths);
+		allLeftDeepPlanTrees = new ArrayList<List<? extends Plan>>();
+		allLeftDeepPlanTrees.add(allAccessPaths);
 
-		for (int i = 1; i < singleRelationAccessPathsWithRemainingAccessPaths.size(); i++)
-			plansWithRemainingRelations.add(generateMultipleRelationPlans(plansWithRemainingRelations.get(i), query));
+		for (int i = 1; i < allAccessPaths.size(); i++)
+			allLeftDeepPlanTrees.add(generateMultipleRelationPlans(Utils.getJoinQueriesFromSPJQuery(
+					allLeftDeepPlanTrees.get(i), query, allAccessPaths)));
 
 		Plan bestPlan = null;
 		long cost = Long.MAX_VALUE;
-		for (Plan allRelationPlan : plansWithRemainingRelations.get(plansWithRemainingRelations.size() - 1).keySet())
+		for (Plan allRelationPlan : allLeftDeepPlanTrees.get(allLeftDeepPlanTrees.size() - 1))
 			if (allRelationPlan.getCost() < cost) {
 				cost = allRelationPlan.getCost();
 				bestPlan = allRelationPlan;
@@ -44,10 +48,10 @@ public class Optimizer {
 		return bestPlan;
 	}
 
-	private static HashMap<AccessPath, List<AccessPath>> generateSingleRelationPlans(
+	private static List<AccessPath> generateSingleRelationPlans(
 			HashMap<Relation, SingleRelationQuery> singleRelationQueries) throws Exception {
 
-		HashMap<AccessPath, List<Relation>> singleRelationAccessPaths = new HashMap<AccessPath, List<Relation>>();
+		List<AccessPath> singleRelationAccessPaths = new ArrayList<AccessPath>();
 
 		for (SingleRelationQuery srquery : singleRelationQueries.values()) {
 			AccessPath accessPath = null;
@@ -71,37 +75,57 @@ public class Optimizer {
 					accessPath = multipleIndex;
 				}
 			}
-			singleRelationAccessPaths.put(accessPath, new ArrayList<Relation>());
+			singleRelationAccessPaths.add(accessPath);
 		}
-
-		for (AccessPath accessPath : singleRelationAccessPaths.keySet()) {
-			for (Relation relation : singleRelationQueries.keySet())
-				if (!relation.equals(accessPath.getInputRelation()))
-					singleRelationAccessPaths.get(accessPath).add(relation);
-		}
-		HashMap<AccessPath, List<AccessPath>> singleRelationAccessPathsWithRemainingAccessPaths = new HashMap<AccessPath, List<AccessPath>>();
-		for (AccessPath accessPath : singleRelationAccessPaths.keySet()) {
-			singleRelationAccessPathsWithRemainingAccessPaths.put(accessPath, new ArrayList<AccessPath>());
-			for (Relation relation : singleRelationAccessPaths.get(accessPath)) {
-				for (AccessPath accessPath2 : singleRelationAccessPaths.keySet())
-					if (relation.equals(accessPath2.getInputRelation()))
-						singleRelationAccessPathsWithRemainingAccessPaths.get(accessPath).add(accessPath2);
-			}
-		}
-		return singleRelationAccessPathsWithRemainingAccessPaths;
+		return singleRelationAccessPaths;
 	}
 
-	private static HashMap<Join, List<AccessPath>> generateMultipleRelationPlans(
-			HashMap<? extends Plan, List<AccessPath>> nMinusOneRelationPlans, SPJQuery query) {
-		HashMap<Join, List<AccessPath>> nRelationPlans = new HashMap<Join, List<AccessPath>>();
-		for (Plan plan : nMinusOneRelationPlans.keySet()) {
-			for (AccessPath accessPath : nMinusOneRelationPlans.get(plan)) {
-				Join join = null;
-				long cost = Long.MAX_VALUE;
+	private static List<Join> generateMultipleRelationPlans(List<JoinQuery> joinQueries) {
 
-				// NestedLoopsJoin nestedLoops = new NestedLoopsJoin(plan, );
+		List<Join> nRelationPlans = new ArrayList<Join>();
+
+		for (JoinQuery joinQuery : joinQueries) {
+			Join join = null;
+			long cost = Long.MAX_VALUE;
+
+			NestedLoopsJoin nestedLoops = new NestedLoopsJoin(joinQuery);
+			cost = nestedLoops.getCost();
+			join = nestedLoops;
+
+			IndexNestedLoopsJoin indexNestedLoops = new IndexNestedLoopsJoin(joinQuery);
+
+			if (cost < indexNestedLoops.getCost()) {
+				cost = indexNestedLoops.getCost();
+				join = indexNestedLoops;
 			}
+
+			nRelationPlans.add(join);
 		}
 		return nRelationPlans;
+	}
+
+	private static List<AccessPath> getRemainingAccessPaths(Plan plan, List<AccessPath> allAccessPaths) {
+
+		if (plan instanceof AccessPath) {
+			List<AccessPath> remainingAccessPaths = new ArrayList<AccessPath>();
+			remainingAccessPaths.addAll(allAccessPaths);
+			remainingAccessPaths.remove((AccessPath) plan);
+			return remainingAccessPaths;
+		}
+
+		if (plan instanceof Join) {
+			List<AccessPath> remainingAccessPaths = new ArrayList<AccessPath>();
+			remainingAccessPaths.addAll(allAccessPaths);
+
+			Plan leftPlan = plan;
+			while (leftPlan instanceof Join) {
+				remainingAccessPaths.remove(((Join) leftPlan).getRight());
+				leftPlan = ((Join) leftPlan).getLeft();
+			}
+			remainingAccessPaths.remove((AccessPath) leftPlan);
+			return remainingAccessPaths;
+		}
+
+		return null;
 	}
 }

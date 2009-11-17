@@ -1,22 +1,19 @@
 package queryopt.optimizer.join;
 
-import java.util.List;
-
-import queryopt.optimizer.Plan;
-import queryopt.optimizer.path.AccessPath;
-import queryopt.optimizer.query.CompareSingleRowClause;
+import queryopt.optimizer.query.JoinQuery;
 
 public class NestedLoopsJoin extends Join {
 
-	public NestedLoopsJoin(Plan left, AccessPath right, List<CompareSingleRowClause> joinClauses) {
-		super(left, right, joinClauses);
+	public NestedLoopsJoin(JoinQuery joinQuery) {
+		super(joinQuery);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected long calcCost(List<CompareSingleRowClause> joinClauses) {
+	protected long calcCost(JoinQuery joinQuery) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	
 }

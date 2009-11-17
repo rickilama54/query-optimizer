@@ -11,9 +11,11 @@ import queryopt.entities.Index;
 import queryopt.entities.IndexAtribute;
 import queryopt.entities.Relation;
 import queryopt.entities.SystemInfo;
+import queryopt.optimizer.path.AccessPath;
 import queryopt.optimizer.query.AggregateFunction;
 import queryopt.optimizer.query.Clause;
 import queryopt.optimizer.query.CompareSingleRowClause;
+import queryopt.optimizer.query.JoinQuery;
 import queryopt.optimizer.query.Literal;
 import queryopt.optimizer.query.SPJQuery;
 import queryopt.optimizer.query.SingleRelationQuery;
@@ -66,6 +68,39 @@ public class Utils {
 		allAtributesInQuery.addAll(hs);
 
 		return allAtributesInQuery;
+	}
+
+	/*
+	 * Get the output relation from a join operation. Should project out all non
+	 * used attributes in the later stages of the query processing.
+	 */
+	public static Relation getOutputRelation(Plan left, AccessPath right, List<CompareSingleRowClause> joinClauses)
+			throws Exception {
+		Relation outputRelation = copy(left.getOutputRelation());
+		outputRelation.setName(left.getOutputRelation().getName() + "_|x|_" + right.getOutputRelation().getName());
+		outputRelation.getAtributes().addAll(left.getOutputRelation().getAtributes());
+
+		for (CompareSingleRowClause clause : joinClauses) {
+			Atribute operand1 = (Atribute) clause.getOperand1();
+			Atribute operand2 = (Atribute) clause.getOperand2();
+			Atribute master = null;
+			Atribute dependent = null;
+			if (operand1.getFkAtribute().equals(operand2)) {
+				master = operand2;
+				dependent = operand1;
+			} else if (operand2.getFkAtribute().equals(operand1)) {
+				master = operand1;
+				dependent = operand2;
+			} else
+				throw new Exception("Should not be here");
+
+			outputRelation.getAtributes().remove(master);
+			outputRelation.getAtributes().remove(dependent);
+
+			boolean isUsedLaterInTheQuery = false;
+		}
+
+		return outputRelation;
 	}
 
 	public static boolean isIndexOnlyScanPossible(Collection<Index> indexes, SingleRelationQuery srquery) {
@@ -292,4 +327,13 @@ public class Utils {
 			srqueries.get(atribute.getRelation()).getProjectionAtributes().add(atribute);
 		}
 	}
+
+	public static List<JoinQuery> getJoinQueriesFromSPJQuery(List<? extends Plan> leftdeepPlansMinusOne,
+			SPJQuery query, List<AccessPath> allAccessPaths) {
+
+		List<JoinQuery> joinQueries = new ArrayList<JoinQuery>();
+
+		return joinQueries;
+	}
+
 }
