@@ -107,7 +107,7 @@ public class MultipleIndexAccessPath extends AccessPath {
 			for (HashMap<Clause, Atribute> ca : ridIndexesIntersection.values())
 				remainingAtributes.removeAll(ca.values());
 
-			HashMap<Index, List<Atribute>> fullIndexScanIndexes = Utils.getMinimalSetIndexesForAtributes(
+			HashMap<Index, List<Atribute>> fullIndexScanIndexes = Utils.getMinimalSetOfIndexesForAtributes(
 					remainingAtributes, indexes);
 
 			List<Index> repeatingIndexes = new ArrayList<Index>();

@@ -63,15 +63,32 @@ public class CompareSingleRowClause extends Clause {
 		return 0.0;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static double calcSelectivityLiteralAtribute(Literal l1, Atribute atribute, Operator operator) {
-		String high = atribute.getHighValue();
-		String low = atribute.getLowValue();
-		String literal = l1.getValue();
+		Comparable high = atribute.getHighValue();
+		Comparable low = atribute.getLowValue();
+		Comparable literal = l1.getValue();
 
-		if (literal.compareTo(high) > 0)
-			return 0.0;
-		if (literal.compareTo(low) < 0)
-			return 0.0;
+		double distanceLow = literal.compareTo(low);
+		double distanceHigh = -literal.compareTo(high);
+		try {
+			double dhigh = Double.valueOf(atribute.getHighValue());
+			double dlow = Double.valueOf(atribute.getLowValue());
+			double dliteral = Double.valueOf(l1.getValue());
+
+			if (dliteral > dhigh)
+				return 0.0;
+			if (dliteral < dlow)
+				return 0.0;
+
+			distanceLow = dliteral - dlow;
+			distanceHigh = dhigh - dliteral;
+		} catch (NumberFormatException e) {
+			if (literal.compareTo(high) > 0)
+				return 0.0;
+			if (literal.compareTo(low) < 0)
+				return 0.0;
+		}
 
 		double selectivity = 1.0;
 		switch (operator) {
@@ -90,14 +107,10 @@ public class CompareSingleRowClause extends Clause {
 			break;
 		case GT:
 		case GT_EQ:
-			double distanceLow = literal.compareTo(low);
-			double distanceHigh = -literal.compareTo(high);
 			selectivity = distanceHigh / (distanceHigh + distanceLow);
 			break;
 		case LS:
 		case LS_EQ:
-			distanceLow = literal.compareTo(low);
-			distanceHigh = -literal.compareTo(high);
 			selectivity = distanceLow / (distanceHigh + distanceLow);
 			break;
 		}

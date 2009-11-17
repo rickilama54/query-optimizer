@@ -20,6 +20,10 @@ public class TestQueries {
 	SPJQuery query4;
 	SPJQuery query5;
 	SPJQuery query6;
+	SPJQuery query7;
+	SPJQuery query8;
+	SPJQuery query9;
+	SPJQuery query10;
 
 	void setup() {
 		SystemInfo systemInfo = new SystemInfo();
@@ -47,11 +51,14 @@ public class TestQueries {
 
 		Atribute empId = new Atribute(4, "EMP_ID", true, 4, 1000, employees);
 		Atribute empName = new Atribute(5, "EMP_NAME", false, 100, 100, employees);
-		Atribute empSalary = new Atribute(6, "EMP_SALARY", false, 4, 15, employees);
+		Atribute empSalary = new Atribute(6, "EMP_SALARY", false, 4, 100, employees);
 		Atribute departmentsDeptId = new Atribute(7, "DEPARTMENTS_DEPT_ID", false, 4, 30, employees, deptId);
 
 		empName.setHighValue("ZZZZZZ");
 		empName.setLowValue("A");
+		empSalary.setHighValue("10000");
+		empSalary.setLowValue("0");
+
 		Index indexEmpId = new Index();
 		indexEmpId.setBTree(true);
 		indexEmpId.setLevels(2);
@@ -66,7 +73,33 @@ public class TestQueries {
 		indexEmpName.setRelation(employees);
 		indexEmpName.setIndexAtributes(Arrays.asList(new IndexAtribute(indexEmpName, empName)));
 
-		employees.setIndexes(Arrays.asList(indexEmpId, indexEmpName));
+		Index indexEmpNameEmpSal = new Index();
+		indexEmpNameEmpSal.setBTree(true);
+		indexEmpNameEmpSal.setLevels(2);
+		indexEmpNameEmpSal.setName("indexEmpNameEmpSal");
+		indexEmpNameEmpSal.setRelation(employees);
+		indexEmpNameEmpSal.setIndexAtributes(Arrays.asList(new IndexAtribute(indexEmpNameEmpSal, empName),
+				new IndexAtribute(indexEmpNameEmpSal, empSalary)));
+
+		Index indexEmpSal = new Index();
+		indexEmpSal.setBTree(true);
+		indexEmpSal.setLevels(2);
+		indexEmpSal.setName("indexEmpSal");
+		indexEmpSal.setRelation(employees);
+		indexEmpSal.setIndexAtributes(Arrays.asList(new IndexAtribute(indexEmpSal, empSalary)));
+
+		Index indexEmpSalEmpName = new Index();
+		indexEmpSalEmpName.setBTree(true);
+		indexEmpSalEmpName.setLevels(2);
+		indexEmpSalEmpName.setName("indexEmpSal");
+		indexEmpSalEmpName.setRelation(employees);
+		indexEmpSalEmpName.setIndexAtributes(Arrays.asList(new IndexAtribute(indexEmpSalEmpName, empSalary),
+				new IndexAtribute(indexEmpSalEmpName, empName)));
+
+		// employees.setIndexes(Arrays.asList(indexEmpId, indexEmpName,
+		// indexEmpNameEmpSal));
+		// employees.setIndexes(Arrays.asList(indexEmpSalEmpName));
+		employees.setIndexes(Arrays.asList(indexEmpId, indexEmpName, indexEmpSal));
 		employees.setAtributes(Arrays.asList(empId, empName, empSalary, departmentsDeptId));
 
 		// SELECT EMP_NAME FROM EMPLOYEES
@@ -113,6 +146,31 @@ public class TestQueries {
 		query6.getProjectionTerms().add(empSalary);
 		query6.setSystemInfo(systemInfo);
 		//
+
+		// SELECT EMP_NAME FROM EMPLOYEES WHERE EMP_SALARY=500
+		query7 = new SPJQuery();
+		query7.getProjectionTerms().add(empName);
+		query7.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.GT_EQ, empSalary, new Literal("5000")));
+		query7.setSystemInfo(systemInfo);
+		//
+
+		// SELECT EMP_NAME FROM EMPLOYEES WHERE EMP_SALARY=500
+		query8 = new SPJQuery();
+		query8.getProjectionTerms().add(empName);
+		query8.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.EQ, empSalary, new Literal("9000")));
+		query8.setSystemInfo(systemInfo);
+		//
+
+		// SELECT EMP_NAME, EMP_SALARY FROM EMPLOYEES WHERE EMP_NAME = 'DRAGAN'
+		// AND EMP_SALARY='500';
+		query9 = new SPJQuery();
+		query9.getProjectionTerms().add(empName);
+		query9.getProjectionTerms().add(empSalary);
+		query9.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.GT_EQ, empName, new Literal("DRAGAN")));
+		query9.getSelectionCnfClauses().add(new CompareSingleRowClause(Operator.EQ, empSalary, new Literal("500")));
+		query9.setSystemInfo(systemInfo);
+		//
+
 	}
 
 	void test(SPJQuery query) throws Exception {
@@ -124,12 +182,17 @@ public class TestQueries {
 	public static void main(String[] args) throws Exception {
 		TestQueries testQueries = new TestQueries();
 		testQueries.setup();
+
 		testQueries.test(testQueries.query1);
 
 		testQueries.test(testQueries.query3);
 		testQueries.test(testQueries.query4);
 		testQueries.test(testQueries.query5);
 		testQueries.test(testQueries.query6);
+
+		testQueries.test(testQueries.query7);
+		testQueries.test(testQueries.query8);
+		testQueries.test(testQueries.query9);
 
 	}
 }

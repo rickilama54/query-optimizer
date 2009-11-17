@@ -1,6 +1,7 @@
-package queryopt.pages;
+package queryopt.components;
 
 import org.apache.tapestry5.annotations.InjectComponent;
+import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.Zone;
@@ -14,8 +15,7 @@ import queryopt.services.ExecutionPlanService;
 public class ExecutionPlanView {
 	@Inject
 	private Session session;
-	@InjectComponent
-	private Zone mainZone;
+
 	@Persist
 	@Property
 	private ExecutionPlan executionPlan;
@@ -23,7 +23,13 @@ public class ExecutionPlanView {
 	@Inject
 	private ExecutionPlanService executionPlanService;
 
-	void onActivate(int executionPlanId) {
+	@InjectComponent
+	private Zone executionPlanZone;
+
+	@Parameter
+	private int executionPlanId;
+
+	void setupRender() {
 		executionPlan = (ExecutionPlan) session.createCriteria(ExecutionPlan.class).add(
 				Restrictions.eq("executionPlanId", executionPlanId)).uniqueResult();
 	}
@@ -44,6 +50,7 @@ public class ExecutionPlanView {
 		executionPlanService.calculateExecutionPlan(executionPlan.getExecutionPlanId());
 		executionPlan = (ExecutionPlan) session.createCriteria(ExecutionPlan.class).add(
 				Restrictions.eq("executionPlanId", executionPlan.getExecutionPlanId())).uniqueResult();
-		return mainZone;
+		return executionPlanZone;
 	}
+
 }
