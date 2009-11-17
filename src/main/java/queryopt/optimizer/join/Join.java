@@ -1,23 +1,22 @@
 package queryopt.optimizer.join;
 
-import java.util.List;
-
 import queryopt.entities.Relation;
 import queryopt.optimizer.Plan;
 import queryopt.optimizer.path.AccessPath;
-import queryopt.optimizer.query.CompareSingleRowClause;
+import queryopt.optimizer.query.JoinQuery;
 
 public abstract class Join implements Plan {
-	protected Plan left;
-	protected AccessPath right;
+
+	private JoinQuery joinQuery;
+
 	protected Relation outputRelation;
 	protected long cost;
 
-	public Join(Plan left, AccessPath right, List<CompareSingleRowClause> joinClauses) {
+	public Join(JoinQuery joinQuery) {
 		super();
-		this.left = left;
-		this.right = right;
-		this.cost = calcCost(joinClauses);
+		this.joinQuery = joinQuery;
+		this.cost = calcCost(joinQuery);
+		// outputrelation !!!
 	}
 
 	public Relation getOutputRelation() {
@@ -25,18 +24,18 @@ public abstract class Join implements Plan {
 	}
 
 	public Plan getLeft() {
-		return left;
+		return joinQuery.getLeft();
 	}
 
 	public AccessPath getRight() {
-		return right;
+		return joinQuery.getRight();
 	}
 
 	public long getCost() {
 		return cost;
 	}
 
-	protected abstract long calcCost(List<CompareSingleRowClause> joinClauses);
+	protected abstract long calcCost(JoinQuery joinQuery);
 
 	public String getPlanAsTree() {
 		// TODO Auto-generated method stub
