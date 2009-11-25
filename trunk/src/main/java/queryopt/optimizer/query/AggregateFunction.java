@@ -4,7 +4,7 @@ import queryopt.entities.Atribute;
 
 public class AggregateFunction implements Term {
 	public enum AggregateFunctionType {
-		AVG, SUM, MIN, MAX
+		COUNT, SUM, AVG, MIN, MAX
 	}
 
 	private Atribute atribute;
