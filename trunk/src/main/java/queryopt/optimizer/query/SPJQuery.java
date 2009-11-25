@@ -58,4 +58,35 @@ public class SPJQuery implements Term {
 		this.systemInfo = systemInfo;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SPJQuery:");
+
+		sb.append("\n\tProjectionTerms: ");
+		for (Term t : this.projectionTerms)
+			sb.append(t + ", ");
+		if (this.projectionTerms.size() > 0)
+			sb.setLength(sb.length() - 2);
+		else
+			sb.append("empty");
+
+		sb.append("\n\tSelectionCnfClauses: ");
+		for (Clause c : this.selectionCnfClauses)
+			sb.append(c + ", ");
+		if (this.selectionCnfClauses.size() > 0)
+			sb.setLength(sb.length() - 2);
+		else
+			sb.append("empty");
+
+		sb.append("\n\tJoinClauses: ");
+		for (JoinClause jc : this.joinClauses)
+			sb.append(jc + ", ");
+		if (this.joinClauses.size() > 0)
+			sb.setLength(sb.length() - 2);
+		else
+			sb.append("empty");
+		return sb.toString();
+	}
+
 }

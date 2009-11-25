@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g 2009-11-25 19:03:34
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g 2009-11-25 19:28:26
 package queryopt.parser;
 
 import org.antlr.runtime.*;
@@ -536,17 +536,17 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = NAME;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:6: ( ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' )+ )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:8: ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' )+
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:6: ( ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' | '_' )+ )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:8: ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' | '_' )+
             {
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:8: ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' )+
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:8: ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' | '_' )+
             int cnt1=0;
             loop1:
             do {
                 int alt1=2;
                 int LA1_0 = input.LA(1);
 
-                if ( ((LA1_0>='0' && LA1_0<='9')||(LA1_0>='A' && LA1_0<='Z')||(LA1_0>='a' && LA1_0<='z')) ) {
+                if ( ((LA1_0>='0' && LA1_0<='9')||(LA1_0>='A' && LA1_0<='Z')||LA1_0=='_'||(LA1_0>='a' && LA1_0<='z')) ) {
                     alt1=1;
                 }
 
@@ -555,7 +555,7 @@ public class SQL_grammarLexer extends Lexer {
             	case 1 :
             	    // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:
             	    {
-            	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+            	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
             	        input.consume();
 
             	    }
@@ -798,7 +798,7 @@ public class SQL_grammarLexer extends Lexer {
             "\2\6\1\uffff\2\6\22\uffff\1\6\6\uffff\1\21\1\3\1\4\1\12\1\uffff"+
             "\1\2\3\uffff\12\22\1\uffff\1\1\1\14\1\13\1\15\2\uffff\1\5\1"+
             "\22\1\17\2\22\1\10\2\22\1\16\3\22\1\20\5\22\1\7\3\22\1\11\3"+
-            "\22\6\uffff\32\22",
+            "\22\4\uffff\1\22\1\uffff\32\22",
             "",
             "",
             "",
@@ -828,34 +828,34 @@ public class SQL_grammarLexer extends Lexer {
             "",
             "",
             "",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
             "\1\51",
             "\1\52",
             "\1\53",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
             "\1\56",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
             "\1\60",
             "\1\61",
             "",
             "\1\62",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
             "",
             "",
             "\1\65",
             "",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
             "\1\67",
             "\1\70",
             "",
             "",
             "\1\71",
             "",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
-            "\12\22\7\uffff\32\22\6\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
+            "\12\22\7\uffff\32\22\4\uffff\1\22\1\uffff\32\22",
             "",
             "",
             ""

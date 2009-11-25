@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g 2009-11-25 19:03:33
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g 2009-11-25 19:28:25
 package queryopt.parser;
 
 import org.antlr.runtime.*;
@@ -908,7 +908,7 @@ public class SQL_grammarParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: NAME, query1, LITERAL, IN
+                    // elements: IN, query1, LITERAL, NAME
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 

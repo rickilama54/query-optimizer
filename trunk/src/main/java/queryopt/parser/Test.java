@@ -2,12 +2,12 @@ package queryopt.parser;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.Tree;
 
 public class Test {
-	public static void main(String[] args) throws RecognitionException {
+	
+	public static void main(String[] args){
 		String testQuery = "SELECT A,B,C,  D , F " + "FROM TABLE1 , TABLE2, TABLE3 " + "WHERE " + "A = B AND "
 				+ "B < C AND " + "C > D AND " + "D >= F AND " + "F >= A;";
 		String testQuery2 = "SELECT * FROM TABLE1;";
@@ -16,7 +16,7 @@ public class Test {
 		SQL_grammarParser parser = new SQL_grammarParser(tokens);
 		CommonTree ast;
 		try {
-			ast = (CommonTree) parser.query().tree;
+			ast = (CommonTree) parser.query().getTree();
 			System.out.println("parser.hasError():" + parser.hasError());
 			System.out.println("parser.getNumberOfSyntaxErrors():" + parser.getNumberOfSyntaxErrors()
 					+ " parser.getErrorMessage():" + parser.getErrorMessage());
