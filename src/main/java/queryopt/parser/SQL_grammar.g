@@ -5,6 +5,10 @@ options
 	output=AST;
 	ASTLabelType=CommonTree;
 }
+tokens
+{
+	QUERY;
+}
 
 @header{package queryopt.parser;}
 @lexer::header {package queryopt.parser;}
@@ -36,14 +40,18 @@ public String getErrorPosition()
 }
 }
 
-
 query
-	:	select from where? ';'! EOF!
-	; 
+	:	query1 ';'! EOF! ; 
+	
+query1
+	:	select from where? ; 
  	   
-select	: 	SELECT^  (NAME (','! NAME)* | STAR)  
+select	: 	SELECT^  ( (NAME | aggregate_funct) (','! (NAME | aggregate_funct) )* | STAR)  
 	;
-	 
+aggregate_funct
+	:	( COUNT | SUM | AVG | MIN | MAX )^ '('!  NAME ')'!
+	;
+	
 from	:	FROM^ NAME (','! NAME)*
 	;
 	
@@ -53,15 +61,13 @@ where	:	WHERE^ and
 and	:	clause ( 'AND'! clause)* 
 	;
 
-clause	:	NAME op^ NAME | NAME op^ LITERAL  | LITERAL op^ NAME  | LITERAL op^ LITERAL
-	; 
-	
-
-
-op	:	(EQ | LS | GT | LS_EQ | GT_EQ)
+clause	:	( NAME | LITERAL ) op^ ( NAME | LITERAL )
+		| (NAME | LITERAL) IN '(' query1 ')' -> ^(IN NAME? LITERAL? ^(QUERY query1))
+		;
+		
+op	:	( EQ | LS | GT | LS_EQ | GT_EQ)
 	;
   
-  	
 /* Ignore white spaces */	
 WS	
 	:  (' '|'\r'|'\t'|'\u000C'|'\n')
@@ -77,5 +83,11 @@ GT_EQ	:	'>=';
 LS_EQ	:	'<=';
 LS	:	'<';
 GT	:	'>';
+IN	:	'IN';
+COUNT	:	'COUNT';
+SUM	:	'SUM';
+AVG	:	'AVG';
+MAX	:	'MAX';
+MIN	:	'MIN';
 LITERAL	:	'\''NAME'\'';
 NAME	:	('0'..'9'|'a'..'z'|'A'..'Z')+ ; 

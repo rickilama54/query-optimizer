@@ -19,7 +19,6 @@ public class Index {
 	private Session session;
 
 	void setupRender() {
-		System.out.println("sessinoDAta:" + sessionData);
 		if (sessionData.getSelectedSchema() == null)
 			sessionData.setSelectedSchema((Schema) session.createCriteria(Schema.class).addOrder(Order.asc("name"))
 					.list().get(0));

@@ -14,11 +14,9 @@ public class Test {
 		SQL_grammarLexer lexer = new SQL_grammarLexer(new ANTLRStringStream(testQuery));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		SQL_grammarParser parser = new SQL_grammarParser(tokens);
-		Tree ast;
-		// System.out.println("tree=" + ((Tree)
-		// parser.query().tree).getChildCount());
+		CommonTree ast;
 		try {
-			ast = (Tree) parser.query().tree;
+			ast = (CommonTree) parser.query().tree;
 			System.out.println("parser.hasError():" + parser.hasError());
 			System.out.println("parser.getNumberOfSyntaxErrors():" + parser.getNumberOfSyntaxErrors()
 					+ " parser.getErrorMessage():" + parser.getErrorMessage());

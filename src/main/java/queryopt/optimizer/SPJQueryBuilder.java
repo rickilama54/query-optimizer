@@ -94,22 +94,32 @@ public class SPJQueryBuilder {
 
 	private void buildSelect(CommonTree selectTree, SPJQuery query) {
 		for (Object child : selectTree.getChildren()) {
-
+			AggregateFunction.AggregateFunctionType type = null;
 			switch (((CommonTree) child).getType()) {
 
-			case SQL_grammarParser.AGGREGATE_FUNC:
-				AggregateFunction.AggregateFunctionType type = null;
-				if (child.toString().equals("SUM"))
-					type = AggregateFunction.AggregateFunctionType.SUM;
-				else if (child.toString().equals("AVG"))
-					type = AggregateFunction.AggregateFunctionType.AVG;
-				else if (child.toString().equals("MAX"))
-					type = AggregateFunction.AggregateFunctionType.MAX;
-				else if (child.toString().equals("MIN"))
-					type = AggregateFunction.AggregateFunctionType.MIN;
-				else
-					throw new IllegalArgumentException("Should not be here");
+			case SQL_grammarParser.COUNT:
+				type = AggregateFunction.AggregateFunctionType.COUNT;
 				Atribute a = getAtribute(((CommonTree) child).getChild(0).toString());
+				query.getProjectionTerms().add(new AggregateFunction(a, type));
+				break;
+			case SQL_grammarParser.SUM:
+				type = AggregateFunction.AggregateFunctionType.SUM;
+				a = getAtribute(((CommonTree) child).getChild(0).toString());
+				query.getProjectionTerms().add(new AggregateFunction(a, type));
+				break;
+			case SQL_grammarParser.AVG:
+				type = AggregateFunction.AggregateFunctionType.AVG;
+				a = getAtribute(((CommonTree) child).getChild(0).toString());
+				query.getProjectionTerms().add(new AggregateFunction(a, type));
+				break;
+			case SQL_grammarParser.MAX:
+				type = AggregateFunction.AggregateFunctionType.MAX;
+				a = getAtribute(((CommonTree) child).getChild(0).toString());
+				query.getProjectionTerms().add(new AggregateFunction(a, type));
+				break;
+			case SQL_grammarParser.MIN:
+				type = AggregateFunction.AggregateFunctionType.MIN;
+				a = getAtribute(((CommonTree) child).getChild(0).toString());
 				query.getProjectionTerms().add(new AggregateFunction(a, type));
 				break;
 
