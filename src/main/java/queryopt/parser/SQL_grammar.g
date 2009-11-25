@@ -90,4 +90,4 @@ AVG	:	'AVG';
 MAX	:	'MAX';
 MIN	:	'MIN';
 LITERAL	:	'\''NAME'\'';
-NAME	:	('0'..'9'|'a'..'z'|'A'..'Z')+ ; 
+NAME	:	( '0'..'9' | 'a'..'z' | 'A'..'Z' | '_' )+ ; 

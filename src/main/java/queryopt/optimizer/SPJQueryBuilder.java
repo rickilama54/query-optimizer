@@ -55,7 +55,6 @@ public class SPJQueryBuilder {
 		SQL_grammarLexer lexer = new SQL_grammarLexer(new ANTLRStringStream(query));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		SQL_grammarParser parser = new SQL_grammarParser(tokens);
-		parser.query();
 		CommonTree ast = (CommonTree) parser.query().getTree();
 		if (parser.hasError())
 			throw new Exception("Error at postition " + parser.getErrorPosition() + ": " + parser.getErrorMessage());
@@ -185,18 +184,24 @@ public class SPJQueryBuilder {
 			CommonTree rightOperand = (CommonTree) whereBlockTree.getChild(1);
 
 			if (leftOperand.getType() == SQL_grammarParser.NAME)
-				operand1 = getAtribute(leftOperand.toString());
+				if (isAtributeNameDefined(leftOperand.toString()))
+					operand1 = getAtribute(leftOperand.toString());
+				else
+					operand1 = new Literal(leftOperand.toString());
 			else if (leftOperand.getType() == SQL_grammarParser.LITERAL)
-				operand1 = new Literal(leftOperand.getChild(0).toString());
+				operand1 = new Literal(leftOperand.toString());
 			else if (leftOperand.getType() == SQL_grammarParser.QUERY)
 				operand1 = buildSpjQueryFromAst(leftOperand);
 			else
 				throw new IllegalArgumentException("Should not be here");
 
 			if (rightOperand.getType() == SQL_grammarParser.NAME)
-				operand2 = getAtribute(rightOperand.toString());
+				if (isAtributeNameDefined(rightOperand.toString()))
+					operand2 = getAtribute(rightOperand.toString());
+				else
+					operand2 = new Literal(rightOperand.toString());
 			else if (rightOperand.getType() == SQL_grammarParser.LITERAL)
-				operand2 = new Literal(rightOperand.getChild(0).toString());
+				operand2 = new Literal(rightOperand.toString());
 			else if (rightOperand.getType() == SQL_grammarParser.QUERY)
 				operand2 = buildSpjQueryFromAst(rightOperand);
 			else
@@ -245,8 +250,16 @@ public class SPJQueryBuilder {
 					a = relationsAtributes.get(r).get(atributeName);
 				else
 					throw new IllegalArgumentException("Atribute name " + atributeName + " is ambiguous");
+
 		if (a == null)
 			throw new IllegalArgumentException("Atribute name " + atributeName + " is not defined");
 		return a;
+	}
+
+	private boolean isAtributeNameDefined(String atributeName) {
+		for (String r : relationsAtributes.keySet())
+			if (relationsAtributes.get(r).containsKey(atributeName))
+				return true;
+		return false;
 	}
 }
