@@ -104,28 +104,5 @@ public class Optimizer {
 		return nRelationPlans;
 	}
 
-	private static List<AccessPath> getRemainingAccessPaths(Plan plan, List<AccessPath> allAccessPaths) {
-
-		if (plan instanceof AccessPath) {
-			List<AccessPath> remainingAccessPaths = new ArrayList<AccessPath>();
-			remainingAccessPaths.addAll(allAccessPaths);
-			remainingAccessPaths.remove((AccessPath) plan);
-			return remainingAccessPaths;
-		}
-
-		if (plan instanceof Join) {
-			List<AccessPath> remainingAccessPaths = new ArrayList<AccessPath>();
-			remainingAccessPaths.addAll(allAccessPaths);
-
-			Plan leftPlan = plan;
-			while (leftPlan instanceof Join) {
-				remainingAccessPaths.remove(((Join) leftPlan).getRight());
-				leftPlan = ((Join) leftPlan).getLeft();
-			}
-			remainingAccessPaths.remove((AccessPath) leftPlan);
-			return remainingAccessPaths;
-		}
-
-		return null;
-	}
+	
 }

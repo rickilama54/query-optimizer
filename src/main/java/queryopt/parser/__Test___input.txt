@@ -1,4 +1,8 @@
-SELECT A,B,C ,    D 
-FROM TABLE1, TABLE2
-WHERE a=b AND c=d AND e = 5
-;
+SELECT A,B,C,  D , F 
+FROM TABLE1 , TABLE2, TABLE3 
+WHERE 
+A = B AND
+B < C AND
+C > D AND
+D >= '5' AND
+F >= A;

@@ -19,8 +19,8 @@ import queryopt.optimizer.query.Literal;
 import queryopt.optimizer.query.Operator;
 import queryopt.optimizer.query.SPJQuery;
 import queryopt.optimizer.query.Term;
-import queryopt.parser.SelectQueryGrammarLexer;
-import queryopt.parser.SelectQueryGrammarParser;
+import queryopt.parser.SQL_grammarLexer;
+import queryopt.parser.SQL_grammarParser;
 
 public class SPJQueryBuilder {
 	private HashMap<String, HashMap<String, Atribute>> relationsAtributes;
@@ -52,9 +52,10 @@ public class SPJQueryBuilder {
 	}
 
 	private CommonTree getAstFromString(String query) throws Exception {
-		SelectQueryGrammarLexer lexer = new SelectQueryGrammarLexer(new ANTLRStringStream(query));
+		SQL_grammarLexer lexer = new SQL_grammarLexer(new ANTLRStringStream(query));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		SelectQueryGrammarParser parser = new SelectQueryGrammarParser(tokens);
+		SQL_grammarParser parser = new SQL_grammarParser(tokens);
+		parser.query();
 		CommonTree ast = (CommonTree) parser.query().getTree();
 		if (parser.hasError())
 			throw new Exception("Error at postition " + parser.getErrorPosition() + ": " + parser.getErrorMessage());
@@ -75,13 +76,13 @@ public class SPJQueryBuilder {
 		for (Object c : queryTree.getChildren()) {
 			CommonTree child = (CommonTree) c;
 			switch (child.getType()) {
-			case SelectQueryGrammarParser.SELECT:
+			case SQL_grammarParser.SELECT:
 				buildSelect(child, query);
 				break;
-			case SelectQueryGrammarParser.FROM:
+			case SQL_grammarParser.FROM:
 				relationsInFrom = buildFrom(child);
 				break;
-			case SelectQueryGrammarParser.WHERE:
+			case SQL_grammarParser.WHERE:
 				buildWhere(child, query);
 				break;
 			default:
@@ -96,7 +97,7 @@ public class SPJQueryBuilder {
 
 			switch (((CommonTree) child).getType()) {
 
-			case SelectQueryGrammarParser.AGGREGATE_FUNC:
+			case SQL_grammarParser.AGGREGATE_FUNC:
 				AggregateFunction.AggregateFunctionType type = null;
 				if (child.toString().equals("SUM"))
 					type = AggregateFunction.AggregateFunctionType.SUM;
@@ -112,13 +113,13 @@ public class SPJQueryBuilder {
 				query.getProjectionTerms().add(new AggregateFunction(a, type));
 				break;
 
-			case SelectQueryGrammarParser.NAME:
+			case SQL_grammarParser.NAME:
 				query.getProjectionTerms().add(getAtribute(child.toString()));
 				break;
-			case SelectQueryGrammarParser.LITERAL:
+			case SQL_grammarParser.LITERAL:
 				query.getProjectionTerms().add(new Literal(((CommonTree) child).getChild(0).toString()));
 				break;
-			case SelectQueryGrammarParser.STAR:
+			case SQL_grammarParser.STAR:
 				for (Relation r : relationsInFrom)
 					query.getProjectionTerms().addAll(r.getAtributes());
 				break;
@@ -132,7 +133,7 @@ public class SPJQueryBuilder {
 		List<Relation> relationsInFrom = new ArrayList<Relation>();
 		for (Object child : fromTree.getChildren()) {
 			switch (((CommonTree) child).getType()) {
-			case SelectQueryGrammarParser.NAME:
+			case SQL_grammarParser.NAME:
 				if (!relationsAtributes.containsKey(child.toString()))
 					throw new IllegalArgumentException("Table " + child.toString() + " is not defined.");
 				else
@@ -146,78 +147,64 @@ public class SPJQueryBuilder {
 	}
 
 	private void buildWhere(CommonTree whereTree, SPJQuery query) throws Exception {
-		for (Object child : whereTree.getChildren()) {
-			switch (((CommonTree) child).getType()) {
-			case SelectQueryGrammarParser.AND:
-				for (Object whereBlockTree : whereTree.getChildren()) {
-					buildWhereBlock((CommonTree) whereBlockTree, query);
-				}
-				break;
-			case SelectQueryGrammarParser.OP:
-			case SelectQueryGrammarParser.IN:
-				buildWhereBlock((CommonTree) child, query);
-				break;
-			default:
-				throw new IllegalArgumentException("Should not be here");
-			}
-		}
+		for (Object whereBlockTree : whereTree.getChildren())
+			buildWhereBlock((CommonTree) whereBlockTree, query);
+
 	}
 
 	private void buildWhereBlock(CommonTree whereBlockTree, SPJQuery query) throws Exception {
+		Operator operator;
 		switch (whereBlockTree.getType()) {
-		case SelectQueryGrammarParser.OP:
-			Operator operator = Operator.EQ;
 
-			if (whereBlockTree.toString().equals("="))
-				operator = Operator.EQ;
-			else if (whereBlockTree.toString().equals("<"))
-				operator = Operator.LS;
-			else if (whereBlockTree.toString().equals(">"))
-				operator = Operator.GT;
-			else if (whereBlockTree.toString().equals("<="))
-				operator = Operator.LS_EQ;
-			else if (whereBlockTree.toString().equals(">="))
-				operator = Operator.GT_EQ;
-			else if (whereBlockTree.toString().equals("<>"))
-				operator = Operator.DIFF;
-			else
-				throw new IllegalArgumentException("Should not be here");
+		case SQL_grammarParser.EQ:
+			operator = Operator.EQ;
+		case SQL_grammarParser.DIFF:
+			operator = Operator.DIFF;
+		case SQL_grammarParser.GT:
+			operator = Operator.GT;
+		case SQL_grammarParser.LS:
+			operator = Operator.LS;
+		case SQL_grammarParser.GT_EQ:
+			operator = Operator.GT_EQ;
+		case SQL_grammarParser.LS_EQ:
+			operator = Operator.LS_EQ;
 
 			Term operand1 = null;
 			Term operand2 = null;
 			CommonTree leftOperand = (CommonTree) whereBlockTree.getChild(0);
 			CommonTree rightOperand = (CommonTree) whereBlockTree.getChild(1);
 
-			if (leftOperand.getType() == SelectQueryGrammarParser.NAME)
+			if (leftOperand.getType() == SQL_grammarParser.NAME)
 				operand1 = getAtribute(leftOperand.toString());
-			else if (leftOperand.getType() == SelectQueryGrammarParser.LITERAL)
+			else if (leftOperand.getType() == SQL_grammarParser.LITERAL)
 				operand1 = new Literal(leftOperand.getChild(0).toString());
-			else if (leftOperand.getType() == SelectQueryGrammarParser.QUERY)
+			else if (leftOperand.getType() == SQL_grammarParser.QUERY)
 				operand1 = buildSpjQueryFromAst(leftOperand);
 			else
 				throw new IllegalArgumentException("Should not be here");
 
-			if (rightOperand.getType() == SelectQueryGrammarParser.NAME)
+			if (rightOperand.getType() == SQL_grammarParser.NAME)
 				operand2 = getAtribute(rightOperand.toString());
-			else if (rightOperand.getType() == SelectQueryGrammarParser.LITERAL)
+			else if (rightOperand.getType() == SQL_grammarParser.LITERAL)
 				operand2 = new Literal(rightOperand.getChild(0).toString());
-			else if (rightOperand.getType() == SelectQueryGrammarParser.QUERY)
+			else if (rightOperand.getType() == SQL_grammarParser.QUERY)
 				operand2 = buildSpjQueryFromAst(rightOperand);
 			else
 				throw new IllegalArgumentException("Should not be here");
 
 			if (operand1 instanceof Atribute && operand2 instanceof Atribute)
-				query.getSelectionCnfClauses().add(new JoinClause(operator, (Atribute) operand1, (Atribute) operand2));
+				query.getJoinClauses().add(new JoinClause(operator, (Atribute) operand1, (Atribute) operand2));
 			else
 				query.getSelectionCnfClauses().add(new CompareSingleRowClause(operator, operand1, operand2));
+
 			break;
 
-		case SelectQueryGrammarParser.IN:
+		case SQL_grammarParser.IN:
 			CommonTree atribute = (CommonTree) whereBlockTree.getChild(0);
 			CommonTree subquery = (CommonTree) whereBlockTree.getChild(1);
-			if (atribute.getType() == SelectQueryGrammarParser.QUERY)
+			if (atribute.getType() == SQL_grammarParser.QUERY)
 				throw new IllegalArgumentException("A sub query cannot be on the left side of an IN clause");
-			if (subquery.getType() != SelectQueryGrammarParser.QUERY)
+			if (subquery.getType() != SQL_grammarParser.QUERY)
 				throw new IllegalArgumentException("The right side of an IN clause must be a subquery");
 			Atribute atr = getAtribute(atribute.toString());
 			SPJQuery subq = buildSpjQueryFromAst(subquery);

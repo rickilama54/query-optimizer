@@ -8,4 +8,13 @@ public class JoinClause extends CompareSingleRowClause {
 		super(operator, atribute1, atribute2);
 	}
 
+	public Atribute getAtribute1() {
+		return (Atribute) this.getOperand1();
+
+	}
+
+	public Atribute getAtribute2() {
+		return (Atribute) this.getOperand2();
+
+	}
 }

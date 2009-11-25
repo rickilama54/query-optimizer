@@ -6,7 +6,6 @@ public class NestedLoopsJoin extends Join {
 
 	public NestedLoopsJoin(JoinQuery joinQuery) {
 		super(joinQuery);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -15,5 +14,4 @@ public class NestedLoopsJoin extends Join {
 		return 0;
 	}
 
-	
 }

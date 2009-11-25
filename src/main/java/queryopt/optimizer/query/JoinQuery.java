@@ -18,13 +18,14 @@ public class JoinQuery {
 
 	private List<JoinClause> joinClauses;
 
-	public JoinQuery(SystemInfo systemInfo, Plan left, AccessPath right) {
+	public JoinQuery(SystemInfo systemInfo, Plan left, AccessPath right, List<Atribute> projectionAtributes,
+			List<JoinClause> joinClauses) {
 		super();
 		this.systemInfo = systemInfo;
 		this.left = left;
 		this.right = right;
-		projectionAtributes = new ArrayList<Atribute>();
-		joinClauses = new ArrayList<JoinClause>();
+		this.projectionAtributes = projectionAtributes;
+		this.joinClauses = joinClauses;
 	}
 
 	public SystemInfo getSystemInfo() {
