@@ -37,7 +37,7 @@ public class Schemas {
 	@SuppressWarnings("unchecked")
 	void setupRender() {
 		schemasEdit = false;
-		systemInfos = session.createCriteria(queryopt.entities.SystemInfo.class).addOrder(Order.asc("name")).list();
+		systemInfos = session.createCriteria(queryopt.entities.SystemInfo.class).list();
 	}
 
 	@SuppressWarnings("unchecked")

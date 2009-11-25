@@ -9,7 +9,6 @@ import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
 
 import queryopt.entities.SystemInfo;
 
@@ -39,7 +38,7 @@ public class SystemInfos {
 
 	@SuppressWarnings("unchecked")
 	public List<SystemInfo> getSystemInfos() {
-		return session.createCriteria(SystemInfo.class).addOrder(Order.asc("name")).list();
+		return session.createCriteria(SystemInfo.class).list();
 	}
 
 	public String getMemorySize() {

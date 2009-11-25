@@ -11,10 +11,12 @@ import queryopt.entities.Index;
 import queryopt.entities.IndexAtribute;
 import queryopt.entities.Relation;
 import queryopt.entities.SystemInfo;
+import queryopt.optimizer.join.Join;
 import queryopt.optimizer.path.AccessPath;
 import queryopt.optimizer.query.AggregateFunction;
 import queryopt.optimizer.query.Clause;
 import queryopt.optimizer.query.CompareSingleRowClause;
+import queryopt.optimizer.query.JoinClause;
 import queryopt.optimizer.query.JoinQuery;
 import queryopt.optimizer.query.Literal;
 import queryopt.optimizer.query.SPJQuery;
@@ -96,8 +98,6 @@ public class Utils {
 
 			outputRelation.getAtributes().remove(master);
 			outputRelation.getAtributes().remove(dependent);
-
-			boolean isUsedLaterInTheQuery = false;
 		}
 
 		return outputRelation;
@@ -110,14 +110,6 @@ public class Utils {
 			atributesInIndexes.addAll(index.getAtributes());
 		return atributesInIndexes.containsAll(atributes);
 	}
-
-	/*
-	 * // TODO private static Relation performSelection(Relation relation,
-	 * List<Clause> selectionClauses) { return null; }
-	 * 
-	 * // TODO private static Relation projectOutSingleRelation(Relation
-	 * relation, SPJQuery query) { return null; }
-	 */
 
 	public static HashMap<Index, List<Atribute>> getMatchingIndexes(List<Index> indexes, SingleRelationQuery srquery) {
 		HashMap<Index, List<Atribute>> matchingIndexes = new HashMap<Index, List<Atribute>>();
@@ -329,11 +321,76 @@ public class Utils {
 	}
 
 	public static List<JoinQuery> getJoinQueriesFromSPJQuery(List<? extends Plan> leftdeepPlansMinusOne,
-			SPJQuery query, List<AccessPath> allAccessPaths) {
+			SPJQuery query, List<AccessPath> allAccessPaths) throws Exception {
 
 		List<JoinQuery> joinQueries = new ArrayList<JoinQuery>();
 
+		for (Plan plan : leftdeepPlansMinusOne)
+			for (AccessPath accessPath : Utils.getRemainingAccessPaths(plan, allAccessPaths)) {
+				JoinQuery joinQuery = Utils.computeJoinQuery(query, plan, accessPath);
+				if (joinQuery != null)
+					joinQueries.add(joinQuery);
+			}
 		return joinQueries;
 	}
 
+	private static JoinQuery computeJoinQuery(SPJQuery query, Plan plan, AccessPath accessPath) throws Exception {
+
+		List<JoinClause> remainingJoinClauses = new ArrayList<JoinClause>();
+		remainingJoinClauses.addAll(query.getJoinClauses());
+		Plan join = plan;
+		while (join instanceof Join) {
+			remainingJoinClauses.removeAll(((Join) join).getJoinQuery().getJoinClauses());
+			join = ((Join) join).getLeft();
+		}
+
+		List<JoinClause> joinClauses = new ArrayList<JoinClause>();
+		for (JoinClause joinClause : remainingJoinClauses)
+			if (accessPath.getOutputRelation().getAtributes().contains(joinClause.getAtribute1()))
+				if (!plan.getOutputRelation().getAtributes().contains(joinClause.getAtribute2()))
+					throw new Exception("Invalid state");
+				else
+					joinClauses.add(joinClause);
+			else if (accessPath.getOutputRelation().getAtributes().contains(joinClause.getAtribute2()))
+				if (!plan.getOutputRelation().getAtributes().contains(joinClause.getAtribute1()))
+					throw new Exception("Invalid state");
+				else
+					joinClauses.add(joinClause);
+
+		// No join Clauses found
+		if (joinClauses.size() == 0)
+			return null;
+
+		// TODO project out not needed attributes
+		List<Atribute> projectionAtributes = new ArrayList<Atribute>();
+		projectionAtributes.addAll(plan.getOutputRelation().getAtributes());
+		projectionAtributes.addAll(accessPath.getOutputRelation().getAtributes());
+
+		return new JoinQuery(query.getSystemInfo(), plan, accessPath, projectionAtributes, joinClauses);
+	}
+
+	private static List<AccessPath> getRemainingAccessPaths(Plan plan, List<AccessPath> allAccessPaths) {
+
+		if (plan instanceof AccessPath) {
+			List<AccessPath> remainingAccessPaths = new ArrayList<AccessPath>();
+			remainingAccessPaths.addAll(allAccessPaths);
+			remainingAccessPaths.remove((AccessPath) plan);
+			return remainingAccessPaths;
+		}
+
+		if (plan instanceof Join) {
+			List<AccessPath> remainingAccessPaths = new ArrayList<AccessPath>();
+			remainingAccessPaths.addAll(allAccessPaths);
+
+			Plan leftPlan = plan;
+			while (leftPlan instanceof Join) {
+				remainingAccessPaths.remove(((Join) leftPlan).getRight());
+				leftPlan = ((Join) leftPlan).getLeft();
+			}
+			remainingAccessPaths.remove((AccessPath) leftPlan);
+			return remainingAccessPaths;
+		}
+
+		return null;
+	}
 }

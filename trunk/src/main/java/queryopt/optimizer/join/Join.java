@@ -23,6 +23,10 @@ public abstract class Join implements Plan {
 		return this.outputRelation;
 	}
 
+	public JoinQuery getJoinQuery() {
+		return joinQuery;
+	}
+
 	public Plan getLeft() {
 		return joinQuery.getLeft();
 	}

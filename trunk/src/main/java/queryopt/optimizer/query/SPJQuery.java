@@ -10,6 +10,7 @@ import queryopt.entities.SystemInfo;
 public class SPJQuery implements Term {
 	private List<Term> projectionTerms;
 	private List<Clause> selectionCnfClauses;
+	private List<JoinClause> joinClauses;
 	private List<Atribute> groupingAtributes;
 	private List<Clause> havingCnfClauses;
 
@@ -19,6 +20,7 @@ public class SPJQuery implements Term {
 	public SPJQuery() {
 		projectionTerms = new ArrayList<Term>();
 		selectionCnfClauses = new ArrayList<Clause>();
+		joinClauses = new ArrayList<JoinClause>();
 		groupingAtributes = new ArrayList<Atribute>();
 		havingCnfClauses = new ArrayList<Clause>();
 		disabledIndexes = new ArrayList<Index>();
@@ -30,6 +32,10 @@ public class SPJQuery implements Term {
 
 	public List<Clause> getSelectionCnfClauses() {
 		return selectionCnfClauses;
+	}
+
+	public List<JoinClause> getJoinClauses() {
+		return joinClauses;
 	}
 
 	public List<Atribute> getGroupingAtributes() {
