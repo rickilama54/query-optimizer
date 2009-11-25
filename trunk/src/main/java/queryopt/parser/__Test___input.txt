@@ -1,2 +1,4 @@
-SELECT * FROM TABLE
-WHERE X = '5';
+SELECT A,B,C ,    D 
+FROM TABLE1, TABLE2
+WHERE a=b AND c=d AND e = 5
+;
