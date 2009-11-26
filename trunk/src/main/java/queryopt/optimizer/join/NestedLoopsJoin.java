@@ -4,7 +4,7 @@ import queryopt.optimizer.query.JoinQuery;
 
 public class NestedLoopsJoin extends Join {
 
-	public NestedLoopsJoin(JoinQuery joinQuery) {
+	public NestedLoopsJoin(JoinQuery joinQuery)  throws Exception {
 		super(joinQuery);
 	}
 

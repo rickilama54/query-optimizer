@@ -4,9 +4,8 @@ import queryopt.optimizer.query.JoinQuery;
 
 public class SortMergeJoin extends Join {
 
-	public SortMergeJoin(JoinQuery joinQuery) {
+	public SortMergeJoin(JoinQuery joinQuery)  throws Exception {
 		super(joinQuery);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

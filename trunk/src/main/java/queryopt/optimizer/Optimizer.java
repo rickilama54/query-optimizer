@@ -80,7 +80,7 @@ public class Optimizer {
 		return singleRelationAccessPaths;
 	}
 
-	private static List<Join> generateMultipleRelationPlans(List<JoinQuery> joinQueries) {
+	private static List<Join> generateMultipleRelationPlans(List<JoinQuery> joinQueries) throws Exception {
 
 		List<Join> nRelationPlans = new ArrayList<Join>();
 

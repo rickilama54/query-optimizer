@@ -75,10 +75,13 @@ public class Utils {
 	/*
 	 * Get the output relation from a join operation. Should project out all non
 	 * used attributes in the later stages of the query processing.
+	 * TODO ima uste rabota
 	 */
-	public static Relation getOutputRelation(Plan left, AccessPath right, List<CompareSingleRowClause> joinClauses)
+	public static Relation getOutputRelation(Plan left, AccessPath right, List<JoinClause> joinClauses)
 			throws Exception {
+		
 		Relation outputRelation = copy(left.getOutputRelation());
+		
 		outputRelation.setName(left.getOutputRelation().getName() + "_|x|_" + right.getOutputRelation().getName());
 		outputRelation.getAtributes().addAll(left.getOutputRelation().getAtributes());
 
