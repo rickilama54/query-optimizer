@@ -16,4 +16,9 @@ public class Literal implements Term {
 		this.value = value;
 	}
 
+	@Override
+	public String toString() {
+		return this.getValue();
+	}
+
 }

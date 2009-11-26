@@ -2,6 +2,7 @@ package queryopt.optimizer.join;
 
 import queryopt.entities.Relation;
 import queryopt.optimizer.Plan;
+import queryopt.optimizer.Utils;
 import queryopt.optimizer.path.AccessPath;
 import queryopt.optimizer.query.JoinQuery;
 
@@ -12,11 +13,12 @@ public abstract class Join implements Plan {
 	protected Relation outputRelation;
 	protected long cost;
 
-	public Join(JoinQuery joinQuery) {
+	public Join(JoinQuery joinQuery) throws Exception {
 		super();
 		this.joinQuery = joinQuery;
 		this.cost = calcCost(joinQuery);
-		// outputrelation !!!
+		this.outputRelation = Utils.getOutputRelation(joinQuery.getLeft(), joinQuery.getRight(), joinQuery
+				.getJoinClauses());
 	}
 
 	public Relation getOutputRelation() {

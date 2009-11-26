@@ -4,7 +4,7 @@ import queryopt.optimizer.query.JoinQuery;
 
 public class IndexNestedLoopsJoin extends Join {
 
-	public IndexNestedLoopsJoin(JoinQuery joinQuery) {
+	public IndexNestedLoopsJoin(JoinQuery joinQuery)  throws Exception {
 		super(joinQuery);
 	}
 

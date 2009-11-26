@@ -44,7 +44,7 @@ query
 	:	query1 ';'! EOF! ; 
 	
 query1
-	:	select from where? ; 
+	:	select from where? -> ^(QUERY from select where?); 
  	   
 select	: 	SELECT^  ( (NAME | aggregate_funct) (','! (NAME | aggregate_funct) )* | STAR)  
 	;
@@ -62,7 +62,7 @@ and	:	clause ( 'AND'! clause)*
 	;
 
 clause	:	( NAME | LITERAL ) op^ ( NAME | LITERAL )
-		| (NAME | LITERAL) IN '(' query1 ')' -> ^(IN NAME? LITERAL? ^(QUERY query1))
+		| (NAME | LITERAL) IN^ '('! query1 ')'!
 		;
 		
 op	:	( EQ | LS | GT | LS_EQ | GT_EQ)

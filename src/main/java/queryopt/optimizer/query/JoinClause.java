@@ -15,6 +15,14 @@ public class JoinClause extends CompareSingleRowClause {
 
 	public Atribute getAtribute2() {
 		return (Atribute) this.getOperand2();
-
 	}
+
+	@Override
+	public String toString() {
+
+		return "operand1: " + this.getAtribute1().getRelation().getName() + "." + this.getAtribute1().getName() + " OPERATOR:"
+				+ this.getOperator() + " operand2: " + this.getAtribute2().getRelation().getName() + "."
+				+ this.getAtribute2().getName();
+	}
+
 }

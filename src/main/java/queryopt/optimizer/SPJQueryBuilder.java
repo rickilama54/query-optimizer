@@ -162,21 +162,29 @@ public class SPJQueryBuilder {
 	}
 
 	private void buildWhereBlock(CommonTree whereBlockTree, SPJQuery query) throws Exception {
-		Operator operator;
+
 		switch (whereBlockTree.getType()) {
 
 		case SQL_grammarParser.EQ:
-			operator = Operator.EQ;
 		case SQL_grammarParser.DIFF:
-			operator = Operator.DIFF;
 		case SQL_grammarParser.GT:
-			operator = Operator.GT;
 		case SQL_grammarParser.LS:
-			operator = Operator.LS;
 		case SQL_grammarParser.GT_EQ:
-			operator = Operator.GT_EQ;
 		case SQL_grammarParser.LS_EQ:
-			operator = Operator.LS_EQ;
+
+			Operator operator = null;
+			if (whereBlockTree.getType() == SQL_grammarParser.EQ)
+				operator = Operator.EQ;
+			else if (whereBlockTree.getType() == SQL_grammarParser.DIFF)
+				operator = Operator.DIFF;
+			else if (whereBlockTree.getType() == SQL_grammarParser.GT)
+				operator = Operator.GT;
+			else if (whereBlockTree.getType() == SQL_grammarParser.LS)
+				operator = Operator.LS;
+			else if (whereBlockTree.getType() == SQL_grammarParser.GT_EQ)
+				operator = Operator.GT_EQ;
+			else if (whereBlockTree.getType() == SQL_grammarParser.LS_EQ)
+				operator = Operator.LS_EQ;
 
 			Term operand1 = null;
 			Term operand2 = null;

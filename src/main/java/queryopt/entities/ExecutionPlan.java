@@ -45,7 +45,7 @@ public class ExecutionPlan {
 		this.error = error;
 	}
 
-	@Column(name = "message", nullable = false)
+	@Column(name = "message")
 	public String getMessage() {
 		return message;
 	}

@@ -158,4 +158,8 @@ public class Atribute implements Term {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return this.getName();
+	}
 }

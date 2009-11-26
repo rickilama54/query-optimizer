@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.EventContext;
-import org.apache.tapestry5.ajax.MultiZoneUpdate;
 import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
@@ -18,7 +17,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
 import queryopt.components.ExecutionPlanView;
-import queryopt.components.Layout;
 import queryopt.entities.ExecutionPlan;
 import queryopt.entities.Relation;
 import queryopt.entities.Schema;
@@ -54,9 +52,6 @@ public class Query {
 
 	@InjectComponent
 	private Zone executionPlansZone;
-
-	@InjectComponent
-	private Layout layout;
 
 	@InjectComponent
 	private Form editForm;
