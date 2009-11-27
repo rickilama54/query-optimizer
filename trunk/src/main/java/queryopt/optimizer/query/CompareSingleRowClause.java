@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import queryopt.entities.Atribute;
+import queryopt.optimizer.Utils;
 
 public class CompareSingleRowClause extends Clause {
 	private Operator operator;
@@ -69,8 +70,9 @@ public class CompareSingleRowClause extends Clause {
 		Comparable low = atribute.getLowValue();
 		Comparable literal = l1.getValue();
 
-		double distanceLow = literal.compareTo(low);
-		double distanceHigh = -literal.compareTo(high);
+		double distanceLow = -Utils.compare(low.toString(), literal.toString(), low.toString(), high.toString());
+		double distanceHigh = Utils.compare(high.toString(), literal.toString(), low.toString(), high.toString());
+
 		try {
 			double dhigh = Double.valueOf(atribute.getHighValue());
 			double dlow = Double.valueOf(atribute.getLowValue());
@@ -84,9 +86,9 @@ public class CompareSingleRowClause extends Clause {
 			distanceLow = dliteral - dlow;
 			distanceHigh = dhigh - dliteral;
 		} catch (NumberFormatException e) {
-			if (literal.compareTo(high) > 0)
+			if (Utils.compare(literal.toString(), high.toString(), low.toString(), high.toString()) > 0)
 				return 0.0;
-			if (literal.compareTo(low) < 0)
+			if (Utils.compare(literal.toString(), low.toString(), low.toString(), high.toString()) < 0)
 				return 0.0;
 		}
 
@@ -172,7 +174,8 @@ public class CompareSingleRowClause extends Clause {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("CompareSingleRowClause: OPERATOR: "+this.getOperator() + " operand1: "+this.getOperand1()+" operand2: "+this.getOperand2());
+		sb.append("CompareSingleRowClause: OPERATOR: " + this.getOperator() + " operand1: " + this.getOperand1()
+				+ " operand2: " + this.getOperand2());
 		return sb.toString();
 	}
 }

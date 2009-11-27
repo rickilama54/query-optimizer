@@ -74,14 +74,14 @@ public class Utils {
 
 	/*
 	 * Get the output relation from a join operation. Should project out all non
-	 * used attributes in the later stages of the query processing.
-	 * TODO ima uste rabota
+	 * used attributes in the later stages of the query processing. TODO ima
+	 * uste rabota
 	 */
 	public static Relation getOutputRelation(Plan left, AccessPath right, List<JoinClause> joinClauses)
 			throws Exception {
-		
+
 		Relation outputRelation = copy(left.getOutputRelation());
-		
+
 		outputRelation.setName(left.getOutputRelation().getName() + "_|x|_" + right.getOutputRelation().getName());
 		outputRelation.getAtributes().addAll(left.getOutputRelation().getAtributes());
 
@@ -395,5 +395,32 @@ public class Utils {
 		}
 
 		return null;
+	}
+
+	public static double compare(String s1, String s2, String low, String high) {
+		int length = high.length();
+		double distanceByChar = (double) Math.pow(Math.E, Math.log(Double.MAX_VALUE - Double.MIN_VALUE)
+				/ (double) length);
+		distanceByChar /= length;
+		// s1 - s2
+		double s1val = 0.0;
+		int power = s1.length();
+		// From the end to the beginning
+		for (char c : s1.toCharArray()) {
+			double cc = (double) c;
+			double letterval = (cc / (double) Character.MAX_VALUE) * (double) distanceByChar;
+			s1val += Math.pow(letterval, power--);
+		}
+		// s1 - s2
+		double s2val = 0.0;
+		power = s2.length();
+		// From the end to the beginning
+		for (char c : s2.toCharArray()) {
+			double cc = (double) c;
+			double letterval = (cc / (double) Character.MAX_VALUE) * (double) distanceByChar;
+			s2val += Math.pow(letterval, power--);
+		}
+
+		return s1val - s2val;
 	}
 }
