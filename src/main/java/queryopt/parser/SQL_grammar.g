@@ -8,6 +8,7 @@ options
 tokens
 {
 	QUERY;
+	LITERAL;
 }
 
 @header{package queryopt.parser;}
@@ -61,9 +62,10 @@ where	:	WHERE^ and
 and	:	clause ( 'AND'! clause)* 
 	;
 
-clause	:	( NAME | LITERAL ) op^ ( NAME | LITERAL )
-		| (NAME | LITERAL) IN^ '('! query1 ')'!
+clause	:	( NAME | literal) op^ ( NAME |  literal ) 
+		| (NAME | literal) IN^ '('! query1 ')'!
 		;
+literal	:	 '\'' name=NAME '\'' -> LITERAL[$name];
 		
 op	:	( EQ | LS | GT | LS_EQ | GT_EQ)
 	;
@@ -89,5 +91,4 @@ SUM	:	'SUM';
 AVG	:	'AVG';
 MAX	:	'MAX';
 MIN	:	'MIN';
-LITERAL	:	'\''NAME'\'';
 NAME	:	( '0'..'9' | 'a'..'z' | 'A'..'Z' | '_' )+ ; 

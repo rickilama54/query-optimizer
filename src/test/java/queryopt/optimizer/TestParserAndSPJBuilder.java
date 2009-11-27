@@ -14,9 +14,10 @@ import queryopt.optimizer.query.SPJQuery;
 
 public class TestParserAndSPJBuilder {
 	private List<Relation> allRelations;
+	private SystemInfo systemInfo;
 
 	public void setup() {
-		SystemInfo systemInfo = new SystemInfo();
+		systemInfo = new SystemInfo();
 		systemInfo.setBlockingFactorIndexFirstLevelRows(2);
 		systemInfo.setMemorySizeInBytes(4000000);
 		systemInfo.setPageSizeInBytes(4000);
@@ -45,7 +46,7 @@ public class TestParserAndSPJBuilder {
 		Atribute departmentsDeptId = new Atribute(7, "DEPARTMENTS_DEPT_ID", false, 4, 30, employees, deptId);
 
 		empName.setHighValue("ZZZZZZ");
-		empName.setLowValue("A");
+		empName.setLowValue("AAAAAA");
 		empSalary.setHighValue("10000");
 		empSalary.setLowValue("0");
 
@@ -56,7 +57,7 @@ public class TestParserAndSPJBuilder {
 		allRelations.add(departments);
 	}
 
-	public void testSPJQuery(String query) throws Exception {
+	public SPJQuery testSPJQuery(String query) throws Exception {
 
 		Query q = new Query();
 		q.setText(query);
@@ -68,17 +69,28 @@ public class TestParserAndSPJBuilder {
 		builder.parse(q.getText());
 		SPJQuery spjquery = builder.build(execplan1);
 		System.out.println(spjquery);
+		spjquery.setSystemInfo(systemInfo);
+		return spjquery;
+	}
+
+	static void optimize(SPJQuery query) throws Exception {
+		Optimizer optimizer = new Optimizer(query);
+		Plan plan = optimizer.generateBestPlan();
+		System.out.println("Best Plan:" + plan.getPlanAsTree());
 	}
 
 	public static void main(String[] args) throws Exception {
 
 		String query1 = "SELECT EMP_ID, EMP_NAME, EMP_SALARY " + "FROM EMPLOYEES";
 		String query2 = "SELECT EMP_ID, EMP_NAME, EMP_SALARY " + "FROM EMPLOYEES, DEPARTMENTS "
-				+ "WHERE DEPARTMENTS_DEPT_ID = DEPT_ID AND EMP_NAME = 'DRAGAN' AND EMP_SALARY > 5";
+				+ "WHERE DEPARTMENTS_DEPT_ID = DEPT_ID AND EMP_NAME > 'DRAGAN' AND EMP_SALARY > 5";
 
 		TestParserAndSPJBuilder test = new TestParserAndSPJBuilder();
 		test.setup();
-		test.testSPJQuery(query1);
-		test.testSPJQuery(query2);
+		SPJQuery spjquery1 = test.testSPJQuery(query1);
+		SPJQuery spjquery2 = test.testSPJQuery(query2);
+
+		optimize(spjquery1);
+		optimize(spjquery2);
 	}
 }

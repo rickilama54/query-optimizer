@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g 2009-11-26 01:09:19
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g 2009-11-27 23:41:23
 package queryopt.parser;
 
 import org.antlr.runtime.*;
@@ -7,31 +7,32 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class SQL_grammarLexer extends Lexer {
-    public static final int WHERE=14;
-    public static final int STAR=7;
+    public static final int WHERE=15;
+    public static final int STAR=8;
+    public static final int T__29=29;
     public static final int T__28=28;
     public static final int T__27=27;
     public static final int T__26=26;
     public static final int T__25=25;
     public static final int T__24=24;
     public static final int LS=18;
-    public static final int MAX=12;
-    public static final int LITERAL=15;
-    public static final int COUNT=8;
-    public static final int MIN=11;
-    public static final int SUM=9;
+    public static final int MAX=13;
+    public static final int LITERAL=5;
+    public static final int COUNT=9;
+    public static final int MIN=12;
+    public static final int SUM=10;
     public static final int EOF=-1;
-    public static final int NAME=6;
+    public static final int NAME=7;
     public static final int WS=22;
     public static final int IN=16;
-    public static final int AVG=10;
+    public static final int AVG=11;
     public static final int DIFF=23;
     public static final int QUERY=4;
     public static final int GT=19;
     public static final int EQ=17;
-    public static final int FROM=13;
+    public static final int FROM=14;
     public static final int LS_EQ=20;
-    public static final int SELECT=5;
+    public static final int SELECT=6;
     public static final int GT_EQ=21;
 
     // delegates
@@ -148,13 +149,33 @@ public class SQL_grammarLexer extends Lexer {
     }
     // $ANTLR end "T__28"
 
+    // $ANTLR start "T__29"
+    public final void mT__29() throws RecognitionException {
+        try {
+            int _type = T__29;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:10:7: ( '\\'' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:10:9: '\\''
+            {
+            match('\''); 
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__29"
+
     // $ANTLR start "WS"
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:73:2: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:73:5: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:75:2: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:75:5: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -182,8 +203,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = SELECT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:76:8: ( 'SELECT' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:76:10: 'SELECT'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:78:8: ( 'SELECT' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:78:10: 'SELECT'
             {
             match("SELECT"); 
 
@@ -203,8 +224,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = FROM;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:77:6: ( 'FROM' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:77:8: 'FROM'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:79:6: ( 'FROM' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:79:8: 'FROM'
             {
             match("FROM"); 
 
@@ -224,8 +245,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = WHERE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:78:7: ( 'WHERE' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:78:9: 'WHERE'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:80:7: ( 'WHERE' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:80:9: 'WHERE'
             {
             match("WHERE"); 
 
@@ -245,8 +266,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = STAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:79:6: ( '*' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:79:8: '*'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:81:6: ( '*' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:81:8: '*'
             {
             match('*'); 
 
@@ -265,8 +286,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:80:4: ( '=' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:80:6: '='
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:82:4: ( '=' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:82:6: '='
             {
             match('='); 
 
@@ -285,8 +306,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = DIFF;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:81:6: ( '<>' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:81:8: '<>'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:83:6: ( '<>' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:83:8: '<>'
             {
             match("<>"); 
 
@@ -306,8 +327,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = GT_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:82:7: ( '>=' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:82:9: '>='
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:84:7: ( '>=' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:84:9: '>='
             {
             match(">="); 
 
@@ -327,8 +348,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = LS_EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:83:7: ( '<=' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:83:9: '<='
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:85:7: ( '<=' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:85:9: '<='
             {
             match("<="); 
 
@@ -348,8 +369,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = LS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:84:4: ( '<' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:84:6: '<'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:86:4: ( '<' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:86:6: '<'
             {
             match('<'); 
 
@@ -368,8 +389,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = GT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:85:4: ( '>' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:85:6: '>'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:87:4: ( '>' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:87:6: '>'
             {
             match('>'); 
 
@@ -388,8 +409,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = IN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:86:4: ( 'IN' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:86:6: 'IN'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:88:4: ( 'IN' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:88:6: 'IN'
             {
             match("IN"); 
 
@@ -409,8 +430,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = COUNT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:87:7: ( 'COUNT' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:87:9: 'COUNT'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:89:7: ( 'COUNT' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:89:9: 'COUNT'
             {
             match("COUNT"); 
 
@@ -430,8 +451,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = SUM;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:88:5: ( 'SUM' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:88:7: 'SUM'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:90:5: ( 'SUM' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:90:7: 'SUM'
             {
             match("SUM"); 
 
@@ -451,8 +472,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = AVG;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:89:5: ( 'AVG' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:89:7: 'AVG'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:91:5: ( 'AVG' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:91:7: 'AVG'
             {
             match("AVG"); 
 
@@ -472,8 +493,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = MAX;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:90:5: ( 'MAX' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:90:7: 'MAX'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:92:5: ( 'MAX' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:92:7: 'MAX'
             {
             match("MAX"); 
 
@@ -493,8 +514,8 @@ public class SQL_grammarLexer extends Lexer {
         try {
             int _type = MIN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:91:5: ( 'MIN' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:91:7: 'MIN'
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:5: ( 'MIN' )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:7: 'MIN'
             {
             match("MIN"); 
 
@@ -509,37 +530,15 @@ public class SQL_grammarLexer extends Lexer {
     }
     // $ANTLR end "MIN"
 
-    // $ANTLR start "LITERAL"
-    public final void mLITERAL() throws RecognitionException {
-        try {
-            int _type = LITERAL;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:92:9: ( '\\'' NAME '\\'' )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:92:11: '\\'' NAME '\\''
-            {
-            match('\''); 
-            mNAME(); 
-            match('\''); 
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end "LITERAL"
-
     // $ANTLR start "NAME"
     public final void mNAME() throws RecognitionException {
         try {
             int _type = NAME;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:6: ( ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' | '_' )+ )
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:8: ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' | '_' )+
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:94:6: ( ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' | '_' )+ )
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:94:8: ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' | '_' )+
             {
-            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:93:8: ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' | '_' )+
+            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:94:8: ( '0' .. '9' | 'a' .. 'z' | 'A' .. 'Z' | '_' )+
             int cnt1=0;
             loop1:
             do {
@@ -589,7 +588,7 @@ public class SQL_grammarLexer extends Lexer {
     // $ANTLR end "NAME"
 
     public void mTokens() throws RecognitionException {
-        // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:8: ( T__24 | T__25 | T__26 | T__27 | T__28 | WS | SELECT | FROM | WHERE | STAR | EQ | DIFF | GT_EQ | LS_EQ | LS | GT | IN | COUNT | SUM | AVG | MAX | MIN | LITERAL | NAME )
+        // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:8: ( T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | WS | SELECT | FROM | WHERE | STAR | EQ | DIFF | GT_EQ | LS_EQ | LS | GT | IN | COUNT | SUM | AVG | MAX | MIN | NAME )
         int alt2=24;
         alt2 = dfa2.predict(input);
         switch (alt2) {
@@ -629,133 +628,133 @@ public class SQL_grammarLexer extends Lexer {
                 }
                 break;
             case 6 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:40: WS
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:40: T__29
+                {
+                mT__29(); 
+
+                }
+                break;
+            case 7 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:46: WS
                 {
                 mWS(); 
 
                 }
                 break;
-            case 7 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:43: SELECT
+            case 8 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:49: SELECT
                 {
                 mSELECT(); 
 
                 }
                 break;
-            case 8 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:50: FROM
+            case 9 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:56: FROM
                 {
                 mFROM(); 
 
                 }
                 break;
-            case 9 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:55: WHERE
+            case 10 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:61: WHERE
                 {
                 mWHERE(); 
 
                 }
                 break;
-            case 10 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:61: STAR
+            case 11 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:67: STAR
                 {
                 mSTAR(); 
 
                 }
                 break;
-            case 11 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:66: EQ
+            case 12 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:72: EQ
                 {
                 mEQ(); 
 
                 }
                 break;
-            case 12 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:69: DIFF
+            case 13 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:75: DIFF
                 {
                 mDIFF(); 
 
                 }
                 break;
-            case 13 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:74: GT_EQ
+            case 14 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:80: GT_EQ
                 {
                 mGT_EQ(); 
 
                 }
                 break;
-            case 14 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:80: LS_EQ
+            case 15 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:86: LS_EQ
                 {
                 mLS_EQ(); 
 
                 }
                 break;
-            case 15 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:86: LS
+            case 16 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:92: LS
                 {
                 mLS(); 
 
                 }
                 break;
-            case 16 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:89: GT
+            case 17 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:95: GT
                 {
                 mGT(); 
 
                 }
                 break;
-            case 17 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:92: IN
+            case 18 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:98: IN
                 {
                 mIN(); 
 
                 }
                 break;
-            case 18 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:95: COUNT
+            case 19 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:101: COUNT
                 {
                 mCOUNT(); 
 
                 }
                 break;
-            case 19 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:101: SUM
+            case 20 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:107: SUM
                 {
                 mSUM(); 
 
                 }
                 break;
-            case 20 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:105: AVG
+            case 21 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:111: AVG
                 {
                 mAVG(); 
 
                 }
                 break;
-            case 21 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:109: MAX
+            case 22 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:115: MAX
                 {
                 mMAX(); 
 
                 }
                 break;
-            case 22 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:113: MIN
+            case 23 :
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:119: MIN
                 {
                 mMIN(); 
 
                 }
                 break;
-            case 23 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:117: LITERAL
-                {
-                mLITERAL(); 
-
-                }
-                break;
             case 24 :
-                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:125: NAME
+                // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:1:123: NAME
                 {
                 mNAME(); 
 
@@ -769,41 +768,42 @@ public class SQL_grammarLexer extends Lexer {
 
     protected DFA2 dfa2 = new DFA2(this);
     static final String DFA2_eotS =
-        "\5\uffff\1\22\1\uffff\3\22\2\uffff\1\33\1\35\3\22\2\uffff\6\22\5"+
+        "\5\uffff\1\22\2\uffff\3\22\2\uffff\1\33\1\35\3\22\1\uffff\6\22\5"+
         "\uffff\1\50\3\22\1\54\1\55\1\22\1\57\2\22\1\uffff\1\22\1\63\1\64"+
         "\2\uffff\1\22\1\uffff\1\66\2\22\2\uffff\1\22\1\uffff\1\72\1\73\1"+
         "\74\3\uffff";
     static final String DFA2_eofS =
         "\75\uffff";
     static final String DFA2_minS =
-        "\1\11\4\uffff\1\116\1\uffff\1\105\1\122\1\110\2\uffff\2\75\1\116"+
-        "\1\117\1\101\2\uffff\1\104\1\107\1\114\1\115\1\117\1\105\5\uffff"+
+        "\1\11\4\uffff\1\116\2\uffff\1\105\1\122\1\110\2\uffff\2\75\1\116"+
+        "\1\117\1\101\1\uffff\1\104\1\107\1\114\1\115\1\117\1\105\5\uffff"+
         "\1\60\1\125\1\130\1\116\2\60\1\105\1\60\1\115\1\122\1\uffff\1\116"+
         "\2\60\2\uffff\1\103\1\uffff\1\60\1\105\1\124\2\uffff\1\124\1\uffff"+
         "\3\60\3\uffff";
     static final String DFA2_maxS =
-        "\1\172\4\uffff\1\126\1\uffff\1\125\1\122\1\110\2\uffff\1\76\1\75"+
-        "\1\116\1\117\1\111\2\uffff\1\104\1\107\1\114\1\115\1\117\1\105\5"+
+        "\1\172\4\uffff\1\126\2\uffff\1\125\1\122\1\110\2\uffff\1\76\1\75"+
+        "\1\116\1\117\1\111\1\uffff\1\104\1\107\1\114\1\115\1\117\1\105\5"+
         "\uffff\1\172\1\125\1\130\1\116\2\172\1\105\1\172\1\115\1\122\1\uffff"+
         "\1\116\2\172\2\uffff\1\103\1\uffff\1\172\1\105\1\124\2\uffff\1\124"+
         "\1\uffff\3\172\3\uffff";
     static final String DFA2_acceptS =
-        "\1\uffff\1\1\1\2\1\3\1\4\1\uffff\1\6\3\uffff\1\12\1\13\5\uffff\1"+
-        "\27\1\30\6\uffff\1\14\1\16\1\17\1\15\1\20\12\uffff\1\21\3\uffff"+
-        "\1\5\1\24\1\uffff\1\23\3\uffff\1\25\1\26\1\uffff\1\10\3\uffff\1"+
-        "\11\1\22\1\7";
+        "\1\uffff\1\1\1\2\1\3\1\4\1\uffff\1\6\1\7\3\uffff\1\13\1\14\5\uffff"+
+        "\1\30\6\uffff\1\15\1\17\1\20\1\16\1\21\12\uffff\1\22\3\uffff\1\5"+
+        "\1\25\1\uffff\1\24\3\uffff\1\26\1\27\1\uffff\1\11\3\uffff\1\12\1"+
+        "\23\1\10";
     static final String DFA2_specialS =
         "\75\uffff}>";
     static final String[] DFA2_transitionS = {
-            "\2\6\1\uffff\2\6\22\uffff\1\6\6\uffff\1\21\1\3\1\4\1\12\1\uffff"+
-            "\1\2\3\uffff\12\22\1\uffff\1\1\1\14\1\13\1\15\2\uffff\1\5\1"+
-            "\22\1\17\2\22\1\10\2\22\1\16\3\22\1\20\5\22\1\7\3\22\1\11\3"+
+            "\2\7\1\uffff\2\7\22\uffff\1\7\6\uffff\1\6\1\3\1\4\1\13\1\uffff"+
+            "\1\2\3\uffff\12\22\1\uffff\1\1\1\15\1\14\1\16\2\uffff\1\5\1"+
+            "\22\1\20\2\22\1\11\2\22\1\17\3\22\1\21\5\22\1\10\3\22\1\12\3"+
             "\22\4\uffff\1\22\1\uffff\32\22",
             "",
             "",
             "",
             "",
             "\1\23\7\uffff\1\24",
+            "",
             "",
             "\1\25\17\uffff\1\26",
             "\1\27",
@@ -815,7 +815,6 @@ public class SQL_grammarLexer extends Lexer {
             "\1\36",
             "\1\37",
             "\1\40\7\uffff\1\41",
-            "",
             "",
             "\1\42",
             "\1\43",
@@ -891,7 +890,7 @@ public class SQL_grammarLexer extends Lexer {
             this.transition = DFA2_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__24 | T__25 | T__26 | T__27 | T__28 | WS | SELECT | FROM | WHERE | STAR | EQ | DIFF | GT_EQ | LS_EQ | LS | GT | IN | COUNT | SUM | AVG | MAX | MIN | LITERAL | NAME );";
+            return "1:1: Tokens : ( T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | WS | SELECT | FROM | WHERE | STAR | EQ | DIFF | GT_EQ | LS_EQ | LS | GT | IN | COUNT | SUM | AVG | MAX | MIN | NAME );";
         }
     }
  

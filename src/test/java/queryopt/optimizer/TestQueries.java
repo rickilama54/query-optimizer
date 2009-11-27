@@ -193,6 +193,5 @@ public class TestQueries {
 		testQueries.test(testQueries.query7);
 		testQueries.test(testQueries.query8);
 		testQueries.test(testQueries.query9);
-
 	}
 }
