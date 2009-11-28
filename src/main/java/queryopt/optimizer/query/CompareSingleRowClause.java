@@ -11,7 +11,7 @@ public class CompareSingleRowClause extends Clause {
 	private Term operand1;
 	private Term operand2;
 
-	public CompareSingleRowClause(Operator operator, Term operand1, Term operand2) {
+	public CompareSingleRowClause(Operator operator, Term operand1, Term operand2) throws Exception {
 		super();
 		this.operator = operator;
 		this.operand1 = operand1;
@@ -44,24 +44,15 @@ public class CompareSingleRowClause extends Clause {
 	}
 
 	@Override
-	protected double calcSelectivity() {
+	protected double calcSelectivity() throws Exception {
 		if (operand1 instanceof Literal && operand2 instanceof Literal)
 			return calcSelectivityTwoLiterals((Literal) operand1, (Literal) operand2, operator);
 		else if (operand1 instanceof Literal && operand2 instanceof Atribute)
 			return calcSelectivityLiteralAtribute((Literal) operand1, (Atribute) operand2, operator);
 		else if (operand1 instanceof Atribute && operand2 instanceof Literal)
 			return calcSelectivityLiteralAtribute((Literal) operand2, (Atribute) operand1, operator);
-		else if (operand1 instanceof Atribute && operand2 instanceof Atribute)
-			return calcSelectivityAtributeAtribute((Atribute) operand1, (Atribute) operand2, operator);
 
-		return 0.0;
-	}
-
-	/*
-	 * Join
-	 */
-	private static double calcSelectivityAtributeAtribute(Atribute a1, Atribute a2, Operator operator) {
-		return 0.0;
+		throw new Exception("Should not be here");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -96,9 +87,9 @@ public class CompareSingleRowClause extends Clause {
 		switch (operator) {
 		case EQ:
 			if (atribute.getDistinctPercent() == 100)
-				selectivity = 1 / (double) atribute.getRelation().getNoOfRows();
+				selectivity = 1.0 / (double) atribute.getRelation().getNoOfRows();
 			else
-				selectivity = (1 - 0.01 * atribute.getDistinctPercent());
+				selectivity = (1.0 - 0.01 * atribute.getDistinctPercent());
 			break;
 		case DIFF:
 			if (atribute.getDistinctPercent() == 100)

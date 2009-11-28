@@ -1,5 +1,6 @@
 package queryopt.optimizer;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,17 +25,23 @@ import queryopt.optimizer.query.SPJQuery;
 import queryopt.optimizer.query.SingleRelationQuery;
 import queryopt.optimizer.query.Term;
 
+/**
+ * @author dragan
+ * 
+ */
 public class Utils {
 
 	public static Relation getOutputRelation(SingleRelationQuery srquery) {
 		Relation outputRelation = copy(srquery.getRelation());
 
 		outputRelation.getAtributes().clear();
+
 		outputRelation.getAtributes().addAll(getAllAtributesInSingleRelationQuery(srquery));
 
 		double rowsFactor = 1.0;
 		for (Clause clause : srquery.getSelectionCnfClauses())
 			rowsFactor *= clause.getSelectivity();
+
 		int rows = (int) (rowsFactor * srquery.getRelation().getNoOfRows());
 		outputRelation.setNoOfRows(rows);
 		return outputRelation;
@@ -80,33 +87,78 @@ public class Utils {
 	 * used attributes in the later stages of the query processing. TODO ima
 	 * uste rabota
 	 */
-	public static Relation getOutputRelation(Plan left, AccessPath right, List<JoinClause> joinClauses)
-			throws Exception {
+	public static Relation getOutputRelation(JoinQuery joinquery) throws Exception {
 
-		Relation outputRelation = copy(left.getOutputRelation());
+		Relation outputRelation = copy(joinquery.getLeft().getOutputRelation());
 
-		outputRelation.setName(left.getOutputRelation().getName() + "_|x|_" + right.getOutputRelation().getName());
-		outputRelation.getAtributes().addAll(left.getOutputRelation().getAtributes());
+		outputRelation.setName(joinquery.getLeft().getOutputRelation().getName() + "_|x|_"
+				+ joinquery.getRight().getOutputRelation().getName());
 
-		for (CompareSingleRowClause clause : joinClauses) {
-			Atribute operand1 = (Atribute) clause.getOperand1();
-			Atribute operand2 = (Atribute) clause.getOperand2();
-			Atribute master = null;
-			Atribute dependent = null;
-			if (operand1.getFkAtribute().equals(operand2)) {
-				master = operand2;
-				dependent = operand1;
-			} else if (operand2.getFkAtribute().equals(operand1)) {
-				master = operand1;
-				dependent = operand2;
-			} else
-				throw new Exception("Should not be here");
+		outputRelation.getAtributes().clear();
+		outputRelation.getAtributes().addAll(joinquery.getProjectionAtributes());
 
-			outputRelation.getAtributes().remove(master);
-			outputRelation.getAtributes().remove(dependent);
+		int noOfRows = 0;
+
+		for (JoinClause clause : joinquery.getJoinClauses()) {
+
 		}
 
+		outputRelation.setNoOfRows(noOfRows);
+
 		return outputRelation;
+	}
+
+
+	private static int getNoOfRowsAfterJoin(Atribute a1, Atribute a2, Operator operator) {
+		// Are a1 and a2 in a FK relationship
+		if (a1.getFkAtribute() != null && a1.getFkAtribute().equals(a2))
+			return getNoOfRowsAfterJoinEqualFK(a1, a2);
+		if (a2.getFkAtribute() != null && a2.getFkAtribute().equals(a1))
+			return getNoOfRowsAfterJoinEqualFK(a2, a1);
+
+		// a1 and a2 are not in a FK relationship
+		BigDecimal a1Low = getHashValue(a1.getLowValue());
+		BigDecimal a1High = getHashValue(a2.getHighValue());
+		BigDecimal a2Low = getHashValue(a2.getLowValue());
+		BigDecimal a2High = getHashValue(a2.getHighValue());
+
+		BigDecimal lowIntersection = a1Low;
+		if (a2Low.compareTo(a1Low) > 0)
+			lowIntersection = a2Low;
+
+		BigDecimal highIntersection = a1High;
+		if (a2High.compareTo(a1High) < 0)
+			highIntersection = a2High;
+
+		// No intersection between [a1Low, a1High] and [a2Low, a2High]
+		if (highIntersection.compareTo(lowIntersection) <= 0)
+			return 0;
+
+		BigDecimal a1PercentInIntersection = highIntersection.subtract(lowIntersection).divide(a1High.subtract(a1Low));
+		BigDecimal a2PercentInIntersection = highIntersection.subtract(lowIntersection).divide(a2High.subtract(a2Low));
+
+		BigDecimal a1RowsInIntersection = a1PercentInIntersection.multiply(new BigDecimal(a1.getRelation()
+				.getNoOfRows()));
+		BigDecimal a2RowsInIntersection = a2PercentInIntersection.multiply(new BigDecimal(a2.getRelation()
+				.getNoOfRows()));
+
+		if (a1RowsInIntersection.compareTo(a2RowsInIntersection) > 0)
+			return a1RowsInIntersection.intValue();
+		return a2RowsInIntersection.intValue();
+	}
+
+	private static int getNoOfRowsAfterJoinEqualFK(Atribute master, Atribute dependent) {
+		double rowsDependent = dependent.getRelation().getNoOfRows();
+		double rowsMaster = master.getRelation().getNoOfRows();
+		double distinctMaster = getNumberOfDistinctValues(master);
+		return (int) (rowsDependent * rowsMaster / distinctMaster);
+	}
+
+	private static double getNumberOfDistinctValues(Atribute a) {
+		double selectivity = (1.0 - 0.01 * a.getDistinctPercent());
+		if (a.getDistinctPercent() == 100)
+			selectivity = 1.0 / (double) a.getRelation().getNoOfRows();
+		return ((double) a.getRelation().getNoOfRows()) * selectivity;
 	}
 
 	public static boolean isIndexOnlyScanPossible(Collection<Index> indexes, SingleRelationQuery srquery) {
@@ -294,14 +346,17 @@ public class Utils {
 		return true;
 	}
 
-	public static HashMap<Relation, SingleRelationQuery> getSingleRelationQueriesFromSPJQuery(SPJQuery query) {
+	public static HashMap<Relation, SingleRelationQuery> getSingleRelationQueriesFromSPJQuery(SPJQuery query)
+			throws Exception {
 		HashMap<Relation, SingleRelationQuery> srqueries = new HashMap<Relation, SingleRelationQuery>();
 
+		// Fill Projection and Grouping Terms
 		for (Term term : query.getProjectionTerms())
 			resolveTerm(term, srqueries, query.getSystemInfo());
 		for (Atribute atribute : query.getGroupingAtributes())
 			resolveTerm(atribute, srqueries, query.getSystemInfo());
 
+		// Fill Selection Clauses
 		for (Clause clause : query.getSelectionCnfClauses())
 			for (Atribute a : clause.getAtributes()) {
 				if (!srqueries.containsKey(a.getRelation()))
@@ -309,26 +364,34 @@ public class Utils {
 				srqueries.get(a.getRelation()).getSelectionCnfClauses().add(clause);
 			}
 
+		// Fill Join Clauses
 		for (JoinClause clause : query.getJoinClauses())
 			for (Atribute a : clause.getAtributes()) {
 				if (!srqueries.containsKey(a.getRelation()))
 					srqueries.put(a.getRelation(), new SingleRelationQuery(query.getSystemInfo(), a.getRelation()));
 				srqueries.get(a.getRelation()).getJoinClauses().add(clause);
+				resolveTerm(a, srqueries, query.getSystemInfo());
 			}
 		return srqueries;
 	}
 
-	private static void resolveTerm(Term term, HashMap<Relation, SingleRelationQuery> srqueries, SystemInfo systemInfo) {
+	private static void resolveTerm(Term term, HashMap<Relation, SingleRelationQuery> srqueries, SystemInfo systemInfo)
+			throws Exception {
 		Atribute atribute = null;
 		if (term instanceof Atribute)
 			atribute = (Atribute) term;
 		else if (term instanceof AggregateFunction)
 			atribute = ((AggregateFunction) term).getAtribute();
-		if (atribute != null) {
-			if (!srqueries.containsKey(atribute.getRelation()))
-				srqueries.put(atribute.getRelation(), new SingleRelationQuery(systemInfo, atribute.getRelation()));
-			srqueries.get(atribute.getRelation()).getProjectionAtributes().add(atribute);
-		}
+		else
+			throw new Exception("Should not be here");
+
+		if (!srqueries.containsKey(atribute.getRelation()))
+			srqueries.put(atribute.getRelation(), new SingleRelationQuery(systemInfo, atribute.getRelation()));
+
+		List<Atribute> projectionAtributes = srqueries.get(atribute.getRelation()).getProjectionAtributes();
+
+		if (!projectionAtributes.contains(atribute))
+			projectionAtributes.add(atribute);
 	}
 
 	public static List<JoinQuery> getJoinQueriesFromSPJQuery(List<? extends Plan> leftdeepPlansMinusOne,
@@ -408,30 +471,26 @@ public class Utils {
 	}
 
 	public static double compare(String s1, String s2, String low, String high) {
-		int length = high.length();
-		double distanceByChar = (double) Math.pow(Math.E, Math.log(Double.MAX_VALUE - Double.MIN_VALUE)
-				/ (double) length);
-		distanceByChar /= length;
-		// s1 - s2
-		double s1val = 0.0;
-		int power = s1.length();
-		// From the end to the beginning
-		for (char c : s1.toCharArray()) {
-			double cc = (double) c;
-			double letterval = (cc / (double) Character.MAX_VALUE) * (double) distanceByChar;
-			s1val += Math.pow(letterval, power--);
-		}
-		// s1 - s2
-		double s2val = 0.0;
-		power = s2.length();
-		// From the end to the beginning
-		for (char c : s2.toCharArray()) {
-			double cc = (double) c;
-			double letterval = (cc / (double) Character.MAX_VALUE) * (double) distanceByChar;
-			s2val += Math.pow(letterval, power--);
-		}
+		return normalize(s1, low, high).subtract(normalize(s2, low, high)).doubleValue();
+	}
 
-		return s1val - s2val;
+	/**
+	 * @param str
+	 * @param low
+	 * @param high
+	 * @return str / (high - low) is in [0.0, 1.0]
+	 */
+	public static BigDecimal normalize(String str, String low, String high) {
+		return getHashValue(str).divide(getHashValue(high).subtract(getHashValue(low)));
+	}
+
+	public static BigDecimal getHashValue(String str) {
+		BigDecimal hash = new BigDecimal(0.0);
+		int power = str.length();
+		for (char c : str.toCharArray()) {
+			hash.add(new BigDecimal((int) c).pow(power--));
+		}
+		return hash;
 	}
 
 	public static String getOperatorString(Operator operator) {

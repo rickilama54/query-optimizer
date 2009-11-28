@@ -5,7 +5,7 @@ import queryopt.optimizer.Utils;
 
 public class JoinClause extends CompareSingleRowClause {
 
-	public JoinClause(Operator operator, Atribute atribute1, Atribute atribute2) {
+	public JoinClause(Operator operator, Atribute atribute1, Atribute atribute2)  throws Exception{
 		super(operator, atribute1, atribute2);
 	}
 

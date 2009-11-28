@@ -25,7 +25,7 @@ public class TestQueries {
 	SPJQuery query9;
 	SPJQuery query10;
 
-	void setup() {
+	void setup()  throws Exception{
 		SystemInfo systemInfo = new SystemInfo();
 		systemInfo.setBlockingFactorIndexFirstLevelRows(2);
 		systemInfo.setMemorySizeInBytes(4000000);

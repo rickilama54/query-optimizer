@@ -18,8 +18,9 @@ public class IndexNestedLoopsJoin extends Join {
 
 	@Override
 	protected long calcCost(JoinQuery joinQuery) {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
+
 
 }

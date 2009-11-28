@@ -16,8 +16,7 @@ public abstract class Join extends Plan {
 		super(joinQuery.getSystemInfo());
 		this.joinQuery = joinQuery;
 		this.cost = calcCost(joinQuery);
-		this.outputRelation = Utils.getOutputRelation(joinQuery.getLeft(), joinQuery.getRight(), joinQuery
-				.getJoinClauses());
+		this.outputRelation = Utils.getOutputRelation(joinQuery);
 	}
 
 	public Relation getOutputRelation() {
