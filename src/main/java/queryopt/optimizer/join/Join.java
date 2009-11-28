@@ -6,15 +6,14 @@ import queryopt.optimizer.Utils;
 import queryopt.optimizer.path.AccessPath;
 import queryopt.optimizer.query.JoinQuery;
 
-public abstract class Join implements Plan {
+public abstract class Join extends Plan {
 
 	private JoinQuery joinQuery;
 
 	protected Relation outputRelation;
-	protected long cost;
 
 	public Join(JoinQuery joinQuery) throws Exception {
-		super();
+		super(joinQuery.getSystemInfo());
 		this.joinQuery = joinQuery;
 		this.cost = calcCost(joinQuery);
 		this.outputRelation = Utils.getOutputRelation(joinQuery.getLeft(), joinQuery.getRight(), joinQuery
@@ -37,15 +36,20 @@ public abstract class Join implements Plan {
 		return joinQuery.getRight();
 	}
 
-	public long getCost() {
-		return cost;
+	protected abstract long calcCost(JoinQuery joinquery) throws Exception;
+
+	@Override
+	protected String getPrefix() {
+		return "";
 	}
 
-	protected abstract long calcCost(JoinQuery joinQuery);
-
-	public String getPlanAsTree() {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	protected String getSufix() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		sb.append("\t-> " + this.getLeft().getPlanAsTree().replace("\n", "\n\t   "));
+		sb.append("\n");
+		sb.append("\t-> " + this.getRight().getPlanAsTree().replace("\n", "\n\t   "));
+		return sb.toString();
 	}
-
 }

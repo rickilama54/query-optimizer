@@ -5,14 +5,14 @@ import queryopt.optimizer.Plan;
 import queryopt.optimizer.Utils;
 import queryopt.optimizer.query.SingleRelationQuery;
 
-public abstract class AccessPath implements Plan {
+public abstract class AccessPath extends Plan {
 	private Relation outputRelation;
 	private Relation inputRelation;
-	private long cost;
-	private SingleRelationQuery srquery;
-
+	
+	protected SingleRelationQuery srquery;
+	
 	public AccessPath(SingleRelationQuery srquery) throws Exception {
-		super();
+		super(srquery.getSystemInfo());
 		this.srquery = srquery;
 		this.inputRelation = srquery.getRelation();
 		cost = calcCost(srquery);
@@ -27,32 +27,6 @@ public abstract class AccessPath implements Plan {
 		return inputRelation;
 	}
 
-	public long getCost() {
-		return cost;
-	}
-
-	protected abstract long calcCost(SingleRelationQuery srquery) throws Exception;
-
-	protected abstract String getName();
-
-	protected abstract String getClassSpecificOutput();
-
-	public String getPlanAsTree() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(this.getName());
-		sb.append(" on ");
-		sb.append(this.getInputRelation().getName());
-		String specificOutput = this.getClassSpecificOutput();
-		if (specificOutput != null)
-			sb.append(" " + specificOutput);
-		sb.append(" (");
-		sb.append("cost=" + cost);
-		sb.append(" ");
-		sb.append("rows=" + this.getOutputRelation().getNoOfRows());
-		sb.append(" ");
-		sb.append("width=" + (double) Utils.getRelationSizeInBytes(this.getOutputRelation(), srquery.getSystemInfo())
-				/ 1000 + " kB");
-		sb.append(")");
-		return sb.toString();
-	}
+	protected abstract long calcCost(SingleRelationQuery joinquery) throws Exception;
+	
 }

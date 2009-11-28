@@ -173,9 +173,7 @@ public class CompareSingleRowClause extends Clause {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("CompareSingleRowClause: OPERATOR: " + this.getOperator() + " operand1: " + this.getOperand1()
-				+ " operand2: " + this.getOperand2());
-		return sb.toString();
+		return this.getOperand1() + " " + Utils.getOperatorString(this.getOperator()) + " " + this.getOperand2();
 	}
+
 }

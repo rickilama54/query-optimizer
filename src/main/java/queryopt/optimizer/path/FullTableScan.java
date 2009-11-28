@@ -12,14 +12,28 @@ public class FullTableScan extends AccessPath {
 		super(srquery);
 	}
 
-	@Override
 	protected String getName() {
 		return NAME;
 	}
 
 	@Override
-	protected String getClassSpecificOutput() {
-		return null;
+	protected String getPrefix() {
+		return "on " + this.getInputRelation().getName();
+	}
+
+	@Override
+	protected String getSufix() {
+		if (this.srquery.getSelectionCnfClauses().size() == 0)
+			return "";
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		sb.append("Filter: ");
+		sb.append("(");
+		for (Clause c : srquery.getSelectionCnfClauses())
+			sb.append(c.toString() + " AND ");
+		sb.delete(sb.length() - 5, sb.length());
+		sb.append(")");
+		return sb.toString();
 	}
 
 	@Override

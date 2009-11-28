@@ -1,6 +1,7 @@
 package queryopt.optimizer.query;
 
 import queryopt.entities.Atribute;
+import queryopt.optimizer.Utils;
 
 public class JoinClause extends CompareSingleRowClause {
 
@@ -19,10 +20,7 @@ public class JoinClause extends CompareSingleRowClause {
 
 	@Override
 	public String toString() {
-
-		return "operand1: " + this.getAtribute1().getRelation().getName() + "." + this.getAtribute1().getName() + " OPERATOR:"
-				+ this.getOperator() + " operand2: " + this.getAtribute2().getRelation().getName() + "."
-				+ this.getAtribute2().getName();
+		return this.getOperand1() + " " + Utils.getOperatorString(this.getOperator()) + " " + this.getOperand2();
 	}
 
 }

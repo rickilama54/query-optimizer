@@ -19,6 +19,7 @@ import queryopt.optimizer.query.CompareSingleRowClause;
 import queryopt.optimizer.query.JoinClause;
 import queryopt.optimizer.query.JoinQuery;
 import queryopt.optimizer.query.Literal;
+import queryopt.optimizer.query.Operator;
 import queryopt.optimizer.query.SPJQuery;
 import queryopt.optimizer.query.SingleRelationQuery;
 import queryopt.optimizer.query.Term;
@@ -62,6 +63,8 @@ public class Utils {
 		allAtributesInQuery.addAll(srquery.getProjectionAtributes());
 
 		for (Clause clause : srquery.getSelectionCnfClauses())
+			allAtributesInQuery.addAll(clause.getAtributes());
+		for (Clause clause : srquery.getJoinClauses())
 			allAtributesInQuery.addAll(clause.getAtributes());
 
 		// Eliminate duplicate Attributes
@@ -300,13 +303,18 @@ public class Utils {
 			resolveTerm(atribute, srqueries, query.getSystemInfo());
 
 		for (Clause clause : query.getSelectionCnfClauses())
-			if (!clause.isJoinClause())
-				for (Atribute a : clause.getAtributes()) {
-					if (!srqueries.containsKey(a.getRelation()))
-						srqueries.put(a.getRelation(), new SingleRelationQuery(query.getSystemInfo(), a.getRelation()));
-					srqueries.get(a.getRelation()).getSelectionCnfClauses().add(clause);
-				}
+			for (Atribute a : clause.getAtributes()) {
+				if (!srqueries.containsKey(a.getRelation()))
+					srqueries.put(a.getRelation(), new SingleRelationQuery(query.getSystemInfo(), a.getRelation()));
+				srqueries.get(a.getRelation()).getSelectionCnfClauses().add(clause);
+			}
 
+		for (JoinClause clause : query.getJoinClauses())
+			for (Atribute a : clause.getAtributes()) {
+				if (!srqueries.containsKey(a.getRelation()))
+					srqueries.put(a.getRelation(), new SingleRelationQuery(query.getSystemInfo(), a.getRelation()));
+				srqueries.get(a.getRelation()).getJoinClauses().add(clause);
+			}
 		return srqueries;
 	}
 
@@ -359,6 +367,8 @@ public class Utils {
 					throw new Exception("Invalid state");
 				else
 					joinClauses.add(joinClause);
+			else
+				throw new Exception("Invalid state");
 
 		// No join Clauses found
 		if (joinClauses.size() == 0)
@@ -422,5 +432,30 @@ public class Utils {
 		}
 
 		return s1val - s2val;
+	}
+
+	public static String getOperatorString(Operator operator) {
+		String str = null;
+		switch (operator) {
+		case EQ:
+			str = "=";
+			break;
+		case DIFF:
+			str = "<>";
+			break;
+		case GT_EQ:
+			str = ">=";
+			break;
+		case LS_EQ:
+			str = "<=";
+			break;
+		case GT:
+			str = ">";
+			break;
+		case LS:
+			str = "<";
+			break;
+		}
+		return str;
 	}
 }

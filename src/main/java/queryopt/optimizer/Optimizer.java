@@ -36,7 +36,7 @@ public class Optimizer {
 
 		for (int i = 1; i < allAccessPaths.size(); i++)
 			allLeftDeepPlanTrees.add(generateMultipleRelationPlans(Utils.getJoinQueriesFromSPJQuery(
-					allLeftDeepPlanTrees.get(i), query, allAccessPaths)));
+					allLeftDeepPlanTrees.get(i - 1), query, allAccessPaths)));
 
 		Plan bestPlan = null;
 		long cost = Long.MAX_VALUE;
