@@ -24,7 +24,7 @@ public class Atribute implements Term {
 	private Atribute fkAtribute;
 	private String highValue;
 	private String lowValue;
-
+	
 	public Atribute() {
 
 	}
@@ -162,4 +162,5 @@ public class Atribute implements Term {
 	public String toString() {
 		return this.getName();
 	}
+	
 }

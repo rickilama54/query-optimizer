@@ -11,7 +11,7 @@ public abstract class Clause {
 		return selectivity;
 	}
 
-	protected abstract double calcSelectivity();
+	protected abstract double calcSelectivity() throws Exception;
 	
 	public abstract List<Atribute> getAtributes();
 	

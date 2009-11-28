@@ -89,11 +89,12 @@ public class TestParserAndSPJBuilder {
 
 		TestParserAndSPJBuilder test = new TestParserAndSPJBuilder();
 		test.setup();
-		// SPJQuery spjquery1 = test.testSPJQuery(query1);
+		SPJQuery spjquery1 = test.testSPJQuery(query1);
 		SPJQuery spjquery2 = test.testSPJQuery(query2);
-		// SPJQuery spjquery3 = test.testSPJQuery(query3);
+		SPJQuery spjquery3 = test.testSPJQuery(query3);
 
-		// optimize(spjquery1);
+		optimize(spjquery1);
 		optimize(spjquery2);
+		optimize(spjquery3);
 	}
 }
