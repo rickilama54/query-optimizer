@@ -76,21 +76,24 @@ public class TestParserAndSPJBuilder {
 	static void optimize(SPJQuery query) throws Exception {
 		Optimizer optimizer = new Optimizer(query);
 		Plan plan = optimizer.generateBestPlan();
-		System.out.println("Best Plan:" + plan.getPlanAsTree());
+		System.out.println("Best Plan:\n" + plan.getPlanAsTree());
 	}
 
 	public static void main(String[] args) throws Exception {
 
 		String query1 = "SELECT EMP_ID, EMP_NAME, EMP_SALARY " + "FROM EMPLOYEES";
 		String query2 = "SELECT EMP_ID, EMP_NAME, EMP_SALARY " + "FROM EMPLOYEES, DEPARTMENTS "
+				+ "WHERE DEPARTMENTS_DEPT_ID = DEPT_ID";
+		String query3 = "SELECT EMP_ID, EMP_NAME, EMP_SALARY " + "FROM EMPLOYEES, DEPARTMENTS "
 				+ "WHERE DEPARTMENTS_DEPT_ID = DEPT_ID AND EMP_NAME > 'DRAGAN' AND EMP_SALARY > 5";
 
 		TestParserAndSPJBuilder test = new TestParserAndSPJBuilder();
 		test.setup();
-		SPJQuery spjquery1 = test.testSPJQuery(query1);
+		// SPJQuery spjquery1 = test.testSPJQuery(query1);
 		SPJQuery spjquery2 = test.testSPJQuery(query2);
+		// SPJQuery spjquery3 = test.testSPJQuery(query3);
 
-		optimize(spjquery1);
+		// optimize(spjquery1);
 		optimize(spjquery2);
 	}
 }

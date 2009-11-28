@@ -29,8 +29,17 @@ public class SingleIndexAccessPath extends AccessPath {
 	}
 
 	@Override
-	protected String getClassSpecificOutput() {
-		return "using index:" + this.getIndex().getName();
+	protected String getPrefix() {
+		return "on " + this.getInputRelation().getName() + " using index:" + this.getIndex().getName();
+	}
+
+	@Override
+	protected String getSufix() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		sb.append("Index Cond: ");
+		// TODO
+		return sb.toString();
 	}
 
 	@Override

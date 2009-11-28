@@ -1,6 +1,5 @@
 package queryopt.optimizer.query;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import queryopt.entities.Atribute;

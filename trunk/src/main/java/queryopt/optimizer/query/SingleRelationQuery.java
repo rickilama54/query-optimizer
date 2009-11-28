@@ -14,6 +14,7 @@ public class SingleRelationQuery {
 
 	private List<Atribute> projectionAtributes;
 	private List<Clause> selectionCnfClauses;
+	private List<JoinClause> joinClauses;
 	private List<Atribute> groupingAtributes;
 
 	public SingleRelationQuery(SystemInfo systemInfo, Relation relation) {
@@ -23,6 +24,7 @@ public class SingleRelationQuery {
 		projectionAtributes = new ArrayList<Atribute>();
 		selectionCnfClauses = new ArrayList<Clause>();
 		groupingAtributes = new ArrayList<Atribute>();
+		joinClauses = new ArrayList<JoinClause>();
 	}
 
 	public SystemInfo getSystemInfo() {
@@ -39,6 +41,10 @@ public class SingleRelationQuery {
 
 	public List<Clause> getSelectionCnfClauses() {
 		return selectionCnfClauses;
+	}
+
+	public List<JoinClause> getJoinClauses() {
+		return joinClauses;
 	}
 
 	public List<Atribute> getGroupingAtributes() {

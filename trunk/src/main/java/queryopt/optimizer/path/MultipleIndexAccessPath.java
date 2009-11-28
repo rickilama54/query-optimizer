@@ -27,13 +27,23 @@ public class MultipleIndexAccessPath extends AccessPath {
 	}
 
 	@Override
-	protected String getClassSpecificOutput() {
+	protected String getPrefix() {
 		StringBuilder specificOutput = new StringBuilder();
+		specificOutput.append("on " + this.getInputRelation().getName() + " ");
 		specificOutput.append("using indexes:");
 		for (Index index : ridIndexes)
 			specificOutput.append(index.getName() + ", ");
 		specificOutput.replace(specificOutput.length() - 2, specificOutput.length() - 1, "");
 		return specificOutput.toString();
+	}
+
+	@Override
+	protected String getSufix() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		sb.append("Index Cond: ");
+		// TODO
+		return sb.toString();
 	}
 
 	@Override
