@@ -1,6 +1,7 @@
 package queryopt.optimizer;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +31,9 @@ import queryopt.optimizer.query.Term;
  * 
  */
 public class Utils {
+
+	private static final int SCALE = 10;
+	private static final RoundingMode ROUND = RoundingMode.HALF_DOWN;
 
 	public static Relation getOutputRelation(SingleRelationQuery srquery) {
 		Relation outputRelation = copy(srquery.getRelation());
@@ -108,11 +112,14 @@ public class Utils {
 		return outputRelation;
 	}
 
-	private static int getNoOfRowsAfterJoin(Atribute a1, Atribute a2, Operator operator) throws Exception {
+	public static int getNoOfRowsAfterJoin(Atribute a1, Atribute a2, Operator operator) throws Exception {
 		BigDecimal a1Low = getHashValue(a1.getLowValue());
-		BigDecimal a1High = getHashValue(a2.getHighValue());
+		BigDecimal a1High = getHashValue(a1.getHighValue());
 		BigDecimal a2Low = getHashValue(a2.getLowValue());
 		BigDecimal a2High = getHashValue(a2.getHighValue());
+
+		BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
+		BigDecimal a2Rows = new BigDecimal(a2.getRelation().getNoOfRows());
 
 		BigDecimal lowIntersection = a1Low;
 		if (a2Low.compareTo(a1Low) > 0)
@@ -123,73 +130,74 @@ public class Utils {
 			highIntersection = a2High;
 
 		// No intersection between [a1Low, a1High] and [a2Low, a2High]
-		if (highIntersection.compareTo(lowIntersection) <= 0)
+		if (operator == Operator.EQ && highIntersection.compareTo(lowIntersection) <= 0)
 			return 0;
 
-		BigDecimal a1PercentInIntersection = highIntersection.subtract(lowIntersection).divide(a1High.subtract(a1Low));
-		BigDecimal a2PercentInIntersection = highIntersection.subtract(lowIntersection).divide(a2High.subtract(a2Low));
+		BigDecimal a1PercentInIntersection = highIntersection.subtract(lowIntersection).divide(a1High.subtract(a1Low),
+				SCALE, ROUND);
+		BigDecimal a2PercentInIntersection = highIntersection.subtract(lowIntersection).divide(a2High.subtract(a2Low),
+				SCALE, ROUND);
 
 		BigDecimal a1RowsInIntersection = a1PercentInIntersection.multiply(new BigDecimal(a1.getRelation()
 				.getNoOfRows()));
 		BigDecimal a2RowsInIntersection = a2PercentInIntersection.multiply(new BigDecimal(a2.getRelation()
 				.getNoOfRows()));
 
-		if (operator == Operator.EQ) {
-			if (a1RowsInIntersection.compareTo(a2RowsInIntersection) > 0)
-				return a1RowsInIntersection.intValue();
-			return a2RowsInIntersection.intValue();
-		}
+		if (operator == Operator.EQ)
+			return a1RowsInIntersection.multiply(a2Rows.divide(new BigDecimal(getDistinctValues(a2)))).intValue();
 
-		if (operator == Operator.GT || operator == Operator.GT_EQ) {
+		if (operator == Operator.GT || operator == Operator.GT_EQ || operator == Operator.LS
+				|| operator == Operator.LS_EQ) {
 			BigDecimal rows = new BigDecimal(0);
-			BigDecimal a1DistinctValues = new BigDecimal(getNumberOfDistinctValues(a1));
-			BigDecimal a1DistinctValuesInInterval = a1PercentInIntersection.multiply(a1DistinctValues);
 			// Interval Rows
-			for (int i = 0; i < a1DistinctValuesInInterval.intValue(); i++)
-				rows.add(a2RowsInIntersection.subtract(a2RowsInIntersection.divide(a1DistinctValuesInInterval)
-						.multiply(new BigDecimal(i))));
-			// Tuples greater than highIntersection
-			if (a1High.compareTo(highIntersection) > 0) {
-				BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
-				BigDecimal a1ValuesGtThanInterval = a1High.subtract(highIntersection).divide(a1High.subtract(a1Low))
-						.multiply(a1Rows);
-				rows.add(a1ValuesGtThanInterval.multiply(a2RowsInIntersection));
+			for (int i = 1; i <= a1RowsInIntersection.intValue(); i++) {
+				int n = a2RowsInIntersection.subtract(
+						new BigDecimal(i).multiply(a2RowsInIntersection.divide(a1RowsInIntersection, SCALE, ROUND)))
+						.intValue();
+				if (operator == Operator.GT_EQ || operator == Operator.LS_EQ)
+					n += 1;
+				rows = rows.add(new BigDecimal(n));
 			}
-			return rows.intValue();
-		}
+			if (operator == Operator.GT || operator == Operator.GT_EQ) {
+				// Tuples greater than highIntersection
+				if (a1High.compareTo(highIntersection) > 0) {
+					BigDecimal a1ValuesGtThanInterval = a1High.subtract(highIntersection).divide(
+							a1High.subtract(a1Low), SCALE, ROUND).multiply(a1Rows);
+					rows = rows.add(a1ValuesGtThanInterval.multiply(a2RowsInIntersection));
+				}
+				// Tuples greater than a2High
+				if (a1Low.compareTo(a2High) >= 0) {
+					rows = rows.add(a1Rows.multiply(a2Rows));
+				}
+			}
 
-		if (operator == Operator.LS || operator == Operator.LS_EQ) {
-			BigDecimal rows = new BigDecimal(0);
-			BigDecimal a1DistinctValues = new BigDecimal(getNumberOfDistinctValues(a1));
-			BigDecimal a1DistinctValuesInInterval = a1PercentInIntersection.multiply(a1DistinctValues);
-			// Interval Rows
-			for (int i = 0; i < a1DistinctValuesInInterval.intValue(); i++)
-				rows.add(a2RowsInIntersection.subtract(a2RowsInIntersection.divide(a1DistinctValuesInInterval)
-						.multiply(new BigDecimal(i))));
-			// Tuples less than lowIntersection
-			if (lowIntersection.compareTo(a1Low) > 0) {
-				BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
-				BigDecimal a1ValuesLsThanInterval = lowIntersection.subtract(a1Low).divide(a1High.subtract(a1Low))
-						.multiply(a1Rows);
-				rows.add(a1ValuesLsThanInterval.multiply(a2RowsInIntersection));
+			if (operator == Operator.LS || operator == Operator.LS_EQ) {
+				// Tuples less than lowIntersection
+				if (a1Low.compareTo(lowIntersection) < 0) {
+					BigDecimal a1ValuesLsThanInterval = lowIntersection.subtract(a1Low).divide(a1High.subtract(a1Low),
+							SCALE, ROUND).multiply(a1Rows);
+					rows = rows.add(a1ValuesLsThanInterval.multiply(a2RowsInIntersection));
+				}
+				// Tuples less than a2Low
+				if (a1High.compareTo(a2Low) <= 0) {
+					rows = rows.add(a1Rows.multiply(a2Rows));
+				}
 			}
 			return rows.intValue();
 		}
 
 		if (operator == Operator.DIFF) {
 			BigDecimal rows = new BigDecimal(0);
-			// Tuples less than lowIntersection
-			if (lowIntersection.compareTo(a1Low) > 0) {
-				BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
-				BigDecimal a1ValuesLsThanInterval = lowIntersection.subtract(a1Low).divide(a1High.subtract(a1Low))
-						.multiply(a1Rows);
-				rows.add(a1ValuesLsThanInterval.multiply(a2RowsInIntersection));
+			// Tuples greater than highIntersection
+			if (a1High.compareTo(highIntersection) > 0) {
+				BigDecimal a1ValuesGtThanInterval = a1High.subtract(highIntersection).divide(a1High.subtract(a1Low),
+						SCALE, ROUND).multiply(a1Rows);
+				rows.add(a1ValuesGtThanInterval.multiply(a2RowsInIntersection));
 			}
 			// Tuples less than lowIntersection
 			if (lowIntersection.compareTo(a1Low) > 0) {
-				BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
-				BigDecimal a1ValuesLsThanInterval = lowIntersection.subtract(a1Low).divide(a1High.subtract(a1Low))
-						.multiply(a1Rows);
+				BigDecimal a1ValuesLsThanInterval = lowIntersection.subtract(a1Low).divide(a1High.subtract(a1Low),
+						SCALE, ROUND).multiply(a1Rows);
 				rows.add(a1ValuesLsThanInterval.multiply(a2RowsInIntersection));
 			}
 			return rows.intValue();
@@ -198,11 +206,10 @@ public class Utils {
 		throw new Exception("Should not be here");
 	}
 
-	private static double getNumberOfDistinctValues(Atribute a) {
-		double selectivity = (1.0 - 0.01 * a.getDistinctPercent());
-		if (a.getDistinctPercent() == 100)
-			selectivity = 1.0 / (double) a.getRelation().getNoOfRows();
-		return ((double) a.getRelation().getNoOfRows()) * selectivity;
+	private static int getDistinctValues(Atribute a) {
+		if (a.getDistinctPercent() == 0)
+			return 1;
+		return (int) (0.01 * a.getDistinctPercent() * (double) a.getRelation().getNoOfRows());
 	}
 
 	public static boolean isIndexOnlyScanPossible(Collection<Index> indexes, SingleRelationQuery srquery) {
@@ -525,15 +532,15 @@ public class Utils {
 	 * @return str / (high - low) is in [0.0, 1.0]
 	 */
 	public static BigDecimal normalize(String str, String low, String high) {
-		return getHashValue(str).divide(getHashValue(high).subtract(getHashValue(low)));
+		return getHashValue(str).subtract(getHashValue(low)).divide(getHashValue(high).subtract(getHashValue(low)),
+				SCALE, ROUND);
 	}
 
 	public static BigDecimal getHashValue(String str) {
 		BigDecimal hash = new BigDecimal(0.0);
 		int power = str.length();
-		for (char c : str.toCharArray()) {
-			hash.add(new BigDecimal((int) c).pow(power--));
-		}
+		for (char c : str.toCharArray())
+			hash = hash.add(new BigDecimal((int) c).pow(power--));
 		return hash;
 	}
 
