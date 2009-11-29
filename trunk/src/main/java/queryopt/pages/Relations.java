@@ -104,8 +104,10 @@ public class Relations {
 		Atribute newAtribute = new Atribute();
 		newAtribute.setName("new atribute");
 		newAtribute.setRelation(relation);
-		newAtribute.setDistinctPercent(10);
+		newAtribute.setDistinctPercent(100);
 		newAtribute.setSizeInBytes(10);
+		newAtribute.setLowValue("A");
+		newAtribute.setHighValue("Z");
 		session.persist(newAtribute);
 		relation.getAtributes().add(newAtribute);
 		this.relation = relation;

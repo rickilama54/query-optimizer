@@ -46,6 +46,11 @@ public class ExecutionPlanView {
 		return (double) executionPlan.getSystemInfo().getRidSizeInBytes() / 1000 + " kB";
 	}
 
+	public String getExecutionPlanText() {
+		return executionPlan.getExecutionPlanText().replace("\n", "<br/>").replace("\t",
+				"<span style=\"margin-left:20px;\"/>");
+	}
+
 	Object onActionFromCalculateExecutionPlan() {
 		executionPlanService.calculateExecutionPlan(executionPlan.getExecutionPlanId());
 		executionPlan = (ExecutionPlan) session.createCriteria(ExecutionPlan.class).add(

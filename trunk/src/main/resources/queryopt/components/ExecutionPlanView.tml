@@ -4,8 +4,7 @@
 	<h2 style="margin-left:30%">Execution Plan</h2>
 
 	<div style="position:absolute; left:80%;">
-		<a href="#" t:type="ActionLink" t:id="calculateExecutionPlan"
-			zone="executionPlanZone">Calculate
+		<a href="#" t:type="ActionLink" t:id="calculateExecutionPlan" zone="executionPlanZone">Calculate
 			Execution Plan</a>
 	</div>
 
@@ -24,7 +23,9 @@
 			<p>
 				<div>
 					ExecutionPlan:
-					<p> ${executionPlan.executionPlanText}</p>
+					<p>
+						<t:outputRaw value="executionPlanText" />
+					</p>
 				</div>
 			</p>
 		</div>

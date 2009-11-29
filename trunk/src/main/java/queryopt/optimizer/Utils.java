@@ -103,9 +103,11 @@ public class Utils {
 
 		int noOfRows = 0;
 
-		for (JoinClause clause : joinquery.getJoinClauses()) {
-
-		}
+		// TODO
+		for (JoinClause clause : joinquery.getJoinClauses())
+			noOfRows = getNoOfRowsAfterJoin(clause.getAtribute1(), clause.getAtribute2(), joinquery.getLeft()
+					.getOutputRelation().getNoOfRows(), joinquery.getRight().getOutputRelation().getNoOfRows(), clause
+					.getOperator());
 
 		outputRelation.setNoOfRows(noOfRows);
 
@@ -113,13 +115,19 @@ public class Utils {
 	}
 
 	public static int getNoOfRowsAfterJoin(Atribute a1, Atribute a2, Operator operator) throws Exception {
+		return Utils.getNoOfRowsAfterJoin(a1, a2, a1.getRelation().getNoOfRows(), a2.getRelation().getNoOfRows(),
+				operator);
+	}
+
+	public static int getNoOfRowsAfterJoin(Atribute a1, Atribute a2, int a1rows, int a2rows, Operator operator)
+			throws Exception {
 		BigDecimal a1Low = getHashValue(a1.getLowValue());
 		BigDecimal a1High = getHashValue(a1.getHighValue());
 		BigDecimal a2Low = getHashValue(a2.getLowValue());
 		BigDecimal a2High = getHashValue(a2.getHighValue());
 
-		BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
-		BigDecimal a2Rows = new BigDecimal(a2.getRelation().getNoOfRows());
+		BigDecimal a1Rows = new BigDecimal(a1rows);
+		BigDecimal a2Rows = new BigDecimal(a2rows);
 
 		BigDecimal lowIntersection = a1Low;
 		if (a2Low.compareTo(a1Low) > 0)
@@ -138,11 +146,8 @@ public class Utils {
 		BigDecimal a2PercentInIntersection = highIntersection.subtract(lowIntersection).divide(a2High.subtract(a2Low),
 				SCALE, ROUND);
 
-		BigDecimal a1RowsInIntersection = a1PercentInIntersection.multiply(new BigDecimal(a1.getRelation()
-				.getNoOfRows()));
-		BigDecimal a2RowsInIntersection = a2PercentInIntersection.multiply(new BigDecimal(a2.getRelation()
-				.getNoOfRows()));
-
+		BigDecimal a1RowsInIntersection = a1PercentInIntersection.multiply(a1Rows);
+		BigDecimal a2RowsInIntersection = a2PercentInIntersection.multiply(a2Rows);
 		if (operator == Operator.EQ)
 			return a1RowsInIntersection.multiply(a2Rows.divide(new BigDecimal(getDistinctValues(a2)))).intValue();
 
