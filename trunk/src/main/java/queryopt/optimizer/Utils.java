@@ -108,15 +108,7 @@ public class Utils {
 		return outputRelation;
 	}
 
-
-	private static int getNoOfRowsAfterJoin(Atribute a1, Atribute a2, Operator operator) {
-		// Are a1 and a2 in a FK relationship
-		if (a1.getFkAtribute() != null && a1.getFkAtribute().equals(a2))
-			return getNoOfRowsAfterJoinEqualFK(a1, a2);
-		if (a2.getFkAtribute() != null && a2.getFkAtribute().equals(a1))
-			return getNoOfRowsAfterJoinEqualFK(a2, a1);
-
-		// a1 and a2 are not in a FK relationship
+	private static int getNoOfRowsAfterJoin(Atribute a1, Atribute a2, Operator operator) throws Exception {
 		BigDecimal a1Low = getHashValue(a1.getLowValue());
 		BigDecimal a1High = getHashValue(a2.getHighValue());
 		BigDecimal a2Low = getHashValue(a2.getLowValue());
@@ -142,16 +134,68 @@ public class Utils {
 		BigDecimal a2RowsInIntersection = a2PercentInIntersection.multiply(new BigDecimal(a2.getRelation()
 				.getNoOfRows()));
 
-		if (a1RowsInIntersection.compareTo(a2RowsInIntersection) > 0)
-			return a1RowsInIntersection.intValue();
-		return a2RowsInIntersection.intValue();
-	}
+		if (operator == Operator.EQ) {
+			if (a1RowsInIntersection.compareTo(a2RowsInIntersection) > 0)
+				return a1RowsInIntersection.intValue();
+			return a2RowsInIntersection.intValue();
+		}
 
-	private static int getNoOfRowsAfterJoinEqualFK(Atribute master, Atribute dependent) {
-		double rowsDependent = dependent.getRelation().getNoOfRows();
-		double rowsMaster = master.getRelation().getNoOfRows();
-		double distinctMaster = getNumberOfDistinctValues(master);
-		return (int) (rowsDependent * rowsMaster / distinctMaster);
+		if (operator == Operator.GT || operator == Operator.GT_EQ) {
+			BigDecimal rows = new BigDecimal(0);
+			BigDecimal a1DistinctValues = new BigDecimal(getNumberOfDistinctValues(a1));
+			BigDecimal a1DistinctValuesInInterval = a1PercentInIntersection.multiply(a1DistinctValues);
+			// Interval Rows
+			for (int i = 0; i < a1DistinctValuesInInterval.intValue(); i++)
+				rows.add(a2RowsInIntersection.subtract(a2RowsInIntersection.divide(a1DistinctValuesInInterval)
+						.multiply(new BigDecimal(i))));
+			// Tuples greater than highIntersection
+			if (a1High.compareTo(highIntersection) > 0) {
+				BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
+				BigDecimal a1ValuesGtThanInterval = a1High.subtract(highIntersection).divide(a1High.subtract(a1Low))
+						.multiply(a1Rows);
+				rows.add(a1ValuesGtThanInterval.multiply(a2RowsInIntersection));
+			}
+			return rows.intValue();
+		}
+
+		if (operator == Operator.LS || operator == Operator.LS_EQ) {
+			BigDecimal rows = new BigDecimal(0);
+			BigDecimal a1DistinctValues = new BigDecimal(getNumberOfDistinctValues(a1));
+			BigDecimal a1DistinctValuesInInterval = a1PercentInIntersection.multiply(a1DistinctValues);
+			// Interval Rows
+			for (int i = 0; i < a1DistinctValuesInInterval.intValue(); i++)
+				rows.add(a2RowsInIntersection.subtract(a2RowsInIntersection.divide(a1DistinctValuesInInterval)
+						.multiply(new BigDecimal(i))));
+			// Tuples less than lowIntersection
+			if (lowIntersection.compareTo(a1Low) > 0) {
+				BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
+				BigDecimal a1ValuesLsThanInterval = lowIntersection.subtract(a1Low).divide(a1High.subtract(a1Low))
+						.multiply(a1Rows);
+				rows.add(a1ValuesLsThanInterval.multiply(a2RowsInIntersection));
+			}
+			return rows.intValue();
+		}
+
+		if (operator == Operator.DIFF) {
+			BigDecimal rows = new BigDecimal(0);
+			// Tuples less than lowIntersection
+			if (lowIntersection.compareTo(a1Low) > 0) {
+				BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
+				BigDecimal a1ValuesLsThanInterval = lowIntersection.subtract(a1Low).divide(a1High.subtract(a1Low))
+						.multiply(a1Rows);
+				rows.add(a1ValuesLsThanInterval.multiply(a2RowsInIntersection));
+			}
+			// Tuples less than lowIntersection
+			if (lowIntersection.compareTo(a1Low) > 0) {
+				BigDecimal a1Rows = new BigDecimal(a1.getRelation().getNoOfRows());
+				BigDecimal a1ValuesLsThanInterval = lowIntersection.subtract(a1Low).divide(a1High.subtract(a1Low))
+						.multiply(a1Rows);
+				rows.add(a1ValuesLsThanInterval.multiply(a2RowsInIntersection));
+			}
+			return rows.intValue();
+		}
+
+		throw new Exception("Should not be here");
 	}
 
 	private static double getNumberOfDistinctValues(Atribute a) {
