@@ -51,7 +51,8 @@ public class CompareSingleRowClause extends Clause {
 			return calcSelectivityLiteralAtribute((Literal) operand1, (Atribute) operand2, operator);
 		else if (operand1 instanceof Atribute && operand2 instanceof Literal)
 			return calcSelectivityLiteralAtribute((Literal) operand2, (Atribute) operand1, operator);
-
+		else if (operand1 instanceof Atribute && operand2 instanceof Atribute)
+			return 1.0;
 		throw new Exception("Should not be here");
 	}
 

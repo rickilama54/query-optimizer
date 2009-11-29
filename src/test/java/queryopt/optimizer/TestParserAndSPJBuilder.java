@@ -29,10 +29,13 @@ public class TestParserAndSPJBuilder {
 		departments.setName("DEPARTMENTS");
 		departments.setNoOfRows(50);
 
-		Atribute deptId = new Atribute(1, "DEPT_ID", true, 4, 50, departments);
+		Atribute deptId = new Atribute(1, "DEPT_ID", true, 4, 100, departments);
 		Atribute deptName = new Atribute(2, "DEPT_NAME", false, 100, 100, departments);
 		Atribute deptSalary = new Atribute(3, "DEPT_AVG_SALARY", false, 10, 100, departments);
 		departments.setAtributes(Arrays.asList(deptId, deptName, deptSalary));
+
+		deptId.setLowValue("1");
+		deptId.setHighValue(String.valueOf(departments.getNoOfRows()));
 
 		Relation employees = new Relation();
 		employees.setBlockingFactor(2);
@@ -40,10 +43,13 @@ public class TestParserAndSPJBuilder {
 		employees.setName("EMPLOYEES");
 		employees.setNoOfRows(1000);
 
-		Atribute empId = new Atribute(4, "EMP_ID", true, 4, 1000, employees);
+		Atribute empId = new Atribute(4, "EMP_ID", true, 4, 100, employees);
 		Atribute empName = new Atribute(5, "EMP_NAME", false, 100, 100, employees);
 		Atribute empSalary = new Atribute(6, "EMP_SALARY", false, 4, 100, employees);
-		Atribute departmentsDeptId = new Atribute(7, "DEPARTMENTS_DEPT_ID", false, 4, 30, employees, deptId);
+		Atribute departmentsDeptId = new Atribute(7, "DEPARTMENTS_DEPT_ID", false, 4, 100, employees, deptId);
+
+		departmentsDeptId.setLowValue("1");
+		departmentsDeptId.setHighValue("10");
 
 		empName.setHighValue("ZZZZZZ");
 		empName.setLowValue("AAAAAA");
