@@ -30,12 +30,12 @@
 			</p>
 		</div>
 	</div>
-
-	<div>
-		<h3>Query:</h3>
-		${executionPlan.query.text}
+<!-- 
+	<div style="width:300px;">
+		<h3>Query:</h3> 
+		<t:outputRaw value="querytext"/>
 	</div>
-
+  -->
 
 	<div style="margin-top:20px">
 		<table style="width:150px">

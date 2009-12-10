@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g 2009-11-27 23:41:23
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g 2009-12-10 16:40:12
 package queryopt.parser;
 
 import org.antlr.runtime.*;
@@ -6,10 +6,12 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.antlr.runtime.debug.*;
+import java.io.IOException;
 
 import org.antlr.runtime.tree.*;
 
-public class SQL_grammarParser extends Parser {
+public class SQL_grammarParser extends DebugParser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "QUERY", "LITERAL", "SELECT", "NAME", "STAR", "COUNT", "SUM", "AVG", "MIN", "MAX", "FROM", "WHERE", "IN", "EQ", "LS", "GT", "LS_EQ", "GT_EQ", "WS", "DIFF", "';'", "','", "'('", "')'", "'AND'", "'\\''"
     };
@@ -44,23 +46,56 @@ public class SQL_grammarParser extends Parser {
     // delegates
     // delegators
 
-
+    public static final String[] ruleNames = new String[] {
+        "invalidRule", "where", "and", "clause", "select", "query1", "op", 
+        "query", "from", "literal", "aggregate_funct"
+    };
+     
+        public int ruleLevel = 0;
+        public int getRuleLevel() { return ruleLevel; }
+        public void incRuleLevel() { ruleLevel++; }
+        public void decRuleLevel() { ruleLevel--; }
         public SQL_grammarParser(TokenStream input) {
-            this(input, new RecognizerSharedState());
+            this(input, DebugEventSocketProxy.DEFAULT_DEBUGGER_PORT, new RecognizerSharedState());
         }
-        public SQL_grammarParser(TokenStream input, RecognizerSharedState state) {
+        public SQL_grammarParser(TokenStream input, int port, RecognizerSharedState state) {
             super(input, state);
-             
+            DebugEventSocketProxy proxy =
+                new DebugEventSocketProxy(this,port,adaptor);
+            setDebugListener(proxy);
+            setTokenStream(new DebugTokenStream(input,proxy));
+            try {
+                proxy.handshake();
+            }
+            catch (IOException ioe) {
+                reportError(ioe);
+            }
+            TreeAdaptor adap = new CommonTreeAdaptor();
+            setTreeAdaptor(adap);
+            proxy.setTreeAdaptor(adap);
         }
-        
-    protected TreeAdaptor adaptor = new CommonTreeAdaptor();
+    public SQL_grammarParser(TokenStream input, DebugEventListener dbg) {
+        super(input, dbg);
 
+         
+        TreeAdaptor adap = new CommonTreeAdaptor();
+        setTreeAdaptor(adap);
+
+    }
+    protected boolean evalPredicate(boolean result, String predicate) {
+        dbg.semanticPredicate(result, predicate);
+        return result;
+    }
+
+    protected DebugTreeAdaptor adaptor;
     public void setTreeAdaptor(TreeAdaptor adaptor) {
-        this.adaptor = adaptor;
+        this.adaptor = new DebugTreeAdaptor(dbg,adaptor);
+
     }
     public TreeAdaptor getTreeAdaptor() {
         return adaptor;
     }
+
 
     public String[] getTokenNames() { return SQL_grammarParser.tokenNames; }
     public String getGrammarFileName() { return "/home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g"; }
@@ -113,19 +148,29 @@ public class SQL_grammarParser extends Parser {
         CommonTree char_literal2_tree=null;
         CommonTree EOF3_tree=null;
 
+        try { dbg.enterRule(getGrammarFileName(), "query");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(44, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:45:2: ( query1 ';' EOF )
+            dbg.enterAlt(1);
+
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:45:4: query1 ';' EOF
             {
             root_0 = (CommonTree)adaptor.nil();
 
+            dbg.location(45,4);
             pushFollow(FOLLOW_query1_in_query59);
             query11=query1();
 
             state._fsp--;
 
             adaptor.addChild(root_0, query11.getTree());
+            dbg.location(45,14);
             char_literal2=(Token)match(input,24,FOLLOW_24_in_query61); 
+            dbg.location(45,19);
             EOF3=(Token)match(input,EOF,FOLLOW_EOF_in_query64); 
 
             }
@@ -144,6 +189,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(45, 21);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "query");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "query"
@@ -171,33 +225,51 @@ public class SQL_grammarParser extends Parser {
         RewriteRuleSubtreeStream stream_select=new RewriteRuleSubtreeStream(adaptor,"rule select");
         RewriteRuleSubtreeStream stream_from=new RewriteRuleSubtreeStream(adaptor,"rule from");
         RewriteRuleSubtreeStream stream_where=new RewriteRuleSubtreeStream(adaptor,"rule where");
+        try { dbg.enterRule(getGrammarFileName(), "query1");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(47, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:48:2: ( select from ( where )? -> ^( QUERY from select ( where )? ) )
+            dbg.enterAlt(1);
+
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:48:4: select from ( where )?
             {
+            dbg.location(48,4);
             pushFollow(FOLLOW_select_in_query177);
             select4=select();
 
             state._fsp--;
 
             stream_select.add(select4.getTree());
+            dbg.location(48,11);
             pushFollow(FOLLOW_from_in_query179);
             from5=from();
 
             state._fsp--;
 
             stream_from.add(from5.getTree());
+            dbg.location(48,16);
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:48:16: ( where )?
             int alt1=2;
+            try { dbg.enterSubRule(1);
+            try { dbg.enterDecision(1);
+
             int LA1_0 = input.LA(1);
 
             if ( (LA1_0==WHERE) ) {
                 alt1=1;
             }
+            } finally {dbg.exitDecision(1);}
+
             switch (alt1) {
                 case 1 :
+                    dbg.enterAlt(1);
+
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:48:16: where
                     {
+                    dbg.location(48,16);
                     pushFollow(FOLLOW_where_in_query181);
                     where6=where();
 
@@ -209,11 +281,12 @@ public class SQL_grammarParser extends Parser {
                     break;
 
             }
+            } finally {dbg.exitSubRule(1);}
 
 
 
             // AST REWRITE
-            // elements: from, where, select
+            // elements: where, select, from
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -225,15 +298,21 @@ public class SQL_grammarParser extends Parser {
             root_0 = (CommonTree)adaptor.nil();
             // 48:23: -> ^( QUERY from select ( where )? )
             {
+                dbg.location(48,26);
                 // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:48:26: ^( QUERY from select ( where )? )
                 {
                 CommonTree root_1 = (CommonTree)adaptor.nil();
+                dbg.location(48,28);
                 root_1 = (CommonTree)adaptor.becomeRoot((CommonTree)adaptor.create(QUERY, "QUERY"), root_1);
 
+                dbg.location(48,34);
                 adaptor.addChild(root_1, stream_from.nextTree());
+                dbg.location(48,39);
                 adaptor.addChild(root_1, stream_select.nextTree());
+                dbg.location(48,46);
                 // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:48:46: ( where )?
                 if ( stream_where.hasNext() ) {
+                    dbg.location(48,46);
                     adaptor.addChild(root_1, stream_where.nextTree());
 
                 }
@@ -261,6 +340,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(48, 53);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "query1");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "query1"
@@ -294,18 +382,30 @@ public class SQL_grammarParser extends Parser {
         CommonTree NAME11_tree=null;
         CommonTree STAR13_tree=null;
 
+        try { dbg.enterRule(getGrammarFileName(), "select");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(50, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:8: ( SELECT ( ( NAME | aggregate_funct ) ( ',' ( NAME | aggregate_funct ) )* | STAR ) )
+            dbg.enterAlt(1);
+
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:11: SELECT ( ( NAME | aggregate_funct ) ( ',' ( NAME | aggregate_funct ) )* | STAR )
             {
             root_0 = (CommonTree)adaptor.nil();
 
+            dbg.location(50,17);
             SELECT7=(Token)match(input,SELECT,FOLLOW_SELECT_in_select110); 
             SELECT7_tree = (CommonTree)adaptor.create(SELECT7);
             root_0 = (CommonTree)adaptor.becomeRoot(SELECT7_tree, root_0);
 
+            dbg.location(50,20);
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:20: ( ( NAME | aggregate_funct ) ( ',' ( NAME | aggregate_funct ) )* | STAR )
             int alt5=2;
+            try { dbg.enterSubRule(5);
+            try { dbg.enterDecision(5);
+
             int LA5_0 = input.LA(1);
 
             if ( (LA5_0==NAME||(LA5_0>=COUNT && LA5_0<=MAX)) ) {
@@ -318,14 +418,23 @@ public class SQL_grammarParser extends Parser {
                 NoViableAltException nvae =
                     new NoViableAltException("", 5, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
+            } finally {dbg.exitDecision(5);}
+
             switch (alt5) {
                 case 1 :
+                    dbg.enterAlt(1);
+
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:22: ( NAME | aggregate_funct ) ( ',' ( NAME | aggregate_funct ) )*
                     {
+                    dbg.location(50,22);
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:22: ( NAME | aggregate_funct )
                     int alt2=2;
+                    try { dbg.enterSubRule(2);
+                    try { dbg.enterDecision(2);
+
                     int LA2_0 = input.LA(1);
 
                     if ( (LA2_0==NAME) ) {
@@ -338,12 +447,18 @@ public class SQL_grammarParser extends Parser {
                         NoViableAltException nvae =
                             new NoViableAltException("", 2, 0, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
+                    } finally {dbg.exitDecision(2);}
+
                     switch (alt2) {
                         case 1 :
+                            dbg.enterAlt(1);
+
                             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:23: NAME
                             {
+                            dbg.location(50,23);
                             NAME8=(Token)match(input,NAME,FOLLOW_NAME_in_select117); 
                             NAME8_tree = (CommonTree)adaptor.create(NAME8);
                             adaptor.addChild(root_0, NAME8_tree);
@@ -352,8 +467,11 @@ public class SQL_grammarParser extends Parser {
                             }
                             break;
                         case 2 :
+                            dbg.enterAlt(2);
+
                             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:30: aggregate_funct
                             {
+                            dbg.location(50,30);
                             pushFollow(FOLLOW_aggregate_funct_in_select121);
                             aggregate_funct9=aggregate_funct();
 
@@ -365,11 +483,17 @@ public class SQL_grammarParser extends Parser {
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(2);}
 
+                    dbg.location(50,47);
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:47: ( ',' ( NAME | aggregate_funct ) )*
+                    try { dbg.enterSubRule(4);
+
                     loop4:
                     do {
                         int alt4=2;
+                        try { dbg.enterDecision(4);
+
                         int LA4_0 = input.LA(1);
 
                         if ( (LA4_0==25) ) {
@@ -377,13 +501,22 @@ public class SQL_grammarParser extends Parser {
                         }
 
 
+                        } finally {dbg.exitDecision(4);}
+
                         switch (alt4) {
                     	case 1 :
+                    	    dbg.enterAlt(1);
+
                     	    // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:48: ',' ( NAME | aggregate_funct )
                     	    {
+                    	    dbg.location(50,51);
                     	    char_literal10=(Token)match(input,25,FOLLOW_25_in_select125); 
+                    	    dbg.location(50,53);
                     	    // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:53: ( NAME | aggregate_funct )
                     	    int alt3=2;
+                    	    try { dbg.enterSubRule(3);
+                    	    try { dbg.enterDecision(3);
+
                     	    int LA3_0 = input.LA(1);
 
                     	    if ( (LA3_0==NAME) ) {
@@ -396,12 +529,18 @@ public class SQL_grammarParser extends Parser {
                     	        NoViableAltException nvae =
                     	            new NoViableAltException("", 3, 0, input);
 
+                    	        dbg.recognitionException(nvae);
                     	        throw nvae;
                     	    }
+                    	    } finally {dbg.exitDecision(3);}
+
                     	    switch (alt3) {
                     	        case 1 :
+                    	            dbg.enterAlt(1);
+
                     	            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:54: NAME
                     	            {
+                    	            dbg.location(50,54);
                     	            NAME11=(Token)match(input,NAME,FOLLOW_NAME_in_select129); 
                     	            NAME11_tree = (CommonTree)adaptor.create(NAME11);
                     	            adaptor.addChild(root_0, NAME11_tree);
@@ -410,8 +549,11 @@ public class SQL_grammarParser extends Parser {
                     	            }
                     	            break;
                     	        case 2 :
+                    	            dbg.enterAlt(2);
+
                     	            // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:61: aggregate_funct
                     	            {
+                    	            dbg.location(50,61);
                     	            pushFollow(FOLLOW_aggregate_funct_in_select133);
                     	            aggregate_funct12=aggregate_funct();
 
@@ -423,6 +565,7 @@ public class SQL_grammarParser extends Parser {
                     	            break;
 
                     	    }
+                    	    } finally {dbg.exitSubRule(3);}
 
 
                     	    }
@@ -432,13 +575,17 @@ public class SQL_grammarParser extends Parser {
                     	    break loop4;
                         }
                     } while (true);
+                    } finally {dbg.exitSubRule(4);}
 
 
                     }
                     break;
                 case 2 :
+                    dbg.enterAlt(2);
+
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:50:83: STAR
                     {
+                    dbg.location(50,83);
                     STAR13=(Token)match(input,STAR,FOLLOW_STAR_in_select141); 
                     STAR13_tree = (CommonTree)adaptor.create(STAR13);
                     adaptor.addChild(root_0, STAR13_tree);
@@ -448,6 +595,7 @@ public class SQL_grammarParser extends Parser {
                     break;
 
             }
+            } finally {dbg.exitSubRule(5);}
 
 
             }
@@ -466,6 +614,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(51, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "select");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "select"
@@ -493,12 +650,20 @@ public class SQL_grammarParser extends Parser {
         CommonTree NAME16_tree=null;
         CommonTree char_literal17_tree=null;
 
+        try { dbg.enterRule(getGrammarFileName(), "aggregate_funct");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(52, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:53:2: ( ( COUNT | SUM | AVG | MIN | MAX ) '(' NAME ')' )
+            dbg.enterAlt(1);
+
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:53:4: ( COUNT | SUM | AVG | MIN | MAX ) '(' NAME ')'
             {
             root_0 = (CommonTree)adaptor.nil();
 
+            dbg.location(53,4);
             set14=(Token)input.LT(1);
             set14=(Token)input.LT(1);
             if ( (input.LA(1)>=COUNT && input.LA(1)<=MAX) ) {
@@ -508,14 +673,18 @@ public class SQL_grammarParser extends Parser {
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
+                dbg.recognitionException(mse);
                 throw mse;
             }
 
+            dbg.location(53,42);
             char_literal15=(Token)match(input,26,FOLLOW_26_in_aggregate_funct177); 
+            dbg.location(53,45);
             NAME16=(Token)match(input,NAME,FOLLOW_NAME_in_aggregate_funct181); 
             NAME16_tree = (CommonTree)adaptor.create(NAME16);
             adaptor.addChild(root_0, NAME16_tree);
 
+            dbg.location(53,53);
             char_literal17=(Token)match(input,27,FOLLOW_27_in_aggregate_funct183); 
 
             }
@@ -534,6 +703,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(54, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "aggregate_funct");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "aggregate_funct"
@@ -561,24 +739,38 @@ public class SQL_grammarParser extends Parser {
         CommonTree char_literal20_tree=null;
         CommonTree NAME21_tree=null;
 
+        try { dbg.enterRule(getGrammarFileName(), "from");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(56, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:56:6: ( FROM NAME ( ',' NAME )* )
+            dbg.enterAlt(1);
+
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:56:8: FROM NAME ( ',' NAME )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
+            dbg.location(56,12);
             FROM18=(Token)match(input,FROM,FOLLOW_FROM_in_from195); 
             FROM18_tree = (CommonTree)adaptor.create(FROM18);
             root_0 = (CommonTree)adaptor.becomeRoot(FROM18_tree, root_0);
 
+            dbg.location(56,14);
             NAME19=(Token)match(input,NAME,FOLLOW_NAME_in_from198); 
             NAME19_tree = (CommonTree)adaptor.create(NAME19);
             adaptor.addChild(root_0, NAME19_tree);
 
+            dbg.location(56,19);
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:56:19: ( ',' NAME )*
+            try { dbg.enterSubRule(6);
+
             loop6:
             do {
                 int alt6=2;
+                try { dbg.enterDecision(6);
+
                 int LA6_0 = input.LA(1);
 
                 if ( (LA6_0==25) ) {
@@ -586,11 +778,17 @@ public class SQL_grammarParser extends Parser {
                 }
 
 
+                } finally {dbg.exitDecision(6);}
+
                 switch (alt6) {
             	case 1 :
+            	    dbg.enterAlt(1);
+
             	    // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:56:20: ',' NAME
             	    {
+            	    dbg.location(56,23);
             	    char_literal20=(Token)match(input,25,FOLLOW_25_in_from201); 
+            	    dbg.location(56,25);
             	    NAME21=(Token)match(input,NAME,FOLLOW_NAME_in_from204); 
             	    NAME21_tree = (CommonTree)adaptor.create(NAME21);
             	    adaptor.addChild(root_0, NAME21_tree);
@@ -603,6 +801,7 @@ public class SQL_grammarParser extends Parser {
             	    break loop6;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(6);}
 
 
             }
@@ -621,6 +820,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(57, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "from");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "from"
@@ -644,16 +852,25 @@ public class SQL_grammarParser extends Parser {
 
         CommonTree WHERE22_tree=null;
 
+        try { dbg.enterRule(getGrammarFileName(), "where");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(59, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:59:7: ( WHERE and )
+            dbg.enterAlt(1);
+
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:59:9: WHERE and
             {
             root_0 = (CommonTree)adaptor.nil();
 
+            dbg.location(59,14);
             WHERE22=(Token)match(input,WHERE,FOLLOW_WHERE_in_where217); 
             WHERE22_tree = (CommonTree)adaptor.create(WHERE22);
             root_0 = (CommonTree)adaptor.becomeRoot(WHERE22_tree, root_0);
 
+            dbg.location(59,16);
             pushFollow(FOLLOW_and_in_where220);
             and23=and();
 
@@ -677,6 +894,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(60, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "where");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "where"
@@ -702,22 +928,35 @@ public class SQL_grammarParser extends Parser {
 
         CommonTree string_literal25_tree=null;
 
+        try { dbg.enterRule(getGrammarFileName(), "and");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(62, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:62:5: ( clause ( 'AND' clause )* )
+            dbg.enterAlt(1);
+
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:62:7: clause ( 'AND' clause )*
             {
             root_0 = (CommonTree)adaptor.nil();
 
+            dbg.location(62,7);
             pushFollow(FOLLOW_clause_in_and230);
             clause24=clause();
 
             state._fsp--;
 
             adaptor.addChild(root_0, clause24.getTree());
+            dbg.location(62,14);
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:62:14: ( 'AND' clause )*
+            try { dbg.enterSubRule(7);
+
             loop7:
             do {
                 int alt7=2;
+                try { dbg.enterDecision(7);
+
                 int LA7_0 = input.LA(1);
 
                 if ( (LA7_0==28) ) {
@@ -725,11 +964,17 @@ public class SQL_grammarParser extends Parser {
                 }
 
 
+                } finally {dbg.exitDecision(7);}
+
                 switch (alt7) {
             	case 1 :
+            	    dbg.enterAlt(1);
+
             	    // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:62:16: 'AND' clause
             	    {
+            	    dbg.location(62,21);
             	    string_literal25=(Token)match(input,28,FOLLOW_28_in_and234); 
+            	    dbg.location(62,23);
             	    pushFollow(FOLLOW_clause_in_and237);
             	    clause26=clause();
 
@@ -744,6 +989,7 @@ public class SQL_grammarParser extends Parser {
             	    break loop7;
                 }
             } while (true);
+            } finally {dbg.exitSubRule(7);}
 
 
             }
@@ -762,6 +1008,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(63, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "and");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "and"
@@ -803,9 +1058,16 @@ public class SQL_grammarParser extends Parser {
         CommonTree char_literal35_tree=null;
         CommonTree char_literal37_tree=null;
 
+        try { dbg.enterRule(getGrammarFileName(), "clause");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(65, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:65:8: ( ( NAME | literal ) op ( NAME | literal ) | ( NAME | literal ) IN '(' query1 ')' )
             int alt11=2;
+            try { dbg.enterDecision(11);
+
             int LA11_0 = input.LA(1);
 
             if ( (LA11_0==NAME) ) {
@@ -821,6 +1083,7 @@ public class SQL_grammarParser extends Parser {
                     NoViableAltException nvae =
                         new NoViableAltException("", 11, 1, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
             }
@@ -843,6 +1106,7 @@ public class SQL_grammarParser extends Parser {
                             NoViableAltException nvae =
                                 new NoViableAltException("", 11, 6, input);
 
+                            dbg.recognitionException(nvae);
                             throw nvae;
                         }
                     }
@@ -850,6 +1114,7 @@ public class SQL_grammarParser extends Parser {
                         NoViableAltException nvae =
                             new NoViableAltException("", 11, 5, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
                 }
@@ -857,6 +1122,7 @@ public class SQL_grammarParser extends Parser {
                     NoViableAltException nvae =
                         new NoViableAltException("", 11, 2, input);
 
+                    dbg.recognitionException(nvae);
                     throw nvae;
                 }
             }
@@ -864,16 +1130,25 @@ public class SQL_grammarParser extends Parser {
                 NoViableAltException nvae =
                     new NoViableAltException("", 11, 0, input);
 
+                dbg.recognitionException(nvae);
                 throw nvae;
             }
+            } finally {dbg.exitDecision(11);}
+
             switch (alt11) {
                 case 1 :
+                    dbg.enterAlt(1);
+
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:65:10: ( NAME | literal ) op ( NAME | literal )
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
+                    dbg.location(65,10);
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:65:10: ( NAME | literal )
                     int alt8=2;
+                    try { dbg.enterSubRule(8);
+                    try { dbg.enterDecision(8);
+
                     int LA8_0 = input.LA(1);
 
                     if ( (LA8_0==NAME) ) {
@@ -886,12 +1161,18 @@ public class SQL_grammarParser extends Parser {
                         NoViableAltException nvae =
                             new NoViableAltException("", 8, 0, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
+                    } finally {dbg.exitDecision(8);}
+
                     switch (alt8) {
                         case 1 :
+                            dbg.enterAlt(1);
+
                             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:65:12: NAME
                             {
+                            dbg.location(65,12);
                             NAME27=(Token)match(input,NAME,FOLLOW_NAME_in_clause252); 
                             NAME27_tree = (CommonTree)adaptor.create(NAME27);
                             adaptor.addChild(root_0, NAME27_tree);
@@ -900,8 +1181,11 @@ public class SQL_grammarParser extends Parser {
                             }
                             break;
                         case 2 :
+                            dbg.enterAlt(2);
+
                             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:65:19: literal
                             {
+                            dbg.location(65,19);
                             pushFollow(FOLLOW_literal_in_clause256);
                             literal28=literal();
 
@@ -913,15 +1197,21 @@ public class SQL_grammarParser extends Parser {
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(8);}
 
+                    dbg.location(65,30);
                     pushFollow(FOLLOW_op_in_clause259);
                     op29=op();
 
                     state._fsp--;
 
                     root_0 = (CommonTree)adaptor.becomeRoot(op29.getTree(), root_0);
+                    dbg.location(65,32);
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:65:32: ( NAME | literal )
                     int alt9=2;
+                    try { dbg.enterSubRule(9);
+                    try { dbg.enterDecision(9);
+
                     int LA9_0 = input.LA(1);
 
                     if ( (LA9_0==NAME) ) {
@@ -934,12 +1224,18 @@ public class SQL_grammarParser extends Parser {
                         NoViableAltException nvae =
                             new NoViableAltException("", 9, 0, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
+                    } finally {dbg.exitDecision(9);}
+
                     switch (alt9) {
                         case 1 :
+                            dbg.enterAlt(1);
+
                             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:65:34: NAME
                             {
+                            dbg.location(65,34);
                             NAME30=(Token)match(input,NAME,FOLLOW_NAME_in_clause264); 
                             NAME30_tree = (CommonTree)adaptor.create(NAME30);
                             adaptor.addChild(root_0, NAME30_tree);
@@ -948,8 +1244,11 @@ public class SQL_grammarParser extends Parser {
                             }
                             break;
                         case 2 :
+                            dbg.enterAlt(2);
+
                             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:65:42: literal
                             {
+                            dbg.location(65,42);
                             pushFollow(FOLLOW_literal_in_clause269);
                             literal31=literal();
 
@@ -961,17 +1260,24 @@ public class SQL_grammarParser extends Parser {
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(9);}
 
 
                     }
                     break;
                 case 2 :
+                    dbg.enterAlt(2);
+
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:66:5: ( NAME | literal ) IN '(' query1 ')'
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
+                    dbg.location(66,5);
                     // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:66:5: ( NAME | literal )
                     int alt10=2;
+                    try { dbg.enterSubRule(10);
+                    try { dbg.enterDecision(10);
+
                     int LA10_0 = input.LA(1);
 
                     if ( (LA10_0==NAME) ) {
@@ -984,12 +1290,18 @@ public class SQL_grammarParser extends Parser {
                         NoViableAltException nvae =
                             new NoViableAltException("", 10, 0, input);
 
+                        dbg.recognitionException(nvae);
                         throw nvae;
                     }
+                    } finally {dbg.exitDecision(10);}
+
                     switch (alt10) {
                         case 1 :
+                            dbg.enterAlt(1);
+
                             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:66:6: NAME
                             {
+                            dbg.location(66,6);
                             NAME32=(Token)match(input,NAME,FOLLOW_NAME_in_clause279); 
                             NAME32_tree = (CommonTree)adaptor.create(NAME32);
                             adaptor.addChild(root_0, NAME32_tree);
@@ -998,8 +1310,11 @@ public class SQL_grammarParser extends Parser {
                             }
                             break;
                         case 2 :
+                            dbg.enterAlt(2);
+
                             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:66:13: literal
                             {
+                            dbg.location(66,13);
                             pushFollow(FOLLOW_literal_in_clause283);
                             literal33=literal();
 
@@ -1011,18 +1326,23 @@ public class SQL_grammarParser extends Parser {
                             break;
 
                     }
+                    } finally {dbg.exitSubRule(10);}
 
+                    dbg.location(66,24);
                     IN34=(Token)match(input,IN,FOLLOW_IN_in_clause286); 
                     IN34_tree = (CommonTree)adaptor.create(IN34);
                     root_0 = (CommonTree)adaptor.becomeRoot(IN34_tree, root_0);
 
+                    dbg.location(66,29);
                     char_literal35=(Token)match(input,26,FOLLOW_26_in_clause289); 
+                    dbg.location(66,31);
                     pushFollow(FOLLOW_query1_in_clause292);
                     query136=query1();
 
                     state._fsp--;
 
                     adaptor.addChild(root_0, query136.getTree());
+                    dbg.location(66,41);
                     char_literal37=(Token)match(input,27,FOLLOW_27_in_clause294); 
 
                     }
@@ -1043,6 +1363,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(67, 3);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "clause");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "clause"
@@ -1070,16 +1399,26 @@ public class SQL_grammarParser extends Parser {
         RewriteRuleTokenStream stream_NAME=new RewriteRuleTokenStream(adaptor,"token NAME");
         RewriteRuleTokenStream stream_29=new RewriteRuleTokenStream(adaptor,"token 29");
 
+        try { dbg.enterRule(getGrammarFileName(), "literal");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(68, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:68:9: ( '\\'' name= NAME '\\'' -> LITERAL[$name] )
+            dbg.enterAlt(1);
+
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:68:12: '\\'' name= NAME '\\''
             {
+            dbg.location(68,12);
             char_literal38=(Token)match(input,29,FOLLOW_29_in_literal306);  
             stream_29.add(char_literal38);
 
+            dbg.location(68,21);
             name=(Token)match(input,NAME,FOLLOW_NAME_in_literal310);  
             stream_NAME.add(name);
 
+            dbg.location(68,27);
             char_literal39=(Token)match(input,29,FOLLOW_29_in_literal312);  
             stream_29.add(char_literal39);
 
@@ -1098,6 +1437,7 @@ public class SQL_grammarParser extends Parser {
             root_0 = (CommonTree)adaptor.nil();
             // 68:32: -> LITERAL[$name]
             {
+                dbg.location(68,35);
                 adaptor.addChild(root_0, (CommonTree)adaptor.create(LITERAL, name));
 
             }
@@ -1119,6 +1459,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(68, 49);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "literal");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "literal"
@@ -1140,12 +1489,20 @@ public class SQL_grammarParser extends Parser {
 
         CommonTree set40_tree=null;
 
+        try { dbg.enterRule(getGrammarFileName(), "op");
+        if ( getRuleLevel()==0 ) {dbg.commence();}
+        incRuleLevel();
+        dbg.location(70, 1);
+
         try {
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:70:4: ( ( EQ | LS | GT | LS_EQ | GT_EQ ) )
+            dbg.enterAlt(1);
+
             // /home/dragan/Dragan/workspaces/eclipse_workspace/query_optimizer/src/main/java/queryopt/parser/SQL_grammar.g:70:6: ( EQ | LS | GT | LS_EQ | GT_EQ )
             {
             root_0 = (CommonTree)adaptor.nil();
 
+            dbg.location(70,6);
             set40=(Token)input.LT(1);
             if ( (input.LA(1)>=EQ && input.LA(1)<=GT_EQ) ) {
                 input.consume();
@@ -1154,6 +1511,7 @@ public class SQL_grammarParser extends Parser {
             }
             else {
                 MismatchedSetException mse = new MismatchedSetException(null,input);
+                dbg.recognitionException(mse);
                 throw mse;
             }
 
@@ -1174,6 +1532,15 @@ public class SQL_grammarParser extends Parser {
         }
         finally {
         }
+        dbg.location(71, 2);
+
+        }
+        finally {
+            dbg.exitRule(getGrammarFileName(), "op");
+            decRuleLevel();
+            if ( getRuleLevel()==0 ) {dbg.terminate();}
+        }
+
         return retval;
     }
     // $ANTLR end "op"

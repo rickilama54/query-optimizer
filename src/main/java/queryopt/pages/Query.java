@@ -33,7 +33,6 @@ public class Query {
 	@Persist
 	private queryopt.entities.Query query;
 
-	@SuppressWarnings("unused")
 	@Property
 	private String message;
 
@@ -148,9 +147,11 @@ public class Query {
 				activeBlock = viewBlock;
 				session.persist(query);
 				save();
-				 return Query.class;
+				return Query.class;
 			}
-			//return new MultiZoneUpdate("mainzone", activeBlock).add("queriesZone", layout.getQueriesZone().getBody());
+			// return new MultiZoneUpdate("mainzone",
+			// activeBlock).add("queriesZone",
+			// layout.getQueriesZone().getBody());
 		}
 		if (isParse) {
 			SPJQueryBuilder queryBuilder = new SPJQueryBuilder(getRelations());
@@ -160,6 +161,8 @@ public class Query {
 				parseok = true;
 				message = "OK";
 			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println(message);
 				message = e.getMessage();
 				parseok = false;
 			}
@@ -182,7 +185,8 @@ public class Query {
 
 	@SuppressWarnings("unchecked")
 	private List<Relation> getRelations() {
-		return session.createCriteria(Relation.class).list();
+		return session.createCriteria(Relation.class).add(
+				Restrictions.eq("schema.schemaId", sessionData.getSelectedSchema().getSchemaId())).list();
 	}
 
 	@SuppressWarnings("unused")
@@ -233,6 +237,10 @@ public class Query {
 
 	Object onActionFromExecutionPlanView() {
 		return ExecutionPlanView.class;
+	}
+
+	public String getQueryText() {
+		return query.getText().replace("\n", "<br/>").replace("\t", "<span style=\"margin-left:20px;\"/>");
 	}
 
 }

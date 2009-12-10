@@ -41,6 +41,7 @@ public class SPJQueryBuilder {
 
 	public void parse(String query) throws Exception {
 		ast = getAstFromString(query.toUpperCase() + ";");
+		buildSpjQueryFromAst(ast);
 	}
 
 	public SPJQuery build(ExecutionPlan executionPlan) throws Exception {
@@ -56,6 +57,7 @@ public class SPJQueryBuilder {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		SQL_grammarParser parser = new SQL_grammarParser(tokens);
 		CommonTree ast = (CommonTree) parser.query().getTree();
+		System.out.println("parser.hasError():" + parser.hasError());
 		if (parser.hasError())
 			throw new Exception("Error at postition " + parser.getErrorPosition() + ": " + parser.getErrorMessage());
 		return ast;

@@ -30,6 +30,7 @@ public class Relations {
 	private List<Relation> relations;
 
 	@Property
+	@Persist
 	private Relation relation;
 
 	@SuppressWarnings("unused")
@@ -91,8 +92,8 @@ public class Relations {
 
 	@SuppressWarnings("unchecked")
 	public List<IndexAtribute> getIndexAtributes() {
-		return session.createCriteria(IndexAtribute.class).add(
-				Restrictions.eq("index.indexId", index.getIndexId())).addOrder(Order.asc("indexAtributeId")).list();
+		return session.createCriteria(IndexAtribute.class).add(Restrictions.eq("index.indexId", index.getIndexId()))
+				.addOrder(Order.asc("indexAtributeId")).list();
 	}
 
 	public boolean isLastAtributeInIndex() {
@@ -160,8 +161,23 @@ public class Relations {
 		saveIndexes = true;
 	}
 
+	private boolean newRelation;
+
+	void onSelectedFromNewRelation() {
+		newRelation = true;
+	}
+
 	@CommitAfter
 	Object onSuccess() {
+		isEditRelation = false;
+		if (newRelation) {
+			Relation r = new Relation();
+			r.setSchema(sessionData.getSelectedSchema());
+			r.setBlockingFactor(2);
+			r.setNoOfRows(10000);
+			r.setName("new relation");
+			session.persist(r);
+		}
 		for (Relation r : relations)
 			for (Atribute a : r.getAtributes())
 				if (a.getFkAtribute() != null) {
@@ -175,6 +191,22 @@ public class Relations {
 		} else {
 			return this;
 		}
+	}
+
+	@Persist
+	@Property
+	private boolean isEditRelation;
+
+	public void onActionFromEditRelation() {
+		isEditRelation = !isEditRelation;
+	}
+
+
+	@CommitAfter
+	public void onActionFromDeleteRelation(int relationId) {
+		Relation r = (Relation) session.createCriteria(Relation.class).add(Restrictions.eq("relationId", relationId))
+				.uniqueResult();
+		session.delete(r);
 	}
 
 	public ValueEncoder<Relation> getRelationEncoder() {

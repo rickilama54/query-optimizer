@@ -4,5 +4,8 @@
 		<t:parameter name="nameCell">
 			<a href="#" t:type="PageLink" t:page="Query" context="query.queryId">${query.name}</a>
 		</t:parameter>
+		<t:parameter name="textCell">
+			<t:outputRaw value="querytext"/>
+		</t:parameter>
 	</div>
 </html>

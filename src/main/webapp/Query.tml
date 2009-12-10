@@ -29,7 +29,7 @@
 				</p>
 				<br />
 				<span style="font-size: 1.0em;font-family:Monospace;margin-top:50px;">
-					<t:outputraw value="query.text" />
+					<t:outputraw value="querytext" />
 				</span>
 			</p>
 			<p>

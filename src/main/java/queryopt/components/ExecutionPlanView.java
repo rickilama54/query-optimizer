@@ -51,6 +51,10 @@ public class ExecutionPlanView {
 				"<span style=\"margin-left:20px;\"/>");
 	}
 
+	public String getQueryText() {
+		return executionPlan.getQuery().getText().replace("\n", "<br/>").replace("\t", "<span style=\"margin-left:20px;\"/>");
+	}
+
 	Object onActionFromCalculateExecutionPlan() {
 		executionPlanService.calculateExecutionPlan(executionPlan.getExecutionPlanId());
 		executionPlan = (ExecutionPlan) session.createCriteria(ExecutionPlan.class).add(
