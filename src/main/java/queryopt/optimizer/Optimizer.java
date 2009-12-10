@@ -20,7 +20,7 @@ public class Optimizer {
 	private SPJQuery query;
 	private List<List<? extends Plan>> allLeftDeepPlanTrees;
 	private List<AccessPath> allAccessPaths;
-	private HashMap<Relation, SingleRelationQuery> singleRelationQueries;
+	private HashMap<Relation, SingleRelationQuery> srqueries;
 
 	public Optimizer(SPJQuery query) throws Exception {
 		this.query = query;
@@ -28,15 +28,17 @@ public class Optimizer {
 
 	public Plan generateBestPlan() throws Exception {
 
-		singleRelationQueries = Utils.getSingleRelationQueriesFromSPJQuery(query);
-		allAccessPaths = generateSingleRelationPlans(singleRelationQueries);
+		srqueries = Utils.getSingleRelationQueriesFromSPJQuery(query);
+		allAccessPaths = genSingleRelationPlans(srqueries);
 
 		allLeftDeepPlanTrees = new ArrayList<List<? extends Plan>>();
 		allLeftDeepPlanTrees.add(allAccessPaths);
 
-		for (int i = 1; i < allAccessPaths.size(); i++)
-			allLeftDeepPlanTrees.add(generateMultipleRelationPlans(Utils.getJoinQueriesFromSPJQuery(
-					allLeftDeepPlanTrees.get(i - 1), query, allAccessPaths)));
+		for (int i = 1; i < allAccessPaths.size(); i++) {
+			List<JoinQuery> joinqueries = Utils.getJoinQueriesFromSPJQuery(allLeftDeepPlanTrees.get(i - 1), query,
+					allAccessPaths);
+			allLeftDeepPlanTrees.add(genMultipleRelationPlans(joinqueries, srqueries));
+		}
 
 		Plan bestPlan = null;
 		long cost = Long.MAX_VALUE;
@@ -48,7 +50,34 @@ public class Optimizer {
 		return bestPlan;
 	}
 
-	private static List<AccessPath> generateSingleRelationPlans(
+	private static List<Join> genMultipleRelationPlans(List<JoinQuery> joinQueries,
+			HashMap<Relation, SingleRelationQuery> srqueries) throws Exception {
+
+		List<Join> nRelationPlans = new ArrayList<Join>();
+
+		for (JoinQuery joinQuery : joinQueries) {
+			Join join = null;
+			long cost = Long.MAX_VALUE;
+
+			// Construct NestedLoops With FTS
+			NestedLoopsJoin nestedLoops = new NestedLoopsJoin(joinQuery);
+			cost = nestedLoops.getCost();
+			join = nestedLoops;
+
+			// Construct JoinQuery With Index Scan and RIDs
+			IndexNestedLoopsJoin indexNestedLoops = new IndexNestedLoopsJoin(joinQuery);
+
+			if (cost < indexNestedLoops.getCost()) {
+				cost = indexNestedLoops.getCost();
+				join = indexNestedLoops;
+			}
+
+			nRelationPlans.add(join);
+		}
+		return nRelationPlans;
+	}
+
+	private static List<AccessPath> genSingleRelationPlans(
 			HashMap<Relation, SingleRelationQuery> singleRelationQueries) throws Exception {
 
 		List<AccessPath> singleRelationAccessPaths = new ArrayList<AccessPath>();
@@ -80,29 +109,4 @@ public class Optimizer {
 		return singleRelationAccessPaths;
 	}
 
-	private static List<Join> generateMultipleRelationPlans(List<JoinQuery> joinQueries) throws Exception {
-
-		List<Join> nRelationPlans = new ArrayList<Join>();
-
-		for (JoinQuery joinQuery : joinQueries) {
-			Join join = null;
-			long cost = Long.MAX_VALUE;
-
-			NestedLoopsJoin nestedLoops = new NestedLoopsJoin(joinQuery);
-			cost = nestedLoops.getCost();
-			join = nestedLoops;
-
-			IndexNestedLoopsJoin indexNestedLoops = new IndexNestedLoopsJoin(joinQuery);
-
-			if (cost < indexNestedLoops.getCost()) {
-				cost = indexNestedLoops.getCost();
-				join = indexNestedLoops;
-			}
-
-			nRelationPlans.add(join);
-		}
-		return nRelationPlans;
-	}
-
-	
 }
