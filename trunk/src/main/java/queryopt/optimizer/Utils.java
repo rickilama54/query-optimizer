@@ -465,7 +465,6 @@ public class Utils {
 	}
 
 	private static JoinQuery computeJoinQuery(SPJQuery query, Plan plan, AccessPath accessPath) throws Exception {
-
 		List<JoinClause> remainingJoinClauses = new ArrayList<JoinClause>();
 		remainingJoinClauses.addAll(query.getJoinClauses());
 		Plan join = plan;
@@ -489,7 +488,7 @@ public class Utils {
 			else
 				throw new Exception("Invalid state");
 
-		// No join Clauses found
+		// No join Clauses found i.e. Plan and AccessPath are not join-able
 		if (joinClauses.size() == 0)
 			return null;
 
