@@ -12,7 +12,6 @@ import org.hibernate.criterion.Restrictions;
 import queryopt.model.SessionData;
 
 public class Queries {
-	@SuppressWarnings("unused")
 	@Property
 	private queryopt.entities.Query query;
 
@@ -26,5 +25,9 @@ public class Queries {
 		return session.createCriteria(queryopt.entities.Query.class).add(
 				Restrictions.eq("schema.schemaId", sessionData.getSelectedSchema().getSchemaId())).addOrder(
 				Order.asc("name")).list();
+	}
+
+	public String getQueryText() {
+		return query.getText().replace("\n", "<br/>").replace("\t", "<span style=\"margin-left:20px;\"/>");
 	}
 }

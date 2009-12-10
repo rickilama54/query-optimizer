@@ -25,10 +25,47 @@
 
 	<t:zone t:id="mainzone">
 		<form t:type="form" t:id="mainForm" zone="mainzone" name="mainform">
+			<input t:type="Submit" t:id="newRelation" value="New Relation"
+				style="float:right;margin-right:30px;margin-top:20px;" />
 			<table class="nostyle">
 				<tr t:type="Loop" source="relations" value="relation" encoder="relationEncoder">
 					<td class="nostyle">
-						<h1>${relation.name}</h1>
+						<t:unless test="isEditRelation">
+							<h1>
+								${relation.name}
+								<a href="#" t:type="ActionLink" t:id="editRelation" style="font-size:10px;">edit</a>
+								<a href="#" t:type="ActionLink" t:id="deleteRelation"
+									t:context="relation.relationId" style="font-size:10px;margin-left:5px;">delete</a>
+							</h1>
+							<t:parameter name="else">
+								<input t:type="textField" value="relation.name" />
+							</t:parameter>
+						</t:unless>
+
+						<div style="margin-top:10px;">
+							Number of rows:
+							<t:unless test="isEditRelation">
+								${relation.noOfRows}
+								<t:parameter name="else">
+									<input t:type="textField" value="relation.noOfRows" />
+								</t:parameter>
+							</t:unless>
+						</div>
+
+						<div style="margin-top:5px;">
+							BlockingFactor:
+							<t:unless test="isEditRelation">
+								${relation.blockingFactor}
+								<t:parameter name="else">
+									<input t:type="textField" value="relation.blockingFactor" />
+								</t:parameter>
+							</t:unless>
+						</div>
+						
+						<t:if test="isEditRelation">
+							<input t:type="Submit" value="Save" />
+						</t:if>
+						
 						<h2>Atributes</h2>
 						<table>
 							<thead>
@@ -198,6 +235,7 @@
 						<input t:id="SaveIndexes"
 							style="margin-top:5px; position:relative; right:0px; text-align: right;"
 							t:type="submit" value="Save" />
+						<hr size="1px" style="margin-top:20px;" />
 					</td>
 				</tr>
 			</table>
