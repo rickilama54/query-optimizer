@@ -342,8 +342,9 @@ public class Utils {
 
 	public static long getRelationSizeInPages(Relation r, SystemInfo systemInfo) {
 		int pagesize = systemInfo.getPageSizeInBytes();
-		System.out.println("pagesize:" + pagesize);
-		System.out.println("getRelationSizeInBytes(r, systemInfo):" + getRelationSizeInBytes(r, systemInfo));
+		// System.out.println("pagesize:" + pagesize);
+		// System.out.println("getRelationSizeInBytes(r, systemInfo):" +
+		// getRelationSizeInBytes(r, systemInfo));
 		return getRelationSizeInBytes(r, systemInfo) / pagesize;
 	}
 
@@ -463,6 +464,10 @@ public class Utils {
 				if (joinQuery != null)
 					joinQueries.add(joinQuery);
 			}
+		for (JoinQuery jq : joinQueries) {
+			System.out.println("jq:" + jq.getRight().getOutputRelation().getName() + " "
+					+ jq.getLeft().getOutputRelation().getName());
+		}
 		return joinQueries;
 	}
 
@@ -474,18 +479,23 @@ public class Utils {
 			remainingJoinClauses.removeAll(((Join) join).getJoinQuery().getJoinClauses());
 			join = ((Join) join).getLeft();
 		}
-
 		List<JoinClause> joinClauses = new ArrayList<JoinClause>();
 		for (JoinClause joinClause : remainingJoinClauses)
 			if (accessPath.getOutputRelation().getAtributes().contains(joinClause.getAtribute1()))
-				if (!plan.getOutputRelation().getAtributes().contains(joinClause.getAtribute2()))
-					throw new Exception("Invalid state");
-				else
+				if (!plan.getOutputRelation().getAtributes().contains(joinClause.getAtribute2())) {
+					// System.out.println("plan.getOutputRelation().getName():"+plan.getOutputRelation().getName());
+					// System.out.println(plan.getOutputRelation().getAtributes());
+					// System.out.println(joinClause.getAtribute1().getName() +
+					// " " + joinClause.getAtribute2().getName());
+					// throw new Exception("Invalid state");
+					//return null;
+				} else
 					joinClauses.add(joinClause);
 			else if (accessPath.getOutputRelation().getAtributes().contains(joinClause.getAtribute2()))
-				if (!plan.getOutputRelation().getAtributes().contains(joinClause.getAtribute1()))
-					throw new Exception("Invalid state");
-				else
+				if (!plan.getOutputRelation().getAtributes().contains(joinClause.getAtribute1())) {
+					// throw new Exception("Invalid state");
+					//return null;
+				} else
 					joinClauses.add(joinClause);
 			else
 				throw new Exception("Invalid state");
@@ -499,7 +509,19 @@ public class Utils {
 		projectionAtributes.addAll(plan.getOutputRelation().getAtributes());
 		projectionAtributes.addAll(accessPath.getOutputRelation().getAtributes());
 
-		return new JoinQuery(query.getSystemInfo(), plan, accessPath, projectionAtributes, joinClauses);
+		for(Atribute a1 : plan.getOutputRelation().getAtributes())
+			for(Atribute a2 : accessPath.getOutputRelation().getAtributes())
+				if(a1.getFkAtribute() != null)
+				if(a1.getFkAtribute().equals(a2))
+					return new JoinQuery(query.getSystemInfo(), plan, accessPath, projectionAtributes, joinClauses);
+		
+		for(Atribute a1 : accessPath.getOutputRelation().getAtributes())
+			for(Atribute a2 : plan.getOutputRelation().getAtributes())
+				if(a1.getFkAtribute() != null)
+				if(a1.getFkAtribute().equals(a2))
+					return new JoinQuery(query.getSystemInfo(), plan, accessPath, projectionAtributes, joinClauses);
+		
+		return null;
 	}
 
 	private static List<AccessPath> getRemainingAccessPaths(Plan plan, List<AccessPath> allAccessPaths) {
